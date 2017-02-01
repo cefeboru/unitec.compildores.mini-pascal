@@ -6,7 +6,7 @@ package org.unitec.compiladores.jflex;
 %line
 %column
 %integer
-/* %standalone */
+
 
 LineTerminator = \r|\n|\r\n
 WhiteSpace     = {LineTerminator} | [ \t\f]
@@ -15,10 +15,14 @@ Number         = [0-9]
 OpenTag        = <
 CloseTag       = >
 OpenClosingTag = <//
-Title          = {Letter}|{Number}|{WhiteSpace}
+TitleTag          = {OpenTag}title{CloseTag}({Letter}|{Number}|{WhiteSpace})*{OpenClosingTag}title{CloseTag}
+
+
 
 %%
 
 <YYINITIAL> {
     {WhiteSpace}    { /*ignore*/ }
+    {TitleTag}      { System.out.println(yytext());}
+    .               { /*ignore*/}
 }
