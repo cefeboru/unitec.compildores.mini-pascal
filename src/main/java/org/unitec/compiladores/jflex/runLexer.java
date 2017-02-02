@@ -20,10 +20,10 @@ import java.util.logging.Logger;
 
 public class runLexer {
     public static void main(String[] vargs){
-        Flexer scanner;
+        FlexerWordsA scanner;
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/htmlInput.html"));
-            scanner = new Flexer(br);
+            scanner = new FlexerWordsA(br);
             scanner.yylex();
         } catch (FileNotFoundException  ex) {
             Logger.getLogger(runLexer.class.getName()).log(Level.SEVERE, null, ex);
