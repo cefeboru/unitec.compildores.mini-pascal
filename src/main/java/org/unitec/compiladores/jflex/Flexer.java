@@ -7,7 +7,7 @@ package org.unitec.compiladores.jflex;
  * <a href="http://www.jflex.de/">JFlex</a> 1.6.1
  * from the specification file <tt>C:/Users/cbonilla/Documents/compiladores-jflex-htmlTitle/src/main/jflex/htmlTitle.jflex</tt>
  */
-public class Lexer {
+public class Flexer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
@@ -32,10 +32,11 @@ public class Lexer {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\3\1\2\1\12\1\3\1\1\22\0\1\3\17\0\12\3"+
-    "\2\0\1\4\1\0\1\5\2\0\32\3\6\0\4\3\1\11\3\3"+
-    "\1\7\2\3\1\10\7\3\1\6\6\3\12\0\1\12\u1fa2\0\1\12"+
-    "\1\12\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\3\1\2\1\13\1\3\1\1\22\0\1\3\16\0\1\12"+
+    "\12\3\2\0\1\4\1\0\1\11\2\0\4\3\1\10\3\3\1\6"+
+    "\2\3\1\7\7\3\1\5\6\3\6\0\4\3\1\10\3\3\1\6"+
+    "\2\3\1\7\7\3\1\5\6\3\12\0\1\13\u1fa2\0\1\13\1\13"+
+    "\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -48,10 +49,10 @@ public class Lexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\3\1\14\0\1\2";
+    "\1\0\3\1\15\0\1\2";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[17];
+    int [] result = new int[18];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -76,12 +77,12 @@ public class Lexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\13\0\26\0\41\0\54\0\67\0\102\0\115"+
-    "\0\130\0\143\0\156\0\171\0\204\0\217\0\232\0\245"+
-    "\0\13";
+    "\0\0\0\14\0\30\0\44\0\60\0\74\0\110\0\124"+
+    "\0\140\0\154\0\170\0\204\0\220\0\234\0\250\0\264"+
+    "\0\300\0\14";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[17];
+    int [] result = new int[18];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -104,14 +105,14 @@ public class Lexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\2\1\3\2\2\1\4\5\2\16\0\1\2\16\0"+
-    "\1\5\13\0\1\6\11\0\1\7\14\0\1\10\13\0"+
-    "\1\11\6\0\1\12\6\0\3\12\1\13\1\0\4\12"+
-    "\7\0\1\14\13\0\1\15\11\0\1\16\14\0\1\17"+
-    "\13\0\1\20\6\0\1\21\5\0";
+    "\1\2\1\3\2\2\1\4\6\2\17\0\1\2\16\0"+
+    "\1\5\14\0\1\6\12\0\1\7\15\0\1\10\14\0"+
+    "\1\11\14\0\1\12\3\0\3\12\1\13\4\12\15\0"+
+    "\1\14\6\0\1\15\14\0\1\16\12\0\1\17\15\0"+
+    "\1\20\14\0\1\21\14\0\1\22\2\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[176];
+    int [] result = new int[204];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -149,10 +150,10 @@ public class Lexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\2\1\14\0\1\11";
+    "\1\0\1\11\2\1\15\0\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[17];
+    int [] result = new int[18];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -233,7 +234,7 @@ public class Lexer {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  Lexer(java.io.Reader in) {
+  public Flexer(java.io.Reader in) {
     this.zzReader = in;
   }
 
@@ -248,7 +249,7 @@ public class Lexer {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 96) {
+    while (i < 114) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);

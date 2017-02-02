@@ -7,13 +7,14 @@ package org.unitec.compiladores.jflex;
  * <a href="http://www.jflex.de/">JFlex</a> 1.6.1
  * from the specification file <tt>C:/Users/cbonilla/Documents/compiladores-jflex-htmlTitle/src/main/jflex/htmlTitle.jflex</tt>
  */
-class Lexer {
+public class Lexer {
 
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
 
   /** initial size of the lookahead buffer */
   private static final int ZZ_BUFFERSIZE = 16384;
+  private static final String ZZ_NL = System.getProperty("line.separator");
 
   /** lexical states */
   public static final int YYINITIAL = 0;
@@ -32,10 +33,10 @@ class Lexer {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\3\1\2\1\12\1\3\1\1\22\0\1\3\17\0\12\3"+
-    "\2\0\1\4\1\0\1\5\2\0\32\3\6\0\4\3\1\11\3\3"+
-    "\1\7\2\3\1\10\7\3\1\6\6\3\12\0\1\12\u1fa2\0\1\12"+
-    "\1\12\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\0\1\2\1\11\1\0\1\1\22\0\1\0\17\0\12\0"+
+    "\2\0\1\3\1\0\1\4\2\0\32\0\6\0\4\0\1\10\3\0"+
+    "\1\6\2\0\1\7\7\0\1\5\6\0\12\0\1\11\u1fa2\0\1\11"+
+    "\1\11\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -48,10 +49,10 @@ class Lexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\3\1\1\2\14\0\1\3";
+    "\1\0\3\1\5\0\1\2";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[18];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -76,12 +77,11 @@ class Lexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\13\0\26\0\41\0\13\0\54\0\67\0\102"+
-    "\0\115\0\130\0\143\0\156\0\171\0\204\0\217\0\232"+
-    "\0\245\0\13";
+    "\0\0\0\12\0\24\0\36\0\50\0\62\0\74\0\106"+
+    "\0\120\0\12";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[18];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -104,14 +104,12 @@ class Lexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\2\1\3\2\2\1\4\5\2\1\5\15\0\1\2"+
-    "\16\0\1\6\13\0\1\7\11\0\1\10\14\0\1\11"+
-    "\13\0\1\12\6\0\1\13\6\0\3\13\1\14\1\0"+
-    "\4\13\7\0\1\15\13\0\1\16\11\0\1\17\14\0"+
-    "\1\20\13\0\1\21\6\0\1\22\5\0";
+    "\1\2\1\3\1\2\1\4\5\2\15\0\1\2\14\0"+
+    "\1\5\12\0\1\6\10\0\1\7\13\0\1\10\12\0"+
+    "\1\11\5\0\1\12\5\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[176];
+    int [] result = new int[90];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -149,10 +147,10 @@ class Lexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\2\1\1\11\14\0\1\11";
+    "\1\0\1\11\2\1\5\0\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[18];
+    int [] result = new int[10];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -233,7 +231,7 @@ class Lexer {
    *
    * @param   in  the java.io.Reader to read input from.
    */
-  Lexer(java.io.Reader in) {
+  public Lexer(java.io.Reader in) {
     this.zzReader = in;
   }
 
@@ -254,6 +252,23 @@ class Lexer {
       do map[j++] = value; while (--count > 0);
     }
     return map;
+  }
+
+  private static String zzToPrintable(String str) {
+    StringBuilder builder = new StringBuilder();
+    for (int n = 0 ; n < str.length() ; ) {
+      int ch = str.codePointAt(n);
+      int charCount = Character.charCount(ch);
+      n += charCount;
+      if (ch > 31 && ch < 127) {
+        builder.append((char)ch);
+      } else if (charCount == 1) {
+        builder.append(String.format("\\u%04X", ch));
+      } else {
+        builder.append(String.format("\\U%06X", ch));
+      }
+    }
+    return builder.toString();
   }
 
 
@@ -599,17 +614,17 @@ class Lexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
+            System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
+            System.out.println("action [31] { /*ignore*/ }");
             { /*ignore*/
             }
-          case 4: break;
+          case 3: break;
           case 2: 
-            { System.out.print(yytext());
-            }
-          case 5: break;
-          case 3: 
+            System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
+            System.out.println("action [30] { System.out.println(yytext()); }");
             { System.out.println(yytext());
             }
-          case 6: break;
+          case 4: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }
@@ -620,8 +635,9 @@ class Lexer {
   /**
    * Runs the scanner on input files.
    *
-   * This is a standalone scanner, it will print any unmatched
-   * text to System.out unchanged.
+   * This main method is the debugging routine for the scanner.
+   * It prints debugging information about each returned token to
+   * System.out until the end of file is reached, or an error occured.
    *
    * @param argv   the command line, contains the filenames to run
    *               the scanner on.
@@ -649,7 +665,10 @@ class Lexer {
           java.io.FileInputStream stream = new java.io.FileInputStream(argv[i]);
           java.io.Reader reader = new java.io.InputStreamReader(stream, encodingName);
           scanner = new Lexer(reader);
-          while ( !scanner.zzAtEOF ) scanner.yylex();
+          do {
+            System.out.println(scanner.yylex());
+          } while (!scanner.zzAtEOF);
+
         }
         catch (java.io.FileNotFoundException e) {
           System.out.println("File not found : \""+argv[i]+"\"");

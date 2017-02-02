@@ -1,7 +1,9 @@
 package org.unitec.compiladores.jflex;
 %%
 
-%class Lexer
+%class Flexer
+%public
+/*%debug*/
 %unicode
 %line
 %column
@@ -12,17 +14,16 @@ LineTerminator = \r|\n|\r\n
 WhiteSpace     = {LineTerminator} | [ \t\f]
 Letter         = [a-zA-Z]
 Number         = [0-9]
-OpenTag        = <
-CloseTag       = >
-OpenClosingTag = <//
-TitleTag          = {OpenTag}title{CloseTag}({Letter}|{Number}|{WhiteSpace})*{OpenClosingTag}title{CloseTag}
+Content        = ({WhiteSpace}|{Number}|{Letter})*
 
-
+OpenTitleTag   = <[tT][iI][tT][lL][eE]>
+CloseTitleTag  = <\/[tT][iI][tT][lL][eE]>
+DocumentTitle  = {OpenTitleTag}{Content}{CloseTitleTag}
 
 %%
 
 <YYINITIAL> {
-    {WhiteSpace}    { /*ignore*/ }
-    {TitleTag}      { System.out.println(yytext());}
-    .               { /*ignore*/}
+    {WhiteSpace}     { /*ignore*/ }
+    {DocumentTitle}  { System.out.println(yytext());}
+    .                { /*ignore*/}
 }
