@@ -34,13 +34,14 @@ public class PascalFlexer {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\11\0\1\7\1\23\1\24\1\7\1\22\22\0\1\7\15\0\1\15"+
-    "\1\0\12\16\7\0\1\5\1\10\1\16\1\14\1\11\1\16\1\4"+
-    "\1\16\1\17\3\16\1\6\1\13\1\3\1\1\1\16\1\2\10\16"+
-    "\4\0\1\16\1\0\1\5\1\10\1\16\1\14\1\11\1\16\1\4"+
-    "\1\16\1\17\3\16\1\6\1\13\1\3\1\1\1\16\1\2\10\16"+
-    "\1\20\1\0\1\21\7\0\1\24\252\0\2\12\u1ef6\0\1\24\1\24"+
-    "\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
+    "\11\0\1\0\1\22\1\24\1\25\1\23\22\0\1\7\6\0\1\34"+
+    "\3\0\1\21\1\0\1\21\1\15\1\0\12\20\7\0\1\5\1\10"+
+    "\1\16\1\14\1\11\1\30\1\4\1\16\1\17\2\16\1\31\1\6"+
+    "\1\13\1\3\1\1\1\16\1\2\1\33\1\26\1\27\5\16\4\0"+
+    "\1\16\1\0\1\5\1\10\1\16\1\14\1\11\1\30\1\4\1\16"+
+    "\1\17\2\16\1\31\1\6\1\13\1\3\1\1\1\16\1\2\1\33"+
+    "\1\26\1\27\5\16\1\35\1\0\1\36\7\0\1\24\252\0\2\12"+
+    "\115\0\1\32\u1ea8\0\1\24\1\24\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\udfe6\0";
 
   /** 
    * Translates characters to character classes
@@ -53,11 +54,11 @@ public class PascalFlexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\2\0\2\1\1\2\2\1\1\3\1\2\1\4\1\5"+
-    "\1\6\12\0";
+    "\2\0\12\1\1\2\1\3\1\4\1\5\14\0\1\1"+
+    "\5\0\1\1";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[22];
+    int [] result = new int[35];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -82,12 +83,14 @@ public class PascalFlexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\25\0\52\0\77\0\52\0\124\0\151\0\52"+
-    "\0\176\0\52\0\52\0\52\0\223\0\250\0\275\0\322"+
-    "\0\347\0\374\0\u0111\0\u0126\0\u013b\0\u0150";
+    "\0\0\0\37\0\76\0\135\0\174\0\233\0\272\0\331"+
+    "\0\370\0\u0117\0\u0136\0\u0155\0\76\0\76\0\76\0\76"+
+    "\0\u0174\0\u0193\0\u01b2\0\331\0\u01d1\0\u01f0\0\u020f\0\u022e"+
+    "\0\u024d\0\u026c\0\u028b\0\u02aa\0\u020f\0\u02c9\0\u02e8\0\u0307"+
+    "\0\u0326\0\u0345\0\u0364";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[22];
+    int [] result = new int[35];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -110,16 +113,24 @@ public class PascalFlexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\3\1\4\5\3\1\5\1\6\1\7\6\3\1\10"+
-    "\1\3\1\11\1\5\2\0\6\12\1\0\2\12\1\0"+
-    "\2\12\1\0\2\12\1\13\1\14\32\0\1\15\33\0"+
-    "\1\16\26\0\1\17\34\0\1\5\4\0\1\20\25\0"+
-    "\1\21\34\0\1\22\14\0\1\23\32\0\1\24\4\0"+
-    "\1\24\22\0\1\3\11\0\1\25\35\0\1\3\16\0"+
-    "\1\26\25\0\1\3\16\0";
+    "\1\3\1\4\6\3\1\5\1\6\6\3\1\7\1\10"+
+    "\1\3\1\11\1\0\1\3\1\12\1\3\1\13\3\3"+
+    "\1\14\1\15\1\3\1\0\6\16\1\0\2\16\1\0"+
+    "\2\16\1\0\3\16\5\0\4\16\1\0\1\16\1\0"+
+    "\1\17\1\20\41\0\1\21\45\0\1\22\40\0\1\23"+
+    "\43\0\1\7\36\0\1\7\1\24\37\0\1\3\16\0"+
+    "\1\25\41\0\1\26\31\0\22\27\4\0\11\27\3\0"+
+    "\1\30\37\0\1\31\46\0\1\32\51\0\1\33\40\0"+
+    "\1\34\5\0\22\27\4\0\6\27\1\35\2\27\4\0"+
+    "\1\36\44\0\1\37\4\0\1\37\34\0\1\3\32\0"+
+    "\1\3\57\0\2\33\5\0\1\40\47\0\1\3\30\0"+
+    "\1\41\37\0\1\42\31\0\6\43\1\42\2\43\1\0"+
+    "\2\43\1\0\2\43\6\0\4\43\1\0\1\43\4\0"+
+    "\6\43\1\0\2\43\1\0\2\43\1\0\3\43\5\0"+
+    "\4\43\1\0\1\43\3\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[357];
+    int [] result = new int[899];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -157,11 +168,10 @@ public class PascalFlexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\2\0\1\11\1\1\1\11\2\1\1\11\1\1\3\11"+
-    "\12\0";
+    "\2\0\1\11\11\1\4\11\14\0\1\1\5\0\1\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[22];
+    int [] result = new int[35];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -257,7 +267,7 @@ public class PascalFlexer {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 154) {
+    while (i < 184) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
@@ -626,40 +636,34 @@ public class PascalFlexer {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
             System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
-            System.out.println("action [44] {  }");
+            System.out.println("action [55] {  }");
             { 
             }
-          case 7: break;
+          case 6: break;
           case 2: 
             System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
-            System.out.println("action [39] { /*ignore*/ }");
-            { /*ignore*/
-            }
-          case 8: break;
-          case 3: 
-            System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
-            System.out.println("action [38] { yybegin(COMMENT);System.out.println(\"Moving to state comment\"); }");
+            System.out.println("action [45] { yybegin(COMMENT);System.out.println(\"Moving to state comment\"); }");
             { yybegin(COMMENT);System.out.println("Moving to state comment");
             }
-          case 9: break;
-          case 4: 
+          case 7: break;
+          case 3: 
             System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
-            System.out.println("action [50] { /* ignore */ }");
+            System.out.println("action [61] { /* ignore */ }");
             { /* ignore */
             }
-          case 10: break;
-          case 5: 
+          case 8: break;
+          case 4: 
             System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
-            System.out.println("action [51] { System.out.println(\"Comments can\'t be nested\"); }");
+            System.out.println("action [62] { System.out.println(\"Comments can\'t be nested\"); }");
             { System.out.println("Comments can't be nested");
             }
-          case 11: break;
-          case 6: 
+          case 9: break;
+          case 5: 
             System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
-            System.out.println("action [52] { yybegin(YYINITIAL); System.out.println(\"Moving to initial state\"); }");
+            System.out.println("action [63] { yybegin(YYINITIAL); System.out.println(\"Moving to initial state\"); }");
             { yybegin(YYINITIAL); System.out.println("Moving to initial state");
             }
-          case 12: break;
+          case 10: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

@@ -13,8 +13,7 @@ package org.unitec.compiladores.jflex;
 
 
 
-Program             = Program
-CabeceraPrograma    = program[ ]* {IdPrograma}
+CabeceraPrograma    = program[ ]* {Identificador}
 Identificador       = {Letra} ({Letra} | {Digito})*
 Begin               = Begin
 End                 = End\.
@@ -23,6 +22,13 @@ LetraMayuscula      = [A-Z]
 LetraMinuscula      = [a-z]
 Letra               = {LetraMayuscula} | {LetraMinuscula} | {CaracterSubrayado}
 Digito              = [0-9]
+Signo               = [+-]*
+Caracter            = .
+LiteralEntero       = {Signo}{Digito}+
+LiteralBoolean      = true | false
+LiteralCaracter     =  '{Caracter}'
+LiteralString       =  '{Caracter}+'
+Literal             = {LiteralEntero}|{LiteralBoolean}|{LiteralCaracter}|{LiteralString}
 
 InicioComentario    = \{
 FinComentario       = \}
@@ -37,11 +43,15 @@ LineTerminator      = \r|\n|\r\n
 %%
 <YYINITIAL> {
     {InicioComentario}      { yybegin(COMMENT);System.out.println("Moving to state comment"); }
-    {WhiteSpace}            { /*ignore*/}
+    {WhiteSpace}            {}
     {LineTerminator}        {}
-    {Program}               {}
+    {CabeceraPrograma}      {}
     {Begin}                 {}
     {End}                   {}
+    {Literal}               {}
+    {LiteralEntero}         {}
+    {LiteralCaracter}       {}
+    {LiteralString}         {}
     .                       {}
 }
 
