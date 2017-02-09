@@ -19,16 +19,19 @@ import java.util.logging.Logger;
 
 
 public class runLexer {
+    
+    static Logger logger = Logger.getLogger(runLexer.class.getName());
+    
     public static void main(String[] vargs){
-        FlexerWordsA scanner;
+        PascalFlexer scanner;
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/htmlInput.html"));
-            scanner = new FlexerWordsA(br);
+            scanner = new PascalFlexer(br);
             scanner.yylex();
         } catch (FileNotFoundException  ex) {
-            Logger.getLogger(runLexer.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(runLexer.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
         
     }
