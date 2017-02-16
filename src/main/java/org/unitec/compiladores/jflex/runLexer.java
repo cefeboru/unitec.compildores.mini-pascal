@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 public class runLexer {
     
     static Logger logger = Logger.getLogger(runLexer.class.getName());
-    
+   
     public static void main(String[] vargs){
         PascalFlexer scanner;
         try {
