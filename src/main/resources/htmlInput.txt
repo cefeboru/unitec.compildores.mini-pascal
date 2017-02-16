@@ -1,0 +1,8 @@
+Program HelloWorld(output);
+type
+    TA = Array[false..true,0..9] of Integer; 
+var
+    asd : TA;
+begin
+  writeln('Hello, world!');
+end.
