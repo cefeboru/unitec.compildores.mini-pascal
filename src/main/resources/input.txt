@@ -1,0 +1,11 @@
+Program HelloWorld(output);
+type
+    TA = Array[boolean] of Integer; 
+var
+    asd : TA;
+    asd2,asd3 : integer;
+begin
+    {qweqwr}
+    asd2,asd3 := 1;
+    writeln('Hello, world!');
+end.
