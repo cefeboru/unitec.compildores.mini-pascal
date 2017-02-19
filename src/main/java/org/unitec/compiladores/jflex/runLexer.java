@@ -25,7 +25,7 @@ public class runLexer {
     public static void main(String[] vargs){
         PascalFlexer scanner;
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/htmlInput.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/input.txt"));
             scanner = new PascalFlexer(br);
             scanner.yylex();
         } catch (FileNotFoundException  ex) {
