@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java_cup.runtime.Symbol;
 
 /**
  *
@@ -27,7 +28,12 @@ public class runLexer {
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/input.txt"));
             scanner = new PascalFlexer(br);
-            scanner.yylex();
+            Symbol sb = scanner.next_token();
+            while(sb.sym != 0) {
+                System.out.println(scanner.yytext());
+            }
+            
+            
         } catch (FileNotFoundException  ex) {
             logger.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -36,3 +42,4 @@ public class runLexer {
         
     }
 }
+

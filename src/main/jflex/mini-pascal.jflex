@@ -1,4 +1,7 @@
 package org.unitec.compiladores.jflex;
+
+import java_cup.runtime.*;
+
 %%
 
 %class PascalFlexer
@@ -8,6 +11,20 @@ package org.unitec.compiladores.jflex;
 %column
 %integer
 %caseless
+%cup
+%standalone
+
+%{
+    
+      StringBuffer string = new StringBuffer();
+
+      private Symbol symbol(int type) {
+        return new Symbol(type, yyline, yycolumn);
+      }
+      private Symbol symbol(int type, Object value) {
+        return new Symbol(type, yyline, yycolumn, value);
+      }
+%}
 
 CabeceraPrograma    =   program{WhiteSpace}+{Identificador} ( \({Identificador}(, {Identificador})* \) )?
 Comentario          =   \{{Caracter}*\}  |  \(\*{Caracter}*\*\) 
@@ -44,9 +61,9 @@ LetraMinuscula              =   [a-z]
 Letra                       =   {LetraMayuscula} | {LetraMinuscula} | {CaracterSubrayado}
 LineTerminator              =	\r|\n|\r\n
 LiteralBoolean              =	true | false
-LiteralCaracter             =	'{Caracter}?'
+LiteralCaracter             =	'[^']?'
 LiteralEntero               =	[+-]*{WhiteSpace}*{Digito}+
-LiteralString               =	'{Caracter}*'
+LiteralString               =	'( [^']+ )'
 LlaveAbrir                  =	\{
 LlaveCerrar                 =	\}
 Of                          =	of
@@ -77,6 +94,7 @@ OperadorSuma                =   [+-]
 OperadorMultiplicacion      =   [*/]
 
 %state COMMENT
+%state STRING_LITERAL
 
 %%
 <YYINITIAL> {

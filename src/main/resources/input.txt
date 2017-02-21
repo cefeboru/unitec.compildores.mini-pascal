@@ -7,5 +7,5 @@ var
 begin
     {qweqwr}
     asd2,asd3 := 1;
-    writeln('Hello, world!');
+    writeln('Hello, world!'');
 end.
