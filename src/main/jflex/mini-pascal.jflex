@@ -35,26 +35,29 @@ ComillaSimple               =	'
 Digito                      =	[0-9]
 DosPuntos                   =	:
 DosPuntosIgual              =	:=
+Else                        =   else
 End                         =	end
 Punto                       =   \.
 OperadorIgual               =	=
 Identificador               =	{Letra}({Letra}|{Digito})*
+If                          =   if
 LetraMayuscula              =   [A-Z]
 LetraMinuscula              =   [a-z]
 Letra                       =   {LetraMayuscula} | {LetraMinuscula} | {CaracterSubrayado}
 LineTerminator              =	\r|\n|\r\n
 LiteralBoolean              =	true | false
 LiteralCaracter             =	'{Caracter}?'
-LiteralEntero               =	[+-]*{WhiteSpace}*{Digito}+
+LiteralEntero               =	{Digito}+
 LiteralString               =	'{Caracter}*'
 LlaveAbrir                  =	\{
 LlaveCerrar                 =	\}
 Of                          =	of
 ParentesisAbrir             =	\(
 ParentesisCerrar            =	\)
-Programa                    =	program{WhiteSpace}+
+Programa                    =	program
 PuntoComa                   =	;
 PuntoPunto                  =	\.\.
+Then                        =   then
 Tipo                        =	type
 TipoChar                    =	char
 TipoInteger                 =	integer
@@ -101,6 +104,7 @@ OperadorMultiplicacion      =   [*/]
     {OperadorNot}                   {System.out.println("OperadorNot: "+yytext());}
     {OperadorSuma}                  {System.out.println("OperadorSuma: "+yytext());}
     {OperadorMultiplicacion}        {System.out.println("OperadorMultiplicacion: "+yytext());}
+    {Then}                          {System.out.println("Then: "+yytext());}
     {Tipo}                          {System.out.println("Tipo: "+yytext());}
     {TipoChar}                      {System.out.println("TipoChar: "+yytext());}
     {TipoInteger}                   {System.out.println("TipoInteger: "+yytext());}
@@ -112,6 +116,8 @@ OperadorMultiplicacion      =   [*/]
     {LiteralBoolean}                {System.out.println("LiteralBoolean: "+yytext());}
     {ParentesisAbrir}               {System.out.println("ParentesisAbrir: "+yytext());}
     {ParentesisCerrar}              {System.out.println("ParentesisCerrar: "+yytext());}
+    {If}                            {System.out.println("If: "+yytext());}
+    {Else}                          {System.out.println("Else: "+yytext());}
     {Var}                           {System.out.println("Var: "+yytext());}
     {Array}                         {System.out.println("Array: "+yytext());}
     {Of}                            {System.out.println("Of: "+yytext());}

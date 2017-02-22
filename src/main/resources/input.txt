@@ -7,5 +7,9 @@ var
 begin
     {qweqwr}
     asd2,asd3 := 1;
-    writeln('Hello, world!');
+    if (asd2 > 1) then
+        writeln('Hello, world!'')
+    else
+        writeln('Meow');
+
 end.
