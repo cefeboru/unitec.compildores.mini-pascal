@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.unitec.compiladores.jflex;
+package org.unitec.compiladores;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -29,6 +29,7 @@ public class runLexer {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/input.txt"));
             scanner = new PascalFlexer(br);
             Symbol sb = scanner.next_token();
+            
             while(sb.sym != 0) {
                 System.out.println(scanner.yytext());
             }

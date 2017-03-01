@@ -1,18 +1,17 @@
-package org.unitec.compiladores.jflex;
+package org.unitec.compiladores;
 
 import java_cup.runtime.*;
 
 %%
 
 %class PascalFlexer
-%public
 %unicode
 %line
 %column
 %integer
 %caseless
 %cup
-%standalone
+%public
 
 %{
     
@@ -61,9 +60,9 @@ LetraMinuscula              =   [a-z]
 Letra                       =   {LetraMayuscula} | {LetraMinuscula} | {CaracterSubrayado}
 LineTerminator              =	\r|\n|\r\n
 LiteralBoolean              =	true | false
-LiteralCaracter             =	'[^']?'
+LiteralCaracter             =	'[^']'
 LiteralEntero               =	[+-]*{WhiteSpace}*{Digito}+
-LiteralString               =	'( [^']+ )'
+LiteralString               =	'[^']*'
 LlaveAbrir                  =	\{
 LlaveCerrar                 =	\}
 Of                          =	of
@@ -90,8 +89,10 @@ OperadorMenorIgual          =   <=
 OperadorAnd                 =   and
 OperadorOr                  =   or
 OperadorNot                 =   not
+OperadorMas                 =   \+
+OperadorMenos               =   \-
 OperadorSuma                =   [+-]
-OperadorMultiplicacion      =   [*/]
+OperadorMultiplicacion      =   [/*]
 
 %state COMMENT
 %state STRING_LITERAL
@@ -102,7 +103,7 @@ OperadorMultiplicacion      =   [*/]
     {LlaveAbrir}                    {yybegin(COMMENT);}
     {LlaveCerrar}                   {System.out.println("LlaveCerrar: "+yytext());}
     {Programa}                      {System.out.println("Programa: "+yytext());}
-    {Coma}                          {System.out.println("Coma: "+yytext());}
+    {Coma}                          { return new Symbol(sym.COMMA); }
     {Punto}                         {System.out.println("Punto: "+yytext());}
     {PuntoComa}                     {System.out.println("PuntoComa: "+yytext());}
     {DosPuntosIgual}                {System.out.println("DosPuntosIgual: "+yytext());}
@@ -117,6 +118,7 @@ OperadorMultiplicacion      =   [*/]
     {OperadorAnd}                   {System.out.println("OperadorAnd: "+yytext());}
     {OperadorOr}                    {System.out.println("OperadorOr: "+yytext());}
     {OperadorNot}                   {System.out.println("OperadorNot: "+yytext());}
+    {OperadorMas}                   {  }
     {OperadorSuma}                  {System.out.println("OperadorSuma: "+yytext());}
     {OperadorMultiplicacion}        {System.out.println("OperadorMultiplicacion: "+yytext());}
     {Tipo}                          {System.out.println("Tipo: "+yytext());}
@@ -129,7 +131,7 @@ OperadorMultiplicacion      =   [*/]
     {LiteralEntero}                 {System.out.println("LiteralEntero: "+yytext());}
     {LiteralBoolean}                {System.out.println("LiteralBoolean: "+yytext());}
     {ParentesisAbrir}               {System.out.println("ParentesisAbrir: "+yytext());}
-    {ParentesisCerrar}              {System.out.println("ParentesisCerrar: "+yytext());}
+    {ParentesisCerrar}              {  }
     {Var}                           {System.out.println("Var: "+yytext());}
     {Array}                         {System.out.println("Array: "+yytext());}
     {Of}                            {System.out.println("Of: "+yytext());}
@@ -138,9 +140,9 @@ OperadorMultiplicacion      =   [*/]
     {Write}                         {System.out.println("Write: "+yytext());}
     {WriteLn}                       {System.out.println("WriteLn: "+yytext());}
     {Read}                          {System.out.println("Read: "+yytext());}
-    {Identificador}                 {System.out.println("Identificador: "+yytext());}
+    {Identificador}                 { }
     
-    .                               {System.out.println("Error!");}
+    .                               {throw new Error("Illegal character <"+yytext()+">");}
 }
 
 <COMMENT> {

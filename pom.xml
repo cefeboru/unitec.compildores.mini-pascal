@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.unitec</groupId>
-    <artifactId>compiladores-jflex-htmlTitle</artifactId>
+    <artifactId>compiladores-pascal</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <properties>
@@ -17,11 +17,7 @@
             <artifactId>java-cup-runtime</artifactId>
             <version>11b-20160615</version>
         </dependency>
-        <dependency>
-            <groupId>java_cup</groupId>
-            <artifactId>java_cup</artifactId>
-            <version>0.9e</version>
-        </dependency>
+       
     </dependencies>
     
     <build>
@@ -37,6 +33,25 @@
                         </goals>
                         <configuration>
                             <outputDirectory>src/main/java</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>com.github.vbmacher</groupId>
+                <artifactId>cup-maven-plugin</artifactId>
+                <version>11b-20160615</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <packageName>org.unitec.compiladores</packageName>
+                            <outputDirectory>src/main/java</outputDirectory>
+                            <className>Parser</className>
+                            <symbolsName>sym</symbolsName>
                         </configuration>
                     </execution>
                 </executions>
