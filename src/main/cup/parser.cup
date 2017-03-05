@@ -1,4 +1,3 @@
-/* Simple +/-/* expression language; parser evaluates constant expressions on the fly*/
 import java_cup.runtime.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -18,34 +17,84 @@ init with {:
 scan with {: return s.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
-terminal            Array, Begin, BracketAbrir, BracketCerrar, Caracter, CaracterSubrayado, Coma, ComillaSimple, Digito, DosPuntos, 
-                    DosPuntosIgual, End, Punto, OperadorIgual, Identificador, LetraMayuscula, LetraMinuscula, Letra, LineTerminator, 
-                    LiteralBoolean, LiteralCaracter, LiteralString, LlaveAbrir, LlaveCerrar, Of, ParentesisAbrir, 
-                    ParentesisCerrar, Programa, PuntoComa, PuntoPunto, Tipo, TipoChar, TipoInteger, TipoString, TipoBoolean, Var, 
-                    WhiteSpace, Write, WriteLn, Read, OperadorDiferente, OperadorMayor, OperadorMenor, OperadorMayorIgual, OperadorMenorIgual, 
-                    OperadorAnd, OperadorOr, OperadorNot, OperadorMas, OperadorMenos, OperadorSuma, OperadorMultiplicacion;
-terminal Integer    LiteralEntero;
+
+//Funciones
+terminal Write;
+terminal WriteLn;
+terminal Read;
+
+//Tipos de datos
+terminal Array;
+terminal Of;
+terminal Tipo;
+terminal Var;
+terminal TipoBoolean;
+terminal TipoChar;
+terminal TipoInteger;
+terminal TipoString;
+
+//Operadores
+terminal OperadorIgual;
+terminal OperadorDiferente;
+terminal OperadorMayor;
+terminal OperadorMenor;
+terminal OperadorMayorIgual;
+terminal OperadorMenorIgual;
+terminal OperadorAnd;
+terminal OperadorOr;
+terminal OperadorNot;
+terminal OperadorSuma;
+terminal OperadorMultiplicacion;
+
+//Estructuras de control
+terminal If;
+terminal Then;
+terminal Else;
+terminal ElseIf;
+terminal Begin;
+terminal End;
+terminal For;
+terminal To;
+terminal Do;
+terminal While;
+terminal Until;
+
+//Otros
+terminal Programa;
+terminal Identificador;
+terminal PuntoComa;
+terminal PuntoPunto;
+terminal WhiteSpace;
+terminal LineTerminator;
+terminal ParentesisAbrir;
+terminal ParentesisCerrar;
+terminal LlaveAbrir;
+terminal LlaveCerrar;
+terminal BracketAbrir;
+terminal BracketCerrar;
+terminal ComillaSimple;
+terminal ComillaDentro;
+terminal Coma;
+terminal Letra;
+terminal Digito;
+terminal DosPuntos;
+terminal DosPuntosIgual;
+terminal Punto;
+
+/*Literales*/
+terminal java.lang.Number       LiteralEntero;
+terminal java.lang.Character    LiteralCaracter;
+terminal java.lang.Boolean      LiteralBoolean;
+terminal java.lang.String       LiteralString;
 
 /* Non terminals */
 non terminal            expr_list;
 non terminal Integer    expr;      // used to store evaluated subexpressions
+non terminal            literal;
 
-/* Precedences 
-precedence left PLUS, MINUS;
-precedence left TIMES;
-precedence left UMINUS;
-*/
-
-/* The grammar rules 
-expr_list ::= expr_list expr:e SEMI         {: System.out.println(e);:}
-            | expr:e SEMI                   {: System.out.println(e);:}
-;
-expr      ::= expr:e1 PLUS  expr:e2         {: RESULT = e1+e2;       :}
-             | expr:e1 MINUS expr:e2        {: RESULT = e1-e2;       :}
-             | expr:e1 TIMES expr:e2        {: RESULT = e1*e2;       :}
-             | MINUS expr:e                 {: RESULT = -e;          :}
-  	     %prec UMINUS
-       | LPAREN expr:e RPAREN	         {: RESULT = e;           :}
-       | NUMBER:n	                     {: RESULT = n;           :}
-             ;
-*/
+literal ::=
+		LiteralEntero   {:  :}
+	|	LiteralString   {:  :}
+	|	LiteralBoolean  {:  :}
+	|	LiteralCaracter {:  :}
+	;

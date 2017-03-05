@@ -49,7 +49,6 @@ Read                        =   read
 //Tipos de datos
 Array                       =	array
 Of                          =	of
-Programa                    =	program
 Tipo                        =	type
 Var                         =	var
 TipoBoolean                 =   boolean
@@ -61,7 +60,7 @@ TipoString                  =	string
 LiteralBoolean              =	true | false
 LiteralCaracter             =	{Letra}
 LiteralEntero               =	{Digito}+
-LiteralString               =	[^']*
+LiteralString               =	'[^']*'
 
 //Operadores
 OperadorIgual               =	=
@@ -81,6 +80,7 @@ If                          = if
 Then                        = then
 Else                        = else
 ElseIf                      = else if
+Begin                       = begin
 End                         = end
 For                         = for
 To                          = to
@@ -89,6 +89,7 @@ While                       = while
 Until                       = until
 
 //Otros
+Programa                    =	program
 Identificador               =	{Letra}({Letra}|{Digito})*
 PuntoComa                   =	;
 PuntoPunto                  =	\.\.
@@ -134,7 +135,6 @@ Punto                       =   \.
     {OperadorAnd}                   {return new Symbol(sym.OperadorAnd);}
     {OperadorOr}                    {return new Symbol(sym.OperadorOr);}
     {OperadorNot}                   {return new Symbol(sym.OperadorNot);}
-    {OperadorMas}                   {return new Symbol(sym.OperadorMas);}
     {OperadorSuma}                  {return new Symbol(sym.OperadorSuma);}
     {OperadorMultiplicacion}        {return new Symbol(sym.OperadorMultiplicacion);}
     {Tipo}                          {return new Symbol(sym.Tipo);}
@@ -153,10 +153,10 @@ Punto                       =   \.
     {Of}                            {return new Symbol(sym.Of);}
     {Begin}                         {return new Symbol(sym.Begin);}
     {End}                           {return new Symbol(sym.End);}
-    {Write}                         {return new Symbol(sym.Write});}
+    {Write}                         {return new Symbol(sym.Write);}
     {WriteLn}                       {return new Symbol(sym.WriteLn);}
     {Read}                          {return new Symbol(sym.Read);}
-    {Identificador}                 {return new Symbol(sym.Identificador);}
+    {Identificador}                 {return new Symbol(sym.Identificador, yytext());}
  
     .                               {throw new Error("Illegal character <"+yytext()+">");}
 }
@@ -167,7 +167,7 @@ Punto                       =   \.
 }
 
 <COMILLA_SIMPLE> {
-    {ComillaSimple} 		{yybegin(YYINITIAL);}
-    {ComillasDentro}            {string.append("\'");}
-    .                           string.append(yytext());}
+    {ComillaSimple} 		{yybegin(YYINITIAL);return new Symbol(sym.LiteralString,string.toString());}
+    {ComillaDentro}             {string.append("\'");}
+    .                           {string.append(yytext());}
 }
