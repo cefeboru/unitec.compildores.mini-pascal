@@ -40,46 +40,31 @@ TipoIndice          =   {TipoPredefinido} | {TipoSubRango}
 TipoSubRango        =   {TipoDato}\.\.{TipoDato}
 TipoPredefinido     =   char | integer | boolean
 
-Array                       =	array
-Begin                       =	begin
-BracketAbrir                =	\[
-BracketCerrar               =	\]
-Caracter                    =	.
-CaracterSubrayado           =   _
-Coma                        =	,
-Digito                      =	[0-9]
-DosPuntos                   =	:
-DosPuntosIgual              =	:=
-End                         =	end
-Punto                       =   \.
-OperadorIgual               =	=
-Identificador               =	{Letra}({Letra}|{Digito})*
-LetraMayuscula              =   [A-Z]
-LetraMinuscula              =   [a-z]
-Letra                       =   {LetraMayuscula} | {LetraMinuscula} | {CaracterSubrayado}
-LineTerminator              =	\r|\n|\r\n
-LiteralBoolean              =	true | false
-LiteralCaracter             =	'[^']'
-LiteralEntero               =	[+-]*{WhiteSpace}*{Digito}+
-LiteralString               =	'[^']*'
-LlaveAbrir                  =	\{
-LlaveCerrar                 =	\}
-Of                          =	of
-ParentesisAbrir             =	\(
-ParentesisCerrar            =	\)
-Programa                    =	program{WhiteSpace}+
-PuntoComa                   =	;
-PuntoPunto                  =	\.\.
-Tipo                        =	type
-TipoChar                    =	char
-TipoInteger                 =	integer
-TipoString                  =	string | string\[{LiteralEntero}+\]
-TipoBoolean                 =   boolean
-Var                         =	var
-WhiteSpace                  =	{LineTerminator} | [ \t\f]
+
+//Funciones
 Write                       =	write
 WriteLn                     =	writeln
 Read                        =   read
+
+//Tipos de datos
+Array                       =	array
+Of                          =	of
+Programa                    =	program
+Tipo                        =	type
+Var                         =	var
+TipoBoolean                 =   boolean
+TipoChar                    =	char
+TipoInteger                 =	integer
+TipoString                  =	string
+
+/*Literales*/
+LiteralBoolean              =	true | false
+LiteralCaracter             =	{Letra}
+LiteralEntero               =	{Digito}+
+LiteralString               =	[^']*
+
+//Operadores
+OperadorIgual               =	=
 OperadorDiferente           =   <>
 OperadorMayor               =   >
 OperadorMenor               =   <
@@ -88,18 +73,50 @@ OperadorMenorIgual          =   <=
 OperadorAnd                 =   and
 OperadorOr                  =   or
 OperadorNot                 =   not
-OperadorMas                 =   \+
-OperadorMenos               =   \-
-OperadorSuma                =   [+-]
+OperadorSuma                =   [+-]|div|mod
 OperadorMultiplicacion      =   [/*]
 
+//Estructuras de control
+If                          = if
+Then                        = then
+Else                        = else
+ElseIf                      = else if
+End                         = end
+For                         = for
+To                          = to
+Do                          = do
+While                       = while
+Until                       = until
+
+//Otros
+Identificador               =	{Letra}({Letra}|{Digito})*
+PuntoComa                   =	;
+PuntoPunto                  =	\.\.
+WhiteSpace                  =	{LineTerminator} | [ \t\f]
+LineTerminator              =	\r|\n|\r\n
+ParentesisAbrir             =	\(
+ParentesisCerrar            =	\)
+LlaveAbrir                  =	\{
+LlaveCerrar                 =	\}
+BracketAbrir                =	\[
+BracketCerrar               =	\]
+ComillaSimple               =   '
+ComillaDentro               =   \'
+Coma                        =	,
+Letra                       =  [a-zA-Z_]
+Digito                      =	[0-9]
+DosPuntos                   =	:
+DosPuntosIgual              =	:=
+Punto                       =   \.
+
 %state COMMENT
-%state STRING_LITERAL
+%state COMILLA_SIMPLE
 
 %%
 <YYINITIAL> {
     {WhiteSpace}                    {}
     {LlaveAbrir}                    {yybegin(COMMENT);}
+    {ComillaSimple}                 {yybegin(COMILLA_SIMPLE);}
     {LlaveCerrar}                   {return new Symbol(sym.LlaveCerrar);}
     {Programa}                      {return new Symbol(sym.Programa);}
     {Coma}                          {return new Symbol(sym.Coma); }
@@ -140,12 +157,17 @@ OperadorMultiplicacion      =   [/*]
     {WriteLn}                       {return new Symbol(sym.WriteLn);}
     {Read}                          {return new Symbol(sym.Read);}
     {Identificador}                 {return new Symbol(sym.Identificador);}
-    
+ 
     .                               {throw new Error("Illegal character <"+yytext()+">");}
 }
 
 <COMMENT> {
-    {LlaveCerrar}   {yybegin(YYINITIAL);}
-    .               {}
-    
+    {LlaveCerrar}               {yybegin(YYINITIAL);}
+    .                           {}
+}
+
+<COMILLA_SIMPLE> {
+    {ComillaSimple} 		{yybegin(YYINITIAL);}
+    {ComillasDentro}            {string.append("\'");}
+    .                           string.append(yytext());}
 }
