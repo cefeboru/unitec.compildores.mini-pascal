@@ -47,7 +47,6 @@ BracketCerrar               =	\]
 Caracter                    =	.
 CaracterSubrayado           =   _
 Coma                        =	,
-ComillaSimple               =	'
 Digito                      =	[0-9]
 DosPuntos                   =	:
 DosPuntosIgual              =	:=
@@ -101,46 +100,46 @@ OperadorMultiplicacion      =   [/*]
 <YYINITIAL> {
     {WhiteSpace}                    {}
     {LlaveAbrir}                    {yybegin(COMMENT);}
-    {LlaveCerrar}                   {System.out.println("LlaveCerrar: "+yytext());}
-    {Programa}                      {System.out.println("Programa: "+yytext());}
-    {Coma}                          { return new Symbol(sym.COMMA); }
-    {Punto}                         {System.out.println("Punto: "+yytext());}
-    {PuntoComa}                     {System.out.println("PuntoComa: "+yytext());}
-    {DosPuntosIgual}                {System.out.println("DosPuntosIgual: "+yytext());}
-    {DosPuntos}                     {System.out.println("DosPuntos: "+yytext());}
-    {BracketAbrir}                  {System.out.println("BracketAbrir: "+yytext());}        
-    {BracketCerrar}                 {System.out.println("BracketCerrar: "+yytext());}
-    {OperadorIgual}                 {System.out.println("OperadorIgual: "+yytext());}
-    {OperadorMayorIgual}            {System.out.println("OperadorMayorIgual: "+yytext());}
-    {OperadorMenorIgual}            {System.out.println("OperadorMenorIgual: "+yytext());}
-    {OperadorMayor}                 {System.out.println("OperadorMayor: "+yytext());}
-    {OperadorMenor}                 {System.out.println("OperadorMenor: "+yytext());}
-    {OperadorAnd}                   {System.out.println("OperadorAnd: "+yytext());}
-    {OperadorOr}                    {System.out.println("OperadorOr: "+yytext());}
-    {OperadorNot}                   {System.out.println("OperadorNot: "+yytext());}
-    {OperadorMas}                   {  }
-    {OperadorSuma}                  {System.out.println("OperadorSuma: "+yytext());}
-    {OperadorMultiplicacion}        {System.out.println("OperadorMultiplicacion: "+yytext());}
-    {Tipo}                          {System.out.println("Tipo: "+yytext());}
-    {TipoChar}                      {System.out.println("TipoChar: "+yytext());}
-    {TipoInteger}                   {System.out.println("TipoInteger: "+yytext());}
-    {TipoBoolean}                   {System.out.println("TipoBoolean: "+yytext());}
-    {TipoString}                    {System.out.println("TipoString: "+yytext());}
-    {LiteralCaracter}               {System.out.println("LiteralCaracter: "+yytext());}
-    {LiteralString}                 {System.out.println("LiteralString: "+yytext());}
-    {LiteralEntero}                 {System.out.println("LiteralEntero: "+yytext());}
-    {LiteralBoolean}                {System.out.println("LiteralBoolean: "+yytext());}
-    {ParentesisAbrir}               {System.out.println("ParentesisAbrir: "+yytext());}
-    {ParentesisCerrar}              {  }
-    {Var}                           {System.out.println("Var: "+yytext());}
-    {Array}                         {System.out.println("Array: "+yytext());}
-    {Of}                            {System.out.println("Of: "+yytext());}
-    {Begin}                         {System.out.println("Begin: "+yytext());}
-    {End}                           {System.out.println("End: "+yytext());}
-    {Write}                         {System.out.println("Write: "+yytext());}
-    {WriteLn}                       {System.out.println("WriteLn: "+yytext());}
-    {Read}                          {System.out.println("Read: "+yytext());}
-    {Identificador}                 { }
+    {LlaveCerrar}                   {return new Symbol(sym.LlaveCerrar);}
+    {Programa}                      {return new Symbol(sym.Programa);}
+    {Coma}                          {return new Symbol(sym.Coma); }
+    {Punto}                         {return new Symbol(sym.Punto);}
+    {PuntoComa}                     {return new Symbol(sym.PuntoComa);}
+    {DosPuntosIgual}                {return new Symbol(sym.DosPuntosIgual);}
+    {DosPuntos}                     {return new Symbol(sym.DosPuntos);}
+    {BracketAbrir}                  {return new Symbol(sym.BracketAbrir);}        
+    {BracketCerrar}                 {return new Symbol(sym.BracketCerrar);}
+    {OperadorIgual}                 {return new Symbol(sym.OperadorIgual);}
+    {OperadorMayorIgual}            {return new Symbol(sym.OperadorMayorIgual);}
+    {OperadorMenorIgual}            {return new Symbol(sym.OperadorMenorIgual);}
+    {OperadorMayor}                 {return new Symbol(sym.OperadorMayor);}
+    {OperadorMenor}                 {return new Symbol(sym.OperadorMenor);}
+    {OperadorAnd}                   {return new Symbol(sym.OperadorAnd);}
+    {OperadorOr}                    {return new Symbol(sym.OperadorOr);}
+    {OperadorNot}                   {return new Symbol(sym.OperadorNot);}
+    {OperadorMas}                   {return new Symbol(sym.OperadorMas);}
+    {OperadorSuma}                  {return new Symbol(sym.OperadorSuma);}
+    {OperadorMultiplicacion}        {return new Symbol(sym.OperadorMultiplicacion);}
+    {Tipo}                          {return new Symbol(sym.Tipo);}
+    {TipoChar}                      {return new Symbol(sym.TipoChar);}
+    {TipoInteger}                   {return new Symbol(sym.TipoInteger);}
+    {TipoBoolean}                   {return new Symbol(sym.TipoBoolean);}
+    {TipoString}                    {return new Symbol(sym.TipoString);}
+    {LiteralCaracter}               {return new Symbol(sym.LiteralCaracter);}
+    {LiteralString}                 {return new Symbol(sym.LiteralString);}
+    {LiteralEntero}                 {return new Symbol(sym.LiteralEntero);}
+    {LiteralBoolean}                {return new Symbol(sym.LiteralBoolean);}
+    {ParentesisAbrir}               {return new Symbol(sym.ParentesisAbrir);}
+    {ParentesisCerrar}              {return new Symbol(sym.ParentesisCerrar);}
+    {Var}                           {return new Symbol(sym.Var);}
+    {Array}                         {return new Symbol(sym.Array);}
+    {Of}                            {return new Symbol(sym.Of);}
+    {Begin}                         {return new Symbol(sym.Begin);}
+    {End}                           {return new Symbol(sym.End);}
+    {Write}                         {return new Symbol(sym.Write});}
+    {WriteLn}                       {return new Symbol(sym.WriteLn);}
+    {Read}                          {return new Symbol(sym.Read);}
+    {Identificador}                 {return new Symbol(sym.Identificador);}
     
     .                               {throw new Error("Illegal character <"+yytext()+">");}
 }
