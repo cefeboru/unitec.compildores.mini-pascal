@@ -7,6 +7,11 @@ parser code {:
     // Connect this parser to a scanner!
     PascalFlexer s;
     Parser(PascalFlexer s){ this.s=s; }
+
+    public void syntax_error(Symbol cur_token) {
+        report_error("Syntax error at line " + (cur_token.left+1) +
+         ",column " + cur_token.right, null);
+    }
 :}
 
 /* define how to connect to the scanner! */
@@ -60,26 +65,26 @@ terminal While;
 terminal Until;
 
 //Otros
-terminal Programa;
-terminal Identificador;
-terminal PuntoComa;
-terminal PuntoPunto;
-terminal WhiteSpace;
-terminal LineTerminator;
-terminal ParentesisAbrir;
-terminal ParentesisCerrar;
-terminal LlaveAbrir;
-terminal LlaveCerrar;
 terminal BracketAbrir;
 terminal BracketCerrar;
 terminal ComillaSimple;
 terminal ComillaDentro;
 terminal Coma;
-terminal Letra;
 terminal Digito;
 terminal DosPuntos;
 terminal DosPuntosIgual;
+terminal Identificador;
+terminal Letra;
+terminal LineTerminator;
+terminal LlaveAbrir;
+terminal LlaveCerrar;
+terminal ParentesisAbrir;
+terminal ParentesisCerrar;
+terminal Programa;
 terminal Punto;
+terminal PuntoComa;
+terminal PuntoPunto;
+terminal WhiteSpace;
 
 /*Literales*/
 terminal java.lang.Number       LiteralEntero;
@@ -88,13 +93,83 @@ terminal java.lang.Boolean      LiteralBoolean;
 terminal java.lang.String       LiteralString;
 
 /* Non terminals */
-non terminal            expr_list;
-non terminal Integer    expr;      // used to store evaluated subexpressions
-non terminal            literal;
+nonterminal             expr_list;
+nonterminal Integer     expr;      // used to store evaluated subexpressions
+nonterminal             literal;
+nonterminal  program;
+nonterminal  block;
+nonterminal  identifier;
+nonterminal  decls;
+nonterminal  decl;
+nonterminal   typedecl;
+nonterminal   vardecl;
+nonterminal   procdecl;
+nonterminal   type;
+nonterminal   identtype;
+nonterminal   arraytype;
+nonterminal   vars;
+nonterminal   var;
+nonterminal   integer;
+
+program         ::= Programa block:b Punto
+                    {:  :}
+                ;
+
+decls           ::= /* empty */
+                        {: RESULT = null; :}
+                | decl:d
+                        {:  :}
+                | decl:d PuntoComa decls:ds
+                        {:  :}
+                ;
+
+decl            ::= typedecl:td
+                        {: RESULT = td; :}
+                | vardecl:vd
+                        {: RESULT = vd; :}
+                | procdecl:pd
+                        {: RESULT = pd; :}
+                ;
+
+typedecl        ::= Tipo identifier:i OperadorIgual type:t
+                        {:  :}
+                ;
+
+type            ::= identtype:it
+                        {: RESULT = it; :}
+                | arraytype:at
+                        {: RESULT = at; :}
+                ;
+
+identtype       ::= identifier:i
+                        {:  :}
+                ;
+
+arraytype       ::= Array BracketAbrir integer:i BracketCerrar Of type:t
+                        {:  :}
+                ;
+
+vardecl         ::= Var vars:vs DosPuntos type:t
+                        {:  :}
+                ;
+
+vars            ::= var:v
+                        {:  :}
+                | var:v Coma vars:vs
+                        {:  :}
+                ;
+
+var             ::= identifier:i
+                        {: RESULT = i; :}
+                ;
+
+integer         ::= LiteralEntero:i 
+                    {:  :}
+                ;
 
 literal ::=
-		LiteralEntero   {:  :}
-	|	LiteralString   {:  :}
-	|	LiteralBoolean  {:  :}
-	|	LiteralCaracter {:  :}
+		LiteralEntero  
+	|	LiteralString   
+	|	LiteralBoolean  
+	|	LiteralCaracter 
 	;

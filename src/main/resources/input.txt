@@ -1,3 +1,4 @@
+'Hola' 
 Program HelloWorld(output);
 type
     TA = Array[boolean] of Integer; 
