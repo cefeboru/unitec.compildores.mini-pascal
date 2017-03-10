@@ -21,8 +21,9 @@ init with {:
     :};
 scan with {: return s.next_token(); :};
 
-/* Terminals (tokens returned by the scanner). */
+//Example in http://users.csc.calpoly.edu/~gfisher/classes/330/examples/cup/pascal.cup
 
+/* Terminals (tokens returned by the scanner). */
 //Funciones
 terminal Write;
 terminal WriteLn;
@@ -49,7 +50,11 @@ terminal OperadorAnd;
 terminal OperadorOr;
 terminal OperadorNot;
 terminal OperadorSuma;
+terminal OperadorResta;
 terminal OperadorMultiplicacion;
+terminal OperadorMod;
+terminal OperadorDivision;
+terminal OperadorDivisionSpecial;
 
 //Estructuras de control
 terminal If;
@@ -80,7 +85,9 @@ terminal LlaveAbrir;
 terminal LlaveCerrar;
 terminal ParentesisAbrir;
 terminal ParentesisCerrar;
-terminal Programa;
+terminal Program;
+terminal Procedure;
+terminal Function;
 terminal Punto;
 terminal PuntoComa;
 terminal PuntoPunto;
@@ -96,22 +103,30 @@ terminal java.lang.String       LiteralString;
 nonterminal             expr_list;
 nonterminal Integer     expr;      // used to store evaluated subexpressions
 nonterminal             literal;
-nonterminal  program;
-nonterminal  block;
-nonterminal  identifier;
-nonterminal  decls;
-nonterminal  decl;
-nonterminal   typedecl;
-nonterminal   vardecl;
-nonterminal   procdecl;
-nonterminal   type;
-nonterminal   identtype;
-nonterminal   arraytype;
-nonterminal   vars;
-nonterminal   var;
-nonterminal   integer;
+nonterminal             program;
+nonterminal             block;
+nonterminal             identifier;
+nonterminal             decls;
+nonterminal             decl;
+nonterminal             typedecl;
+nonterminal             vardecl;
+nonterminal             procdecl;
+nonterminal             type;
+nonterminal             identtype;
+nonterminal             arraytype;
+nonterminal             vars;
+nonterminal             var;
+nonterminal             integer;
+nonterminal             character;
+nonterminal             boolean;
+nonterminal             string;
 
-program         ::= Programa block:b Punto
+/*Precedencia de Operadores*/
+precedence left OperadorIgual, OperadorDiferente, OperadorMayor, OperadorMenor, OperadorMayorIgual, OperadorMenorIgual;
+precedence left OperadorSuma, OperadorResta, OperadorMultiplicacion, OperadorMod, OperadorDivision, OperadorDivisionSpecial;
+precedence left OperadorAnd, OperadorOr, OperadorNot;
+
+program         ::= Program block:b Punto
                     {:  :}
                 ;
 
@@ -160,10 +175,22 @@ vars            ::= var:v
                 ;
 
 var             ::= identifier:i
-                        {: RESULT = i; :}
+                    {: RESULT = i; :}
                 ;
 
 integer         ::= LiteralEntero:i 
+                    {:  :}
+                ;
+
+character       ::= LiteralCaracter:c
+                    {:  :}
+                ;
+
+boolean         ::= LiteralBoolean:b
+                    {:  :}
+                ;
+
+string          ::= LiteralString:s
                     {:  :}
                 ;
 

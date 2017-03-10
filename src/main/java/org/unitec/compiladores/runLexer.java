@@ -39,10 +39,10 @@ public class runLexer {
                 sb = scanner.next_token();
             }
             
-            Parser parser = new Parser(scanner,csf);
+            /*Parser parser = new Parser(scanner,csf);
             
             XMLElement e = (XMLElement)parser.parse().value;
-            System.out.println(e.toString());
+            System.out.println(e.toString());*/
             
         } catch (FileNotFoundException  ex) {
             logger.log(Level.SEVERE, null, ex);

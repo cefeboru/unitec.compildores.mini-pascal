@@ -12,6 +12,7 @@ import java_cup.runtime.*;
 %caseless
 %cup
 %public
+%debug
 
 %{
     
@@ -72,24 +73,30 @@ OperadorMenorIgual          =   <=
 OperadorAnd                 =   and
 OperadorOr                  =   or
 OperadorNot                 =   not
-OperadorSuma                =   [+-]|div|mod
-OperadorMultiplicacion      =   [/*]
+OperadorSuma                =   \+
+OperadorResta               =   -
+OperadorMultiplicacion      =   \* 
+OperadorMod                 =   mod
+OperadorDivision            =   \/
+OperadorDivisionSpecial     =   div
 
 //Estructuras de control
-If                          = if
-Then                        = then
-Else                        = else
-ElseIf                      = else if
-Begin                       = begin
-End                         = end
-For                         = for
-To                          = to
-Do                          = do
-While                       = while
-Until                       = until
+If                          =   if
+Then                        =   then
+Else                        =   else
+ElseIf                      =   else if
+Begin                       =   begin
+End                         =   end
+For                         =   for
+To                          =   to
+Do                          =   do
+While                       =   while
+Until                       =   until
 
 //Otros
-Programa                    =	program
+Program                     =	program
+Procedure                   =   procedure
+Function                    =   function
 Identificador               =	{Letra}({Letra}|{Digito})*
 PuntoComa                   =	;
 PuntoPunto                  =	\.\.
@@ -104,7 +111,7 @@ BracketCerrar               =	\]
 ComillaSimple               =   '
 ComillaDentro               =   \'
 Coma                        =	,
-Letra                       =  [a-zA-Z_]
+Letra                       =   [a-zA-Z_]
 Digito                      =	[0-9]
 DosPuntos                   =	:
 DosPuntosIgual              =	:=
@@ -119,7 +126,9 @@ Punto                       =   \.
     {LlaveAbrir}                    {yybegin(COMMENT);}
     {ComillaSimple}                 {yybegin(COMILLA_SIMPLE);}
     {LlaveCerrar}                   {return new Symbol(sym.LlaveCerrar);}
-    {Programa}                      {return new Symbol(sym.Programa);}
+    {Program}                       {return new Symbol(sym.Program);}
+    {Procedure}                     {return new Symbol(sym.Procedure);}
+    {Function}                      {return new Symbol(sym.Function);}
     {Coma}                          {return new Symbol(sym.Coma); }
     {Punto}                         {return new Symbol(sym.Punto);}
     {PuntoComa}                     {return new Symbol(sym.PuntoComa);}
@@ -127,16 +136,20 @@ Punto                       =   \.
     {DosPuntos}                     {return new Symbol(sym.DosPuntos);}
     {BracketAbrir}                  {return new Symbol(sym.BracketAbrir);}        
     {BracketCerrar}                 {return new Symbol(sym.BracketCerrar);}
-    {OperadorIgual}                 {return new Symbol(sym.OperadorIgual);}
     {OperadorMayorIgual}            {return new Symbol(sym.OperadorMayorIgual);}
     {OperadorMenorIgual}            {return new Symbol(sym.OperadorMenorIgual);}
+    {OperadorIgual}                 {return new Symbol(sym.OperadorIgual);}
     {OperadorMayor}                 {return new Symbol(sym.OperadorMayor);}
     {OperadorMenor}                 {return new Symbol(sym.OperadorMenor);}
     {OperadorAnd}                   {return new Symbol(sym.OperadorAnd);}
     {OperadorOr}                    {return new Symbol(sym.OperadorOr);}
     {OperadorNot}                   {return new Symbol(sym.OperadorNot);}
     {OperadorSuma}                  {return new Symbol(sym.OperadorSuma);}
+    {OperadorResta}                 {return new Symbol(sym.OperadorResta);}
     {OperadorMultiplicacion}        {return new Symbol(sym.OperadorMultiplicacion);}
+    {OperadorMod}                   {return new Symbol(sym.OperadorMod);}
+    {OperadorDivision}              {return new Symbol(sym.OperadorDivision);}
+    {OperadorDivisionSpecial}       {return new Symbol(sym.OperadorDivisionSpecial);}
     {Tipo}                          {return new Symbol(sym.Tipo);}
     {TipoChar}                      {return new Symbol(sym.TipoChar);}
     {TipoInteger}                   {return new Symbol(sym.TipoInteger);}
