@@ -32,23 +32,20 @@ public class runLexer {
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/main/resources/input.txt"));
             scanner = new PascalFlexer(br);
-            Symbol sb = scanner.next_token();
             
-            while(sb.sym != sym.EOF) {
-                System.out.println(scanner.yytext());
-                sb = scanner.next_token();
-            }
-            
-            /*Parser parser = new Parser(scanner,csf);
-            
-            XMLElement e = (XMLElement)parser.parse().value;
-            System.out.println(e.toString());*/
+            Parser parser = new Parser(scanner);
+            parser.debug_parse();
+            //parser.parse();
             
         } catch (FileNotFoundException  ex) {
             logger.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
+        
+    }
+    
+    public static void runParser() {
         
     }
 }

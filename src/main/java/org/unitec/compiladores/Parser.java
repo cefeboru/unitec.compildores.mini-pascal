@@ -50,7 +50,7 @@ public class Parser extends java_cup.runtime.lr_parser {
     unpackFromStrings(new String[] {
     "\000\006\000\004\070\004\001\002\000\002\001\002\000" +
     "\004\002\006\001\002\000\004\002\000\001\002\000\004" +
-    "\073\010\001\002\000\004\002\001\001\002" });
+    "\074\010\001\002\000\004\002\001\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -150,7 +150,7 @@ class CUP$Parser$actions {
       switch (CUP$Parser$act_num)
         {
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 0: // program ::= Program block Punto 
+          case 0: // program ::= Program block PuntoComa 
             {
               Object RESULT =null;
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
