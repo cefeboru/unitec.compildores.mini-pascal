@@ -1,7 +1,10 @@
 Program HelloWorld;
 var
-    TA2: Array[5] of InTeger; 
-    asd2 : integer;
+    asd2 : Integer;
+    asd3,asd4 : Integer;
+procedure findMin(x, y, z: integer; var m: integer; var s: string); 
+begin
+end;
 begin
     {qweqwr}
     asd3 := 1;

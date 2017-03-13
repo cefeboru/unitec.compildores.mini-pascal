@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import org.junit.Assert;
 import org.junit.Test;
-import org.unitec.compiladores.Parser;
 import org.unitec.compiladores.PascalFlexer;
 
 /*
@@ -40,6 +39,7 @@ public class ParserTest {
             parser = new Parser(scanner);
             
             parseSymbol = parser.debug_parse();
+            
             //parser.parse();
             
             

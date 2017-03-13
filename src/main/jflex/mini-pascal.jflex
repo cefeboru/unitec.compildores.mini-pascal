@@ -59,7 +59,7 @@ TipoString                  =	string
 
 /*Literales*/
 LiteralBoolean              =	true | false
-LiteralCaracter             =	{Letra}
+LiteralCaracter             =	'{Letra}'
 LiteralEntero               =	{Digito}+
 LiteralString               =	'[^']*'
 
