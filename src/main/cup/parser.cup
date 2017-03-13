@@ -1,44 +1,20 @@
 import java_cup.runtime.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-
-
-parser code {:
-    // Connect this parser to a scanner!
-    PascalFlexer s;
-    Parser(PascalFlexer s){ this.s=s; }
-
-    public void syntax_error(Symbol cur_token) {
-        report_error("Syntax error at line " + (cur_token.left+1) +
-         ",column " + cur_token.right, null);
-    }
-:}
-
-/* define how to connect to the scanner! 
-init with {: 
-        BufferedReader br = new BufferedReader(new FileReader("src/main/resources/input.txt")); 
-        s = new PascalFlexer(br);
-    :};
-scan with {: return s.next_token(); :};
-*/
-
-//Example in http://users.csc.calpoly.edu/~gfisher/classes/330/examples/cup/pascal.cup
 
 /* Terminals (tokens returned by the scanner). */
 //Funciones
-//terminal Write;
-//terminal WriteLn;
-//terminal Read;
+terminal Write;
+terminal WriteLn;
+terminal Read;
 
 //Tipos de datos
 terminal Array;
 terminal Of;
 terminal Tipo;
 terminal Var;
-//terminal TipoBoolean;
-//terminal TipoChar;
-//terminal TipoInteger;
-//terminal TipoString;
+terminal TipoBoolean;
+terminal TipoChar;
+terminal TipoInteger;
+terminal TipoString;
 
 //Operadores
 terminal OperadorIgual;
@@ -53,57 +29,57 @@ terminal OperadorNot;
 terminal OperadorSuma;
 terminal OperadorResta;
 terminal OperadorMultiplicacion;
-//terminal OperadorMod;
+terminal OperadorMod;
 terminal OperadorDivision;
-//terminal OperadorDivisionSpecial;
+terminal OperadorDivisionSpecial;
 
 //Estructuras de control
 terminal If;
 terminal Then;
 terminal Else;
-//terminal ElseIf;
+terminal ElseIf;
 terminal Begin;
 terminal End;
-//terminal For;
-//terminal To;
-//terminal Do;
-//terminal While;
-//terminal Until;
+terminal For;
+terminal To;
+terminal Do;
+terminal While;
+terminal Until;
 
 //Otros
 terminal BracketAbrir;
 terminal BracketCerrar;
-//terminal ComillaSimple;
-//terminal ComillaDentro;
+terminal ComillaSimple;
+terminal ComillaDentro;
 terminal Coma;
-//terminal Digito;
+terminal Digito;
 terminal DosPuntos;
 terminal DosPuntosIgual;
-//terminal Identificador;
-//terminal Letra;
-//terminal LineTerminator;
-//terminal LlaveAbrir;
-//terminal LlaveCerrar;
+terminal Identificador;
+terminal Letra;
+terminal LineTerminator;
+terminal LlaveAbrir;
+terminal LlaveCerrar;
 terminal ParentesisAbrir;
 terminal ParentesisCerrar;
 terminal Program;
-//terminal Procedure;
-//terminal Function;
-//terminal Punto;
+terminal Procedure;
+terminal Function;
+terminal Punto;
 terminal PuntoComa;
-//terminal PuntoPunto;
-//terminal WhiteSpace;
+terminal PuntoPunto;
+terminal WhiteSpace;
 
 /*Literales*/
 terminal java.lang.Number       LiteralEntero;
 terminal java.lang.Character    LiteralCaracter;
-//terminal java.lang.Boolean      LiteralBoolean;
-//terminal java.lang.String       LiteralString;
+terminal java.lang.Boolean      LiteralBoolean;
+terminal java.lang.String       LiteralString;
 
 /* Non terminals */
 nonterminal             expr_list;
 nonterminal Integer     expr;      // used to store evaluated subexpressions
-//nonterminal             literal;
+nonterminal             literal;
 nonterminal             program;
 nonterminal             block;
 nonterminal             identifier;
@@ -115,6 +91,7 @@ nonterminal             procdecl;
 nonterminal             type;
 nonterminal             identtype;
 nonterminal             arraytype;
+nonterminal             arrayidenttype;
 nonterminal             vars;
 nonterminal             var;
 
@@ -134,20 +111,14 @@ nonterminal             unyop;
 
 nonterminal             integer;
 nonterminal             character;
-//nonterminal             boolean;
-//nonterminal             string;
+nonterminal             boolean;
+nonterminal             string;
+
 
 nonterminal designator;
 
-/*Precedencia de Operadores*/
-/*
-precedence left OperadorIgual, OperadorDiferente, OperadorMayor, OperadorMenor, OperadorMayorIgual, OperadorMenorIgual;
-precedence left OperadorSuma, OperadorResta, OperadorMultiplicacion, OperadorMod, OperadorDivision, OperadorDivisionSpecial;
-precedence left OperadorAnd, OperadorOr, OperadorNot;
-*/
 
-program         ::= Program block:b PuntoComa
-                    {:  :}
+program         ::= Program Identificador:i PuntoComa block:b Punto
                 ;
 
 block           ::= decls:d Begin stmts:s End
@@ -162,29 +133,26 @@ decls           ::= /* empty */
                         {:  :}
                 ;
 
-decl            ::= typedecl:td
-                        {: RESULT = td; :}
-                | vardecl:vd
-                        {: RESULT = vd; :}
-                | procdecl:pd
-                        {: RESULT = pd; :}
-                ;
-
-typedecl        ::= Tipo identifier:i OperadorIgual type:t
-                        {:  :}
+decl            ::= vardecl:vd
+                |   procdecl:pd
                 ;
 
 type            ::= identtype:it
-                        {: RESULT = it; :}
-                | arraytype:at
-                        {: RESULT = at; :}
+                | arraytype:ats
                 ;
 
-identtype       ::= identifier:i
-                        {:  :}
+identtype       ::= TipoChar
+                |   TipoString
+                |   TipoBoolean
+                |   TipoInteger
                 ;
 
-arraytype       ::= Array BracketAbrir integer:i BracketCerrar Of type:t
+arrayidenttype  ::= TipoChar
+                |   TipoBoolean
+                |   TipoInteger
+                ;
+
+arraytype       ::= Array BracketAbrir integer:i BracketCerrar Of arrayidenttype:t
                         {:  :}
                 ;
 
@@ -198,8 +166,8 @@ vars            ::= var:v
                         {:  :}
                 ;
 
-var             ::= identifier:i
-                    {: RESULT = i; :}
+var             ::= Identificador:i
+                    {: :}
                 ;
 
 integer         ::= LiteralEntero:i 
@@ -210,122 +178,11 @@ integer         ::= LiteralEntero:i
 character       ::= LiteralCaracter:c
                     {:  :}
                 ;
-/*
+
 boolean         ::= LiteralBoolean:b
                     {:  :}
                 ;
 
 string          ::= LiteralString:s
                     {:  :}
-                ;
-*/
-
-/* Statements */
-
-stmts           ::= stmt:s
-                        {:  :}
-                | stmt:s PuntoComa stmts:ss
-                        {:  :}
-                ;
-/* Just one statement */
-stmt            ::= /* empty */
-                        {:  :}
-                | assmntstmt:as
-                        {: RESULT = as; :}
-                | ifstmt:is
-                        {: RESULT = is; :}
-                | proccallstmt:ps
-                        {: RESULT = ps; :}
-                | compoundstmt:cs
-                        {: RESULT = cs; :}
-                ;
-
-/* Assigment Statement */
-assmntstmt      ::= designator:d DosPuntosIgual expr:e
-                        {:  :}
-                ;
-
-/* If statement */
-ifstmt          ::= If expr:e Then stmt:s ifstmtelse
-                        {:  :}
-                ;
-ifstmtelse      ::= /* empty */
-                    |   ifstmt Else stmt:s2
-                ;
-/* Porcedure call statement */
-proccallstmt    ::= identifier:i ParentesisAbrir exprlist:el ParentesisCerrar
-                        {: :}
-                ;
-
-compoundstmt    ::= Begin stmts:ss End
-                        {: RESULT = ss; :}
-                ;
-
-
-expr            ::= integer:i
-                        {: RESULT = i; :}
-                | character:c
-                        {: RESULT = c; :}
-                | designator:d
-                        {: RESULT = d; :}
-                | var:v ParentesisAbrir exprlist:el ParentesisCerrar
-                        {:  :}
-                | expr:e1 relop:op expr:e2
-                        {: RESULT = op; op.child1 =
-                           e1; op.child2 = e2; :}                   %prec OperadorIgual
-                | expr:e1 addop:op expr:e2
-                        {: RESULT = op;
-                           op.child1 = e1; op.child2 = e2; :}       %prec OperadorSuma
-                | expr:e1 multop:op expr:e2
-                        {: RESULT = op;
-                           op.child1 = e1; op.child2 = e2; :}       %prec OperadorMultiplicacion
-                | unyop:op expr:e                            
-                        {: RESULT = op; op.child = e; :}            %prec OperadorNot
-                | ParentesisAbrir expr:e ParentesisCerrar
-                        {: RESULT = e; :}
-                ;
-
-designator      ::= var:v
-                        {: RESULT = v; :}
-                | designator:d BracketAbrir expr:e BracketCerrar
-                        {:  :}
-                ;
-
-relop           ::= OperadorMenor
-                        {:  :}
-                | OperadorMayor
-                        {:  :}
-                | OperadorIgual
-                        {:  :}
-                | OperadorMenorIgual
-                        {:  :}
-                | OperadorMayorIgual
-                        {:  :}
-                | OperadorDiferente
-                        {:  :}
-                ;
-
-addop           ::= OperadorSuma
-                        {: :}
-                | OperadorResta
-                        {: :}
-                | OperadorOr
-                        {: :}
-                ;
-
-multop          ::= OperadorMultiplicacion
-                        {: RESULT = new TreeNode2(sym.TIMES, null, null); :}
-                | OperadorDivision
-                        {: RESULT = new TreeNode2(sym.DIVIDE, null, null); :}
-                | OperadorAnd
-                        {: RESULT = new TreeNode2(sym.AND, null, null); :}
-                ;
-
-
-unyop           ::= OperadorSuma
-                        {:  :}
-                | OperadorResta
-                        {:  :}
-                | OperadorNot
-                        {: :}
                 ;
