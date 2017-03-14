@@ -157,7 +157,7 @@ Punto                       =   \.
     {TipoString}                    {return new Symbol(sym.TipoString);}
     {LiteralCaracter}               {return new Symbol(sym.LiteralCaracter);}
     {LiteralString}                 {return new Symbol(sym.LiteralString);}
-    {LiteralEntero}                 {return new Symbol(sym.LiteralEntero);}
+    {LiteralEntero}                 {return new Symbol(sym.LiteralEntero, new Integer(Integer.parseInt(yytext())));}
     {LiteralBoolean}                {return new Symbol(sym.LiteralBoolean);}
     {ParentesisAbrir}               {return new Symbol(sym.ParentesisAbrir);}
     {ParentesisCerrar}              {return new Symbol(sym.ParentesisCerrar);}

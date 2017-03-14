@@ -994,8 +994,8 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
           case 73: break;
           case 22: 
             System.out.println("line: "+(yyline+1)+" "+"col: "+(yycolumn+1)+" "+"match: --"+zzToPrintable(yytext())+"--");
-            System.out.println("action [160] { return new Symbol(sym.LiteralEntero); }");
-            { return new Symbol(sym.LiteralEntero);
+            System.out.println("action [160] { return new Symbol(sym.LiteralEntero, new Integer(Integer.parseInt(yytext()))); }");
+            { return new Symbol(sym.LiteralEntero, new Integer(Integer.parseInt(yytext())));
             }
           case 74: break;
           case 23: 
