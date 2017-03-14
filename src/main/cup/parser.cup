@@ -126,6 +126,7 @@ decls           ::= /* empty */
 
 decl            ::= Var vardecls:vd
                 |   Procedure Identificador:i ParentesisAbrir procdecls ParentesisCerrar PuntoComa block:b PuntoComa
+                |   Function Identificador:i ParentesisAbrir procdecls ParentesisCerrar DosPuntos type PuntoComa block:b PuntoComa
                 ;
 
 
