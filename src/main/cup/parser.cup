@@ -125,21 +125,20 @@ decls           ::= /* empty */
                 ;
 
 decl            ::= Var vardecls:vd
-                |   Procedure Identificador:i ParentesisAbrir procdecls ParentesisCerrar PuntoComa block:b PuntoComa
-                |   Function Identificador:i ParentesisAbrir procdecls ParentesisCerrar DosPuntos type PuntoComa block:b PuntoComa
+                |   Procedure Identificador:i ParentesisAbrir procdecls procdecl ParentesisCerrar PuntoComa block:b PuntoComa
+                |   Function Identificador:i ParentesisAbrir procdecls procdecl ParentesisCerrar DosPuntos type PuntoComa block:b PuntoComa
                 ;
 
 
 procdecls       ::= /* Empty */
-                |   procdecl
-                |   Var procdecl
-                |   Var procdecl PuntoComa procdecls
-                |   procdecl PuntoComa procdecls
+                |   Var vars:vs DosPuntos identtype:i PuntoComa procdecls 
+                |   vars:vs DosPuntos identtype:i PuntoComa procdecls 
                 ;
 
-procdecl        ::= vars:vs DosPuntos identtype
+procdecl        ::= Var vars:vs DosPuntos identtype
+                |   vars:vs DosPuntos identtype 
+                |   /* Empty */
                 ;
-
 
 vardecls        ::= /* Empty */
                 |  vardecl PuntoComa vardecls
@@ -177,7 +176,18 @@ arraytype       ::= Array BracketAbrir integer:i BracketCerrar Of arrayidenttype
                         {:  :}
                 ;
 
-stmts           ::= 
+stmts           ::= stmt:s
+                        {: :}
+                | stmt:s PuntoComa stmts:ss
+                        {: :}
+                ;
+
+stmt            ::= /* empty */
+                        {: :}
+                | assmntstmt:as
+                        {: :}
+                | ifstmt:is
+                        {: :}
                 ;
 
 integer         ::= LiteralEntero:i 
