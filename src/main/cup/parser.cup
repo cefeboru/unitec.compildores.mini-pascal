@@ -86,7 +86,9 @@ nonterminal             identifier;
 nonterminal             decls;
 nonterminal             decl;
 nonterminal             typedecl;
+nonterminal             vardecls;
 nonterminal             vardecl;
+nonterminal             procdecls;
 nonterminal             procdecl;
 nonterminal             type;
 nonterminal             identtype;
@@ -101,13 +103,6 @@ nonterminal             stmt;
 nonterminal             assmntstmt;
 nonterminal             ifstmt;
 nonterminal             ifstmtelse;
-nonterminal             proccallstmt;
-nonterminal             compoundstmt;
-
-nonterminal             relop;
-nonterminal             addop;
-nonterminal             multop;
-nonterminal             unyop;
 
 nonterminal             integer;
 nonterminal             character;
@@ -126,19 +121,44 @@ block           ::= decls:d Begin stmts:s End
                 ;
 
 decls           ::= /* empty */
-                        {: RESULT = null; :}
-                | decl:d
+                |   decl:d decls:ds
+                ;
+
+decl            ::= Var vardecls:vd
+                |   Procedure Identificador:i ParentesisAbrir procdecls ParentesisCerrar PuntoComa block:b PuntoComa
+                ;
+
+
+procdecls       ::= /* Empty */
+                |   procdecl
+                |   Var procdecl
+                |   Var procdecl PuntoComa procdecls
+                |   procdecl PuntoComa procdecls
+                ;
+
+procdecl        ::= vars:vs DosPuntos identtype
+                ;
+
+
+vardecls        ::= /* Empty */
+                |  vardecl PuntoComa vardecls
+                ;
+
+vardecl         ::= vars:vs DosPuntos type:t
+                ;
+
+vars            ::= var:v
                         {:  :}
-                | decl:d PuntoComa decls:ds
+                |   var:v Coma vars:vs
                         {:  :}
                 ;
 
-decl            ::= vardecl:vd
-                |   procdecl:pd
+var             ::= Identificador:i
+                    {: :}
                 ;
 
 type            ::= identtype:it
-                | arraytype:ats
+                |   arraytype:ats
                 ;
 
 identtype       ::= TipoChar
@@ -156,24 +176,12 @@ arraytype       ::= Array BracketAbrir integer:i BracketCerrar Of arrayidenttype
                         {:  :}
                 ;
 
-vardecl         ::= Var vars:vs DosPuntos type:t
-                        {:  :}
-                ;
-
-vars            ::= var:v
-                        {:  :}
-                | var:v Coma vars:vs
-                        {:  :}
-                ;
-
-var             ::= Identificador:i
-                    {: :}
+stmts           ::= 
                 ;
 
 integer         ::= LiteralEntero:i 
                     {:  :}
                 ;
-
 
 character       ::= LiteralCaracter:c
                     {:  :}
