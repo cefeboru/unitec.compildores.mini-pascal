@@ -169,8 +169,7 @@ Punto                       =   \.
     {Write}                         {return new Symbol(sym.Write);}
     {WriteLn}                       {return new Symbol(sym.WriteLn);}
     {Read}                          {return new Symbol(sym.Read);}
-    {Identificador}                 {return new Symbol(sym.Identificador, yytext());}
- 
+    {Identificador}                 {return new Symbol(sym.Identificador, yytext());} 
     .                               {throw new Error("Illegal character <"+yytext()+">");}
 }
 

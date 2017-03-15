@@ -82,6 +82,7 @@ nonterminal Integer     expr;      // used to store evaluated subexpressions
 nonterminal             literal;
 nonterminal             program;
 nonterminal             block;
+nonterminal             blockProc;
 nonterminal             identifier;
 nonterminal             decls;
 nonterminal             decl;
@@ -90,17 +91,27 @@ nonterminal             vardecls;
 nonterminal             vardecl;
 nonterminal             procdecls;
 nonterminal             procdecl;
+
+nonterminal             functionDecl;
+nonterminal             inlineArgs;
+nonterminal             inlineArg;
+nonterminal             procedureDecl;
+nonterminal             procInlineDecls;
+nonterminal             procInlineDecl;
+
 nonterminal             type;
 nonterminal             identtype;
 nonterminal             arraytype;
 nonterminal             arrayidenttype;
 nonterminal             vars;
 nonterminal             var;
+nonterminal             expresions;
 
 nonterminal             exprlist;
+nonterminal             opRelacion;
 nonterminal             stmts;
 nonterminal             stmt;
-nonterminal             assmntstmt;
+nonterminal             assignstmt;
 nonterminal             ifstmt;
 nonterminal             ifstmtelse;
 
@@ -120,24 +131,40 @@ block           ::= decls:d Begin stmts:s End
                         {:  :}
                 ;
 
+blockProc       ::= procInlineDecls Begin stmts:s End
+                ;
+
 decls           ::= /* empty */
                 |   decl:d decls:ds
                 ;
 
 decl            ::= Var vardecls:vd
-                |   Procedure Identificador:i ParentesisAbrir procdecls procdecl ParentesisCerrar PuntoComa block:b PuntoComa
-                |   Function Identificador:i ParentesisAbrir procdecls procdecl ParentesisCerrar DosPuntos type PuntoComa block:b PuntoComa
+                |   functionDecl
+                |   procedureDecl
+                ;
+
+functionDecl    ::= Function Identificador:i ParentesisAbrir inlineArgs ParentesisCerrar DosPuntos type PuntoComa blockProc:b PuntoComa
+                |   Function Identificador:i ParentesisAbrir ParentesisCerrar DosPuntos type PuntoComa blockProc:b PuntoComa
+                ;
+
+procedureDecl   ::= Procedure Identificador:i ParentesisAbrir inlineArgs ParentesisCerrar PuntoComa blockProc:b PuntoComa
+                |   Procedure Identificador:i ParentesisAbrir ParentesisCerrar PuntoComa blockProc:b PuntoComa
+                ;
+
+procInlineDecls  ::= 
+                |   procInlineDecl procInlineDecls
+                ;
+
+procInlineDecl  ::= Var vardecls:vd
                 ;
 
 
-procdecls       ::= /* Empty */
-                |   Var vars:vs DosPuntos identtype:i PuntoComa procdecls 
-                |   vars:vs DosPuntos identtype:i PuntoComa procdecls 
+inlineArgs      ::= inlineArg
+                |   inlineArg PuntoComa inlineArgs
                 ;
 
-procdecl        ::= Var vars:vs DosPuntos identtype
-                |   vars:vs DosPuntos identtype 
-                |   /* Empty */
+inlineArg       ::= Var vars:vs DosPuntos identtype
+                |       vars:vs DosPuntos identtype 
                 ;
 
 vardecls        ::= /* Empty */
@@ -184,14 +211,37 @@ stmts           ::= stmt:s
 
 stmt            ::= /* empty */
                         {: :}
-                | assmntstmt:as
+                | assignstmt:as
                         {: :}
                 | ifstmt:is
                         {: :}
                 ;
 
+assignstmt      ::= Identificador:i DosPuntosIgual expr:e
+                ;
+
+expr            ::= integer
+                |   character
+                |   boolean
+                |   string
+                |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
+                |   expr opRelacion:op expr
+                ;
+
+opRelacion      ::= OperadorIgual
+                |   OperadorDiferente
+                |   OperadorMayor
+                |   OperadorMenor
+                |   OperadorMenorIgual
+                |   OperadorMayorIgual
+                ;
+
+exprlist        ::= expr
+                |   expr Coma exprlist
+                ;
+
 integer         ::= LiteralEntero:i 
-                    {:  :}
+                    {: :}
                 ;
 
 character       ::= LiteralCaracter:c

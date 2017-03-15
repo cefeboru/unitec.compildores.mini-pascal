@@ -2,12 +2,15 @@ Program HelloWorld;
 var
     asd2 : Integer;
     asd3,asd4 : Integer;
-function max(): integer;
 
-procedure findMin(x, y, z: integer; var m: integer; var s: string); 
+function max(x: integer): integer;
 begin
 end;
 
+procedure findMin(x, y, z: integer; var m: integer; var s: string); 
+procedure findMins (x, y, z: integer; var m: integer; var s: string);
+begin
+end; 
 begin
 end;
 
