@@ -162,6 +162,7 @@ nonterminal             arrayidenttype;
 nonterminal             vars;
 nonterminal             var;
 nonterminal             expresions;
+nonterminal             opexpr;
 
 nonterminal             exprlist;
 nonterminal             opRelacion;
@@ -274,14 +275,15 @@ stmt            ::= /* empty */
                 ;
 
 assignstmt      ::= Identificador:i DosPuntosIgual expr:e
+                |   Identificador:i DosPuntosIgual literal:l
                 ;
 
-expr            ::= integer
-                |   character
-                |   boolean
-                |   string
-                |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
+expr            ::= var:v ParentesisAbrir exprlist:el ParentesisCerrar
+                |   literal opRelacion literal 
                 ;
+
+
+
 
 opRelacion      ::= OperadorIgual
                 |   OperadorDiferente
@@ -293,6 +295,12 @@ opRelacion      ::= OperadorIgual
 
 exprlist        ::= expr
                 |   expr Coma exprlist
+                ;
+
+literal         ::= integer
+                |   character
+                |   boolean
+                |   string
                 ;
 
 integer         ::= LiteralEntero:i 
