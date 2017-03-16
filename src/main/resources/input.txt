@@ -7,8 +7,7 @@ function max(x: integer): integer;
 begin
 end;
 
-procedure findMin(x, y, z: integer; var m: integer; var s: string);
-function
+procedure findMin(x, y, z: integer; var m: integer; var s: string); 
 begin
 end;
 

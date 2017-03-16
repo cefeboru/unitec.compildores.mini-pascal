@@ -275,14 +275,14 @@ stmt            ::= /* empty */
                 ;
 
 assignstmt      ::= Identificador:i DosPuntosIgual expr:e
-                |   Identificador:i DosPuntosIgual literal:l
                 ;
 
-expr            ::= var:v ParentesisAbrir exprlist:el ParentesisCerrar
-                |   literal opRelacion literal 
+expr            ::= integer
+                |   character
+                |   boolean
+                |   string
+                |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
                 ;
-
-
 
 
 opRelacion      ::= OperadorIgual
