@@ -1,4 +1,60 @@
 import java_cup.runtime.*;
+import java.util.List;
+
+
+parser code {:
+        @Override
+	public void report_error(String message, Object info) {
+            
+            if (info instanceof String)
+                    System.err.println(" " + info + " " + message + "\n");
+            else {
+                    StringBuffer m = new StringBuffer("Error ");
+                    if (info instanceof java_cup.runtime.Symbol) {
+                        m.append(("(Se ha encontrado el token \"" + ((Symbol)info).value + "\" en la linea "
+                            + ((Symbol)info).left + 1 + ", columna " + ((Symbol)info).right + " " + 1) + ")");
+                    }
+                    if (message.equals("Couldn't repair and continue parse"))
+                        m.append(" : No existe una regla por los momentos para este token.");
+                    else
+                        m.append(" : " + message);
+                    System.err.println(m);
+            }
+        }
+
+        @Override
+	public void syntax_error(Symbol s){
+            System.err.println( "(Se ha encontrado el token \"" + sym.terminalNames[s.sym] + "\" en la linea " + (s.left+1) + ", columna" + (s.right+1) + ")" ); 
+            expected();
+        }
+
+        public void expected(){
+            List<Integer> token_list = this.expected_token_ids();
+            if (token_list.size() <= 0){
+                    token_list = this.expected_token_ids();
+            }
+            String expected_tokens = "";
+            for (int i = 0 ; i < token_list.size(); i++){
+                    int id = token_list.get(i);
+                    if (id == 1){
+                            continue;
+                    }
+                    String terminal_name = sym.terminalNames[id];
+                    if (i == token_list.size() - 1){
+                            expected_tokens += terminal_name;
+                    }else{
+                            expected_tokens += terminal_name + " , ";
+                    }
+            }
+            System.err.println("Se esperaba alguno de los siguientes tokens:" + expected_tokens);
+        };
+
+        public void report_fatal_error(String message, Object info) {
+            report_error(message, info);
+            throw new RuntimeException("Fatal Syntax Error");
+        }
+:};
+
 
 /* Terminals (tokens returned by the scanner). */
 //Funciones
@@ -106,6 +162,7 @@ nonterminal             arrayidenttype;
 nonterminal             vars;
 nonterminal             var;
 nonterminal             expresions;
+nonterminal             opexpr;
 
 nonterminal             exprlist;
 nonterminal             opRelacion;
@@ -225,8 +282,8 @@ expr            ::= integer
                 |   boolean
                 |   string
                 |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
-                |   expr:e1 opRelacion:op expr:e2 -->error
                 ;
+
 
 opRelacion      ::= OperadorIgual
                 |   OperadorDiferente
@@ -238,6 +295,12 @@ opRelacion      ::= OperadorIgual
 
 exprlist        ::= expr
                 |   expr Coma exprlist
+                ;
+
+literal         ::= integer
+                |   character
+                |   boolean
+                |   string
                 ;
 
 integer         ::= LiteralEntero:i 
