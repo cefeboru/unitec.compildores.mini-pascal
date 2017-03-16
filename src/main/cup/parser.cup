@@ -225,7 +225,7 @@ expr            ::= integer
                 |   boolean
                 |   string
                 |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
-                |   expr opRelacion:op expr
+                |   expr:e1 opRelacion:op expr:e2 -->error
                 ;
 
 opRelacion      ::= OperadorIgual
