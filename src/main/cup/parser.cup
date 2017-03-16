@@ -166,11 +166,13 @@ nonterminal             opexpr;
 
 nonterminal             exprlist;
 nonterminal             opRelacion;
+non terminal            opSuma;
+non terminal            opUnario;
 nonterminal             stmts;
 nonterminal             stmt;
 nonterminal             assignstmt;
 nonterminal             ifstmt;
-nonterminal             ifstmtelse;
+non terminal            elsestmt;
 
 nonterminal             integer;
 nonterminal             character;
@@ -178,7 +180,12 @@ nonterminal             boolean;
 nonterminal             string;
 
 
-nonterminal designator;
+/*-* Operator Precedences **/
+precedence right DosPuntosIgual;
+precedence left  OperadorIgual, OperadorMenor, OperadorMayor, OperadorMenorIgual, OperadorMayorIgual, OperadorDiferente;
+precedence left OperadorSuma, OperadorResta, OperadorOr;
+precedence left OperadorMultiplicacion, OperadorDivision, OperadorMod, OperadorDivisionSpecial, OperadorAnd;
+
 
 
 program         ::= Program Identificador:i PuntoComa block:b Punto
@@ -274,16 +281,21 @@ stmt            ::= /* empty */
                         {: :}
                 ;
 
-assignstmt      ::= Identificador:i DosPuntosIgual expr:e
+assignstmt      ::= Identificador:i DosPuntosIgual expr:e 
                 ;
 
-expr            ::= integer
-                |   character
-                |   boolean
-                |   string
+ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
+                |   If expr:e Then stmt:s
+                ;
+
+expr            ::= literal
+                |   var
                 |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
+                |   expr opRelacion expr
+                |   expr opSuma expr
+                |   opUnario expr
+                |   ParentesisAbrir expr ParentesisCerrar
                 ;
-
 
 opRelacion      ::= OperadorIgual
                 |   OperadorDiferente
@@ -291,6 +303,17 @@ opRelacion      ::= OperadorIgual
                 |   OperadorMenor
                 |   OperadorMenorIgual
                 |   OperadorMayorIgual
+                ;
+
+
+opSuma          ::= OperadorSuma
+                |   OperadorResta
+                |   OperadorOr
+                ;
+
+opUnario        ::= OperadorNot
+                |   OperadorSuma
+                |   OperadorResta
                 ;
 
 exprlist        ::= expr
