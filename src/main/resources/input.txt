@@ -16,5 +16,5 @@ begin
     a := +4;
     a := -4;
     a := a > b;
-    if a > b then;
+    for i := a to 10  do
 end.

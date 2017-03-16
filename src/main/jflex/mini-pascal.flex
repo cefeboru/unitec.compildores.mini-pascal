@@ -84,7 +84,6 @@ OperadorDivisionSpecial     =   div
 If                          =   if
 Then                        =   then
 Else                        =   else
-ElseIf                      =   else if
 Begin                       =   begin
 End                         =   end
 For                         =   for
@@ -129,6 +128,14 @@ Punto                       =   \.
     {Program}                       {return symbol(sym.Program);}
     {Procedure}                     {return symbol(sym.Procedure);}
     {Function}                      {return symbol(sym.Function);}
+    {If}                            {return symbol(sym.If);}
+    {Else}                          {return symbol(sym.Else);}
+    {Then}                          {return symbol(sym.Then);}
+    {For}                           {return symbol(sym.For);}
+    {To}                            {return symbol(sym.To);}
+    {Do}                            {return symbol(sym.Do);}
+    {While}                         {return symbol(sym.While);}
+    {Until}                         {return symbol(sym.Until);}
     {Coma}                          {return symbol(sym.Coma); }
     {Punto}                         {return symbol(sym.Punto);}
     {PuntoComa}                     {return symbol(sym.PuntoComa);}

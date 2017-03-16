@@ -147,6 +147,8 @@ nonterminal             vardecls;
 nonterminal             vardecl;
 nonterminal             procdecls;
 nonterminal             procdecl;
+nonterminal             forstmt;
+nonterminal             varFor;
 
 nonterminal             functionDecl;
 nonterminal             inlineArgs;
@@ -182,9 +184,10 @@ nonterminal             string;
 
 /*-* Operator Precedences **/
 precedence right DosPuntosIgual;
-precedence left  OperadorIgual, OperadorMenor, OperadorMayor, OperadorMenorIgual, OperadorMayorIgual, OperadorDiferente;
+precedence left OperadorIgual, OperadorMenor, OperadorMayor, OperadorMenorIgual, OperadorMayorIgual, OperadorDiferente;
 precedence left OperadorSuma, OperadorResta, OperadorOr;
 precedence left OperadorMultiplicacion, OperadorDivision, OperadorMod, OperadorDivisionSpecial, OperadorAnd;
+precedence left Else;
 
 
 
@@ -273,7 +276,7 @@ stmts           ::= stmt:s
                         {: :}
                 ;
 
-stmt            ::= /* empty */
+stmt            ::= /* Empty */
                         {: :}
                 | assignstmt:as
                         {: :}
@@ -286,6 +289,13 @@ assignstmt      ::= Identificador:i DosPuntosIgual expr:e
 
 ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
                 |   If expr:e Then stmt:s
+                ;
+
+forstmt         ::= For assignstmt:a To varFor:v Do stmt:s
+                ;
+
+varFor          ::= Identificador:i
+                |   LiteralEntero:l
                 ;
 
 expr            ::= literal
