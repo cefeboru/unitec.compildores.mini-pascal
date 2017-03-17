@@ -59,7 +59,6 @@ parser code {:
 /* Terminals (tokens returned by the scanner). */
 //Funciones
 terminal Write;
-terminal WriteLn;
 terminal Read;
 
 //Tipos de datos
@@ -100,6 +99,7 @@ terminal For;
 terminal To;
 terminal Do;
 terminal While;
+terminal Repeat;
 terminal Until;
 
 //Otros
@@ -174,7 +174,12 @@ nonterminal             stmts;
 nonterminal             stmt;
 nonterminal             assignstmt;
 nonterminal             ifstmt;
-non terminal            elsestmt;
+non terminal            whilestmt;
+non terminal            repeatstmt;
+
+non terminal            writestmt;
+non terminal            readstmt;
+
 
 nonterminal             integer;
 nonterminal             character;
@@ -187,9 +192,8 @@ precedence right DosPuntosIgual;
 precedence left OperadorIgual, OperadorMenor, OperadorMayor, OperadorMenorIgual, OperadorMayorIgual, OperadorDiferente;
 precedence left OperadorSuma, OperadorResta, OperadorOr;
 precedence left OperadorMultiplicacion, OperadorDivision, OperadorMod, OperadorDivisionSpecial, OperadorAnd;
-precedence left Else;
 
-
+precedence left Else, PuntoComa;
 
 program         ::= Program Identificador:i PuntoComa block:b Punto
                 ;
@@ -277,11 +281,13 @@ stmts           ::= stmt:s
                 ;
 
 stmt            ::= /* Empty */
-                        {: :}
                 | assignstmt:as
-                        {: :}
                 | ifstmt:is
-                        {: :}
+                | forstmt
+                | whilestmt
+                | repeatstmt
+                | readstmt
+                | writestmt
                 ;
 
 assignstmt      ::= Identificador:i DosPuntosIgual expr:e 
@@ -291,11 +297,22 @@ ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
                 |   If expr:e Then stmt:s
                 ;
 
-forstmt         ::= For assignstmt:a To varFor:v Do stmt:s
+forstmt         ::= For assignstmt:a To expr:e2 Do stmts:s
                 ;
 
-varFor          ::= Identificador:i
-                |   LiteralEntero:l
+whilestmt       ::= While expr:e Do stmt:s
+                ;
+
+repeatstmt      ::= Repeat stmts:s Until expr:e
+                ;
+
+writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
+                |   Write ParentesisAbrir string:s Coma string ParentesisCerrar
+                |   Write ParentesisAbrir string:s Coma character ParentesisCerrar
+                |   Write ParentesisAbrir string:s Coma integer ParentesisCerrar
+                ;
+
+readstmt        ::= Read ParentesisAbrir string:s ParentesisCerrar
                 ;
 
 expr            ::= literal

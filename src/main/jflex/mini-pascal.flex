@@ -59,7 +59,7 @@ TipoString                  =	string
 
 /*Literales*/
 LiteralBoolean              =	true | false
-LiteralCaracter             =	'{Letra}'
+LiteralCaracter             =	'[^']'
 LiteralEntero               =	{Digito}+
 LiteralString               =	'[^']*'
 
@@ -90,6 +90,7 @@ For                         =   for
 To                          =   to
 Do                          =   do
 While                       =   while
+Repeat                      =   repeat
 Until                       =   until
 
 //Otros
@@ -135,6 +136,7 @@ Punto                       =   \.
     {To}                            {return symbol(sym.To);}
     {Do}                            {return symbol(sym.Do);}
     {While}                         {return symbol(sym.While);}
+    {Repeat}                        {return symbol(sym.Repeat);}
     {Until}                         {return symbol(sym.Until);}
     {Coma}                          {return symbol(sym.Coma); }
     {Punto}                         {return symbol(sym.Punto);}
@@ -162,8 +164,7 @@ Punto                       =   \.
     {TipoInteger}                   {return symbol(sym.TipoInteger);}
     {TipoBoolean}                   {return symbol(sym.TipoBoolean);}
     {TipoString}                    {return symbol(sym.TipoString);}
-    {LiteralCaracter}               {return symbol(sym.LiteralCaracter);}
-    {LiteralString}                 {return symbol(sym.LiteralString);}
+    {LiteralCaracter}               {return symbol(sym.LiteralCaracter, yytext().charAt(1));System.out.pritnln(yytext().charAt(1));}
     {LiteralEntero}                 {return symbol(sym.LiteralEntero, new Integer(Integer.parseInt(yytext())));}
     {LiteralBoolean}                {return symbol(sym.LiteralBoolean);}
     {ParentesisAbrir}               {return symbol(sym.ParentesisAbrir);}
@@ -174,7 +175,6 @@ Punto                       =   \.
     {Begin}                         {return symbol(sym.Begin);}
     {End}                           {return symbol(sym.End);}
     {Write}                         {return symbol(sym.Write);}
-    {WriteLn}                       {return symbol(sym.WriteLn);}
     {Read}                          {return symbol(sym.Read);}
     {Identificador}                 {return symbol(sym.Identificador, yytext());} 
     .                               {throw new Error("Illegal character <"+yytext()+">");}

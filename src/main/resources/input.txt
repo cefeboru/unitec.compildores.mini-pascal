@@ -12,9 +12,6 @@ begin
 end;
 
 begin
-    {qweqwr}
-    a := +4;
-    a := -4;
-    a := a > b;
-    for i := a to 10  do
+   {asd}
+   a := 'a';
 end.
