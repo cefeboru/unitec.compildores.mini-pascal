@@ -211,6 +211,8 @@ nonterminal Element              expresions;
 nonterminal Element              opexpr;
 
 nonterminal Element              exprlist;
+nonterminal Element              exprLogical;
+nonterminal Element              exprOpLog;
 nonterminal Element              opRelacion;
 nonterminal Element              opArit;
 nonterminal Element              opUnario;
@@ -785,19 +787,31 @@ expr            ::= literal:l
                     if (e != null) { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
-                |   ParentesisAbrir expr:e ParentesisCerrar
+                |   exprLogical:e
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Expression");
                     if (e != null) { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
-                |   opLogico:op ParentesisAbrir expr:e ParentesisCerrar
+                ;
+
+exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expression");
+                    if (e1 != null) { nPadre.appendChild(e1);}
+                    if (e2 != null) { nPadre.appendChild(e2);}
+                    RESULT = nPadre;
+                :}
+                ;
+exprOpLog       ::= /* Empty */
+                | opLogico:op exprLogical:e
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Expression");
                     if (op != null) { nPadre.appendChild(op);}
-                    if (e != null) { nPadre.appendChild(e);}
+                    if (e != null)  { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
                 ;

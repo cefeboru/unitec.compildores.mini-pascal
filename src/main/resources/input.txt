@@ -1,25 +1,11 @@
-Program HelloWorld;
+program repeatUntilLoop;
 var
-    asd2 : Integer;
-    asd3,asd4 : Integer;
-
-function max(x: integer): string;
-begin
-    fa := a;
-end;
-
-procedure findMin(x, y, z: integer; var m: integer; var s: string); 
-begin
-    fp := 2 + 2;
-end;
+   a: integer;
 
 begin
-    {asd}
-    if ( a = not b ) then
-    maxVar := max(a);
-    a := ('a');
-    for a := 10  to 20 do
-    begin
-        writeln('value of a: ', a);
-    end;
+   a := 10;
+   repeat
+      writeln('value of a: ', a);
+      a := a + 1;
+   c := ((a = 20) and ((not a=1) or (not a<=0)));
 end.
