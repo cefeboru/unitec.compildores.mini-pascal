@@ -43,9 +43,8 @@ TipoPredefinido     =   char | integer | boolean
 
 
 //Funciones
-Write                       =	write
-WriteLn                     =	writeln
-Read                        =   read
+Write                       =	write | writeln
+Read                        =   read | readln
 
 //Tipos de datos
 Array                       =	array

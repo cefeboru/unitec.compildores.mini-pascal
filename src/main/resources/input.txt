@@ -14,7 +14,12 @@ begin
 end;
 
 begin
-   {asd}
-   maxVar := max(a);
-   a := ('a');
+    {asd}
+    if ( a = not b ) then
+    maxVar := max(a);
+    a := ('a');
+    for a := 10  to 20 do
+    begin
+        writeln('value of a: ', a);
+    end;
 end.
