@@ -50,7 +50,10 @@ public class ParserTest {
         } catch (Exception ex) {
             Logger.getLogger(ParserTest.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(parseSymbol == null)
+            Assert.assertFalse(true);
+        else 
+            Assert.assertEquals(0, parseSymbol.sym);
         
-        Assert.assertEquals(sym.EOF, parseSymbol.sym);
     }    
 }

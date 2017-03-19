@@ -1,5 +1,20 @@
 import java_cup.runtime.*;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.StringWriter;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;  
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 
 
 parser code {:
@@ -55,136 +70,165 @@ parser code {:
         }
 :};
 
+action code {:
+        /* Contruccion del arbol en XML */
+
+        Document xmlDocument = null;    
+        Element nodoPadre = null; 
+
+        private void iniXML() {
+        if (xmlDocument == null) {
+            try {
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                xmlDocument = docBuilder.newDocument();//Crear el documento XML
+            } catch (Exception e) {
+                System.err.println("el Arbol tiene ERROR: " + e.getMessage());
+            }
+        }
+    }
+
+    public void escribirXML() throws javax.xml.transform.TransformerConfigurationException, javax.xml.transform.TransformerException {
+        //Escribir el archivo XML         
+        xmlDocument.appendChild(nodoPadre);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource origen = new DOMSource(xmlDocument);
+        StreamResult result = new StreamResult(new File("AST.xml"));
+        transformer.transform(origen, result);
+    }
+:}
+
 
 /* Terminals (tokens returned by the scanner). */
-//Funciones
-terminal Write;
-terminal Read;
+//Functiones
+terminal Element  Write;
+terminal Element  Read;
 
 //Tipos de datos
-terminal Array;
-terminal Of;
-terminal Tipo;
-terminal Var;
-terminal TipoBoolean;
-terminal TipoChar;
-terminal TipoInteger;
-terminal TipoString;
+terminal Element  Array;
+terminal Element  Of;
+terminal Element  Tipo;
+terminal Element  Var;
+terminal String  TipoBoolean;
+terminal String  TipoChar;
+terminal String  TipoInteger;
+terminal String  TipoString;
 
 //Operadores
-terminal OperadorIgual;
-terminal OperadorDiferente;
-terminal OperadorMayor;
-terminal OperadorMenor;
-terminal OperadorMayorIgual;
-terminal OperadorMenorIgual;
-terminal OperadorAnd;
-terminal OperadorOr;
-terminal OperadorNot;
-terminal OperadorSuma;
-terminal OperadorResta;
-terminal OperadorMultiplicacion;
-terminal OperadorMod;
-terminal OperadorDivision;
-terminal OperadorDivisionSpecial;
+terminal String  OperadorIgual;
+terminal String  OperadorDiferente;
+terminal String  OperadorMayor;
+terminal String  OperadorMenor;
+terminal String  OperadorMayorIgual;
+terminal String  OperadorMenorIgual;
+terminal String  OperadorAnd;
+terminal String  OperadorOr;
+terminal String  OperadorNot;
+terminal String  OperadorSuma;
+terminal String  OperadorResta;
+terminal String  OperadorMultiplicacion;
+terminal String  OperadorMod;
+terminal String  OperadorDivision;
+terminal String  OperadorDivisionSpecial;
 
 //Estructuras de control
-terminal If;
-terminal Then;
-terminal Else;
-terminal ElseIf;
-terminal Begin;
-terminal End;
-terminal For;
-terminal To;
-terminal Do;
-terminal While;
-terminal Repeat;
-terminal Until;
+terminal Element  If;
+terminal Element  Then;
+terminal Element  Else;
+terminal Element  ElseIf;
+terminal Element  Begin;
+terminal Element  End;
+terminal Element  For;
+terminal Element  To;
+terminal Element  Do;
+terminal Element  While;
+terminal Element  Repeat;
+terminal Element  Until;
 
 //Otros
-terminal BracketAbrir;
-terminal BracketCerrar;
-terminal ComillaSimple;
-terminal ComillaDentro;
-terminal Coma;
-terminal Digito;
-terminal DosPuntos;
-terminal DosPuntosIgual;
-terminal Identificador;
-terminal Letra;
-terminal LineTerminator;
-terminal LlaveAbrir;
-terminal LlaveCerrar;
-terminal ParentesisAbrir;
-terminal ParentesisCerrar;
-terminal Program;
-terminal Procedure;
-terminal Function;
-terminal Punto;
-terminal PuntoComa;
-terminal PuntoPunto;
-terminal WhiteSpace;
+terminal String  BracketAbrir;
+terminal String  BracketCerrar;
+terminal String  ComillaSimple;
+terminal String  ComillaDentro;
+terminal String  Coma;
+terminal String  Digito;
+terminal String  DosPuntos;
+terminal String  DosPuntosIgual;
+terminal String  Identificador;
+terminal String  Letra;
+terminal String  LineTerminator;
+terminal String  LlaveAbrir;
+terminal String  LlaveCerrar;
+terminal String  ParentesisAbrir;
+terminal String  ParentesisCerrar;
+terminal String  Program;
+terminal String  Procedure;
+terminal String  Function;
+terminal String  Punto;
+terminal String  PuntoComa;
+terminal String  PuntoPunto;
+terminal String  WhiteSpace;
 
 /*Literales*/
-terminal java.lang.Number       LiteralEntero;
-terminal java.lang.Character    LiteralCaracter;
-terminal java.lang.Boolean      LiteralBoolean;
-terminal java.lang.String       LiteralString;
+terminal String         LiteralEntero;
+terminal Character      LiteralCaracter;
+terminal String         LiteralBoolean;
+terminal String         LiteralString;
 
 /* Non terminals */
-nonterminal             expr_list;
-nonterminal Integer     expr;      // used to store evaluated subexpressions
-nonterminal             literal;
-nonterminal             program;
-nonterminal             block;
-nonterminal             blockProc;
-nonterminal             identifier;
-nonterminal             decls;
-nonterminal             decl;
-nonterminal             typedecl;
-nonterminal             vardecls;
-nonterminal             vardecl;
-nonterminal             procdecls;
-nonterminal             procdecl;
-nonterminal             forstmt;
-nonterminal             varFor;
+nonterminal Element              expr_list;
+nonterminal Element              expr;      // used to store evaluated subexpressions
+nonterminal Element              literal;
+nonterminal Element              program;
+nonterminal Element              block;
+nonterminal Element              blockProc;
+nonterminal Element              identifier;
+nonterminal Element              decls;
+nonterminal Element              decl;
+nonterminal Element              typedecl;
+nonterminal Element              vardecls;
+nonterminal Element              vardecl;
+nonterminal Element              procdecls;
+nonterminal Element              procdecl;
+nonterminal Element              forstmt;
+nonterminal Element              varFor;
 
-nonterminal             functionDecl;
-nonterminal             inlineArgs;
-nonterminal             inlineArg;
-nonterminal             procedureDecl;
-nonterminal             procInlineDecls;
-nonterminal             procInlineDecl;
+nonterminal Element              functionDecl;
+nonterminal Element              inlineArgs;
+nonterminal Element              inlineArg;
+nonterminal Element              procedureDecl;
+nonterminal Element              procInlineDecls;
+nonterminal Element              procInlineDecl;
 
-nonterminal             type;
-nonterminal             identtype;
-nonterminal             arraytype;
-nonterminal             arrayidenttype;
-nonterminal             vars;
-nonterminal             var;
-nonterminal             expresions;
-nonterminal             opexpr;
+nonterminal Element              type;
+nonterminal String              identtype;
+nonterminal Element              arraytype;
+nonterminal String              arrayidenttype;
+nonterminal Element              vars;
+nonterminal Element              var;
+nonterminal Element              expresions;
+nonterminal Element              opexpr;
 
-nonterminal             exprlist;
-nonterminal             opRelacion;
-non terminal            opSuma;
-non terminal            opUnario;
-nonterminal             stmts;
-nonterminal             stmt;
-nonterminal             assignstmt;
-nonterminal             ifstmt;
-non terminal            whilestmt;
-non terminal            repeatstmt;
+nonterminal Element              exprlist;
+nonterminal Element              opRelacion;
+non terminal Element             opSuma;
+non terminal Element             opUnario;
+nonterminal Element              stmts;
+nonterminal Element              stmt;
+nonterminal Element              assignstmt;
+nonterminal Element              ifstmt;
+non terminal Element             whilestmt;
+non terminal Element             repeatstmt;
 
-non terminal            writestmt;
-non terminal            readstmt;
+non terminal Element             writestmt;
+non terminal Element             readstmt;
 
 
-nonterminal             integer;
-nonterminal             character;
-nonterminal             boolean;
-nonterminal             string;
+nonterminal Element               integer;
+nonterminal Element              character;
+nonterminal Element              boolean;
+nonterminal Element              string;
 
 
 /*-* Operator Precedences **/
@@ -195,93 +239,356 @@ precedence left OperadorMultiplicacion, OperadorDivision, OperadorMod, OperadorD
 
 precedence left Else, PuntoComa;
 
-program         ::= Program Identificador:i PuntoComa block:b Punto
+program         ::= Program var:i PuntoComa block:b Punto
+                {:
+                    iniXML();
+                    nodoPadre = xmlDocument.createElement("Program"); 
+                    if (i != null) { nodoPadre.appendChild(i); }
+                    if(b != null) { nodoPadre.appendChild(b); }
+                    escribirXML();
+                :}
                 ;
 
 block           ::= decls:d Begin stmts:s End
-                        {:  :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Block");
+                    if (d != null) { nPadre.appendChild(d); }
+                    if (s != null) { nPadre.appendChild(s); }
+                    RESULT = nPadre;                    
+                :}
                 ;
 
-blockProc       ::= procInlineDecls Begin stmts:s End
+blockProc       ::= procInlineDecls:p Begin stmts:s End
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Block");
+                    if (p != null) { nPadre.appendChild(p); }
+                    if (s != null) { nPadre.appendChild(s); }
+                    RESULT = nPadre;                    
+                :}
                 ;
 
-decls           ::= /* empty */
+decls           ::= /* empty */ {: RESULT = null; :}
                 |   decl:d decls:ds
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Declarations");
+                    if (d != null && ds == null) {
+                        RESULT = d;
+                    } else if (d == null && ds != null){
+                        RESULT = ds;
+                    } else if (d != null && ds != null) {
+                        nPadre.appendChild(d);
+                        nPadre.appendChild(ds);
+                        RESULT = nPadre;
+                    } else RESULT = null;
+                                        
+                :}
                 ;
 
 decl            ::= Var vardecls:vd
-                |   functionDecl
-                |   procedureDecl
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Declaration");
+                    if (vd != null) { 
+                        nPadre.appendChild(vd); 
+                        RESULT = nPadre;                    
+                    } else RESULT = null;
+                    
+                :}
+                |   functionDecl:f
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Declaration");
+                    if (f != null) { nPadre.appendChild(f); RESULT = nPadre;}
+                                        
+                :}
+                |   procedureDecl:p
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Declaration");
+                    if (p != null) { nPadre.appendChild(p); RESULT = nPadre;}                    
+                :}
                 ;
 
-functionDecl    ::= Function Identificador:i ParentesisAbrir inlineArgs ParentesisCerrar DosPuntos type PuntoComa blockProc:b PuntoComa
-                |   Function Identificador:i ParentesisAbrir ParentesisCerrar DosPuntos type PuntoComa blockProc:b PuntoComa
+functionDecl    ::= Function var:i ParentesisAbrir inlineArgs:in ParentesisCerrar DosPuntos type:t PuntoComa blockProc:b PuntoComa
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("FunctionDeclaration");
+                    if (i != null) { nPadre.appendChild(i); }
+                    if (in != null) { nPadre.appendChild(in); }
+                    if (t != null) { nPadre.appendChild(t); }
+                    if (b != null) { nPadre.appendChild(b); }
+
+                    RESULT = nPadre;                    
+                :}
+                |   Function var:i ParentesisAbrir ParentesisCerrar DosPuntos type:t PuntoComa blockProc:b PuntoComa
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("FunctionDeclaration");
+                    if (i != null) { nPadre.appendChild(i); }
+                    if (t != null) { nPadre.appendChild(t); }
+                    if (b != null) { nPadre.appendChild(b); }
+
+                    RESULT = nPadre;                    
+                :}
                 ;
 
-procedureDecl   ::= Procedure Identificador:i ParentesisAbrir inlineArgs ParentesisCerrar PuntoComa blockProc:b PuntoComa
-                |   Procedure Identificador:i ParentesisAbrir ParentesisCerrar PuntoComa blockProc:b PuntoComa
+procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerrar PuntoComa blockProc:b PuntoComa
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("ProcedureDeclaration");
+                    if (i != null) { nPadre.appendChild(i); }
+                    if (in != null) { nPadre.appendChild(in); }
+                    if (b != null) { nPadre.appendChild(b); }
+
+                    RESULT = nPadre;                    
+                :}
+                |   Procedure var:i ParentesisAbrir ParentesisCerrar PuntoComa blockProc:b PuntoComa
+                {:
+                    iniXML(); 
+                    Element nPadre = xmlDocument.createElement("ProcedureDeclaration");
+                    if (i != null) { nPadre.appendChild(i); }
+                    if (b != null) { nPadre.appendChild(b); }
+
+                    RESULT = nPadre;                    
+                :}
                 ;
 
-procInlineDecls  ::= 
-                |   procInlineDecl procInlineDecls
+procInlineDecls  ::= {: RESULT = null; :}
+                |   procInlineDecl:pd procInlineDecls:pds
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("ProcInlinceDecls");
+                    if (pd != null && pds == null) {
+                        RESULT = pd;
+                    } else if(pd == null && pds != null) {
+                        RESULT = pds;
+                    } else if(pd != null && pds != null) {
+                        nPadre.appendChild(pd);
+                        nPadre.appendChild(pds);
+                        RESULT = nPadre;
+                    } else RESULT = null;               
+                :}
                 ;
 
 procInlineDecl  ::= Var vardecls:vd
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("VarsDeclarations");
+                    if (vd != null){
+                        nPadre.appendChild(vd);
+                        RESULT = nPadre;
+                    }               
+                :}
+
                 ;
 
 
-inlineArgs      ::= inlineArg
-                |   inlineArg PuntoComa inlineArgs
+inlineArgs      ::= inlineArg:ia
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Arguments");
+                    if(ia != null) {
+                        nPadre.appendChild(ia);
+                        RESULT = nPadre;
+                    }
+                :}
+                |   inlineArg:ia PuntoComa inlineArgs:ias
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Arguments");
+                    if(ia != null && ias == null) {
+                        RESULT = ia;
+                    } else if(ia == null && ias != null) {
+                        RESULT = ias;
+                    } else if(ia == null && ias == null) {
+                        nPadre.appendChild(ia);
+                        nPadre.appendChild(ias);
+                        RESULT = nPadre;
+                    }
+                :}
                 ;
 
-inlineArg       ::= Var vars:vs DosPuntos identtype
-                |       vars:vs DosPuntos identtype 
+inlineArg       ::= Var vars:vs DosPuntos identtype:i
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("inlineArg");
+                    if(vs != null) {
+                        nPadre.appendChild(vs);
+                    }
+                    if( i != null ) {
+                        Element nType = xmlDocument.createElement("Type");
+                        nType.setAttribute("Value",i);
+                        nPadre.appendChild(nType);                        
+                    }
+                    RESULT = nPadre;
+                :}
+                |   vars:vs DosPuntos identtype:i 
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("inlineArg");
+                    if(vs != null) {
+                        nPadre.appendChild(vs);
+                    }
+                    if( i != null ) {
+                        Element nType = xmlDocument.createElement("Type");
+                        nType.setAttribute("Value",i);
+                        nPadre.appendChild(nType);                        
+                    }
+                    RESULT = nPadre;
+                :}
                 ;
 
-vardecls        ::= /* Empty */
-                |  vardecl PuntoComa vardecls
+vardecls        ::= /* Empty */ {: RESULT = null; :}
+                |  vardecl:v PuntoComa vardecls:vs
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("VarsDeclarations");
+                    if(v != null && vs == null ){
+                        RESULT = v;
+                    } else if(v == null && vs != null){
+                        RESULT = vs;
+                    } else if(v != null && vs != null){
+                        nPadre.appendChild(v);
+                        nPadre.appendChild(vs);
+                        RESULT = nPadre;
+                    } else RESULT = null;
+                :}
                 ;
 
 vardecl         ::= vars:vs DosPuntos type:t
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("VarDeclaration");
+                    if (vs != null) { nPadre.appendChild(vs); }
+                    nPadre.appendChild(t);
+                    RESULT = nPadre;                    
+                :}
                 ;
 
 vars            ::= var:v
-                        {:  :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Variable");
+                    if (v != null) { nPadre.appendChild(v); }
+                    RESULT = nPadre;                    
+                :}
                 |   var:v Coma vars:vs
-                        {:  :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Variables");
+                    if (v != null) { nPadre.appendChild(v); }
+                    if (vs != null) { nPadre.appendChild(vs); }
+                    RESULT = nPadre;                    
+                :}
                 ;
 
 var             ::= Identificador:i
-                    {: :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Identificador");
+                    nPadre.setAttribute("Valor",i);            
+                    RESULT = nPadre;                    
+                :}
                 ;
 
 type            ::= identtype:it
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Type");
+                    if(it != null) {
+                        nPadre.setAttribute("Value",it);
+                        RESULT = nPadre;
+                        System.out.println("Setting Ident Atrribute");
+                    } else RESULT = null;
+                :}
                 |   arraytype:ats
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Type");
+                    if(ats != null) {
+                        nPadre.appendChild(ats);
+                        RESULT = nPadre;
+                    } else RESULT = null;
+                :}
                 ;
 
-identtype       ::= TipoChar
-                |   TipoString
-                |   TipoBoolean
-                |   TipoInteger
+identtype       ::= TipoChar:c
+                {:
+                   RESULT = c;
+                :}
+                |   TipoString:c
+                {:
+                   RESULT = c;
+                :}
+                |   TipoBoolean:c
+                {:
+                   RESULT = c;
+                :}
+                |   TipoInteger:c
+                {:
+                   RESULT = c;
+                :}
                 ;
 
-arrayidenttype  ::= TipoChar
-                |   TipoBoolean
-                |   TipoInteger
-                ;
 
 arraytype       ::= Array BracketAbrir integer:i BracketCerrar Of arrayidenttype:t
-                        {:  :}
+                {:  
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("ArrayType");
+                    if(i != null){nPadre.setAttribute("InitialSize",i.getAttribute("Value"));}
+                    if(t != null){nPadre.setAttribute("Type",t);}
+                    RESULT = nPadre;
+                :}
+                ;
+
+arrayidenttype  ::= TipoChar:c
+                {:
+                   RESULT = c;
+                :}
+                |   TipoBoolean:c
+                {:
+                   RESULT = c;
+                :}
+                |   TipoInteger:c
+                {:
+                   RESULT = c;
+                :}
                 ;
 
 stmts           ::= stmt:s
-                        {: :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Statements");
+                    if (s != null) { nPadre.appendChild(s); RESULT = nPadre;}
+                    
+                :}
                 | stmt:s PuntoComa stmts:ss
-                        {: :}
+                {:
+                    Element nPadre = xmlDocument.createElement("Statements");
+                    iniXML();
+                    if(s != null && ss == null){
+                        RESULT = s;
+                    } else if(s == null && ss != null){
+                        RESULT = ss;
+                    } else if(s != null && ss != null){
+                        nPadre.appendChild(s);
+                        nPadre.appendChild(ss);
+                        RESULT = nPadre;
+                    } else RESULT = null;
+                :}
                 ;
 
-stmt            ::= /* Empty */
+stmt            ::= /* Empty */ {: RESULT = null; :}
                 | assignstmt:as
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Statement");
+                    if (as != null) { nPadre.appendChild(as); }                 
+                    RESULT = nPadre;
+                :}
                 | ifstmt:is
                 | forstmt
                 | whilestmt
@@ -290,7 +597,14 @@ stmt            ::= /* Empty */
                 | writestmt
                 ;
 
-assignstmt      ::= Identificador:i DosPuntosIgual expr:e 
+assignstmt      ::= var:i DosPuntosIgual expr:e 
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Assignment");
+                    if (i != null) { nPadre.appendChild(i); }
+                    if (e != null) { nPadre.appendChild(e); }                   
+                    RESULT = nPadre;
+                :}
                 ;
 
 ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
@@ -307,64 +621,239 @@ repeatstmt      ::= Repeat stmts:s Until expr:e
                 ;
 
 writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
-                |   Write ParentesisAbrir string:s Coma string ParentesisCerrar
-                |   Write ParentesisAbrir string:s Coma character ParentesisCerrar
-                |   Write ParentesisAbrir string:s Coma integer ParentesisCerrar
+                |   Write ParentesisAbrir string:s Coma var:v ParentesisCerrar
                 ;
 
 readstmt        ::= Read ParentesisAbrir string:s ParentesisCerrar
                 ;
 
-expr            ::= literal
-                |   var
+expr            ::= literal:l 
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expresion");
+                    if (l != null) { nPadre.appendChild(l); }                   
+                    RESULT = nPadre;
+                :}
+                |   var:v
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expresion");
+                    if (v != null) { nPadre.appendChild(v); }                   
+                    RESULT = nPadre;
+                :}
                 |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
-                |   expr opRelacion expr
-                |   expr opSuma expr
-                |   opUnario expr
-                |   ParentesisAbrir expr ParentesisCerrar
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("FunctionCall");
+                    if (v != null) { nPadre.appendChild(v);}
+                    if (el != null) { nPadre.appendChild(el);}
+                    RESULT = nPadre;
+                :}
+                |   expr:e1 opRelacion:op expr:e2
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expression");
+                    if (e1 != null) { nPadre.appendChild(e1);}
+                    if (op != null) { nPadre.appendChild(op);}
+                    if (e2 != null) { nPadre.appendChild(e2);}
+                    RESULT = nPadre;
+                :}
+                |   expr:e1 opSuma:op expr:e2
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expression");
+                    if (e1 != null) { nPadre.appendChild(e1);}
+                    if (op != null) { nPadre.appendChild(op);}
+                    if (e2 != null) { nPadre.appendChild(e2);}
+                    RESULT = nPadre;
+                :}
+                |   opUnario:ou expr:e
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expression");
+                    if (ou != null) { nPadre.appendChild(ou);}
+                    if (e != null) { nPadre.appendChild(e);}
+                    RESULT = nPadre;
+                :}
+                |   ParentesisAbrir expr:e ParentesisCerrar
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expression");
+                    if (e != null) { nPadre.appendChild(e);}
+                    RESULT = nPadre;
+                :}
                 ;
 
-opRelacion      ::= OperadorIgual
-                |   OperadorDiferente
-                |   OperadorMayor
-                |   OperadorMenor
-                |   OperadorMenorIgual
-                |   OperadorMayorIgual
+opRelacion      ::= OperadorIgual:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorDiferente:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorMayor:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorMenor:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorMenorIgual:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorMayorIgual:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
                 ;
 
 
-opSuma          ::= OperadorSuma
-                |   OperadorResta
-                |   OperadorOr
+opSuma          ::= OperadorSuma:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("SumOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorResta:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("SumOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorOr:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("SumOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
                 ;
 
-opUnario        ::= OperadorNot
-                |   OperadorSuma
-                |   OperadorResta
+opUnario        ::= OperadorNot:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("UnaryOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorSuma:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("UnaryOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
+                |   OperadorResta:op
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("UnaryOp");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    RESULT = nPadre;
+                :}
                 ;
 
-exprlist        ::= expr
-                |   expr Coma exprlist
+exprlist        ::= expr:e
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("ExprList");
+                    if (e != null) { nPadre.appendChild(e);}
+                    RESULT = nPadre;
+                :}
+                |   expr:e Coma exprlist:el
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("ExprList");
+                    if (e != null) { nPadre.appendChild(e);}
+                    if (el != null) { nPadre.appendChild(el);}
+                    RESULT = nPadre;
+                :}
                 ;
 
-literal         ::= integer
-                |   character
-                |   boolean
-                |   string
+literal         ::= integer:l
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Literal");
+                    if (l != null) { nPadre.appendChild(l);}
+                    RESULT = nPadre;
+                :}
+                |   character:c
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Literal");
+                    if (c != null) { nPadre.appendChild(c);}
+                    RESULT = nPadre;
+                :}                
+                |   boolean:b
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Literal");
+                    if (b != null) { nPadre.appendChild(b);}
+                    RESULT = nPadre;
+                :}
+                |   string:s
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Literal");
+                    if (s != null) { nPadre.appendChild(s);}
+                    RESULT = nPadre;
+                :}
                 ;
 
 integer         ::= LiteralEntero:i 
-                    {: :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Integer");
+                    nPadre.setAttribute("Valor",i.toString());
+                    RESULT = nPadre;
+                :}
                 ;
 
 character       ::= LiteralCaracter:c
-                    {:  :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Character");
+                    nPadre.setAttribute("Valor",c.toString());            
+                    RESULT = nPadre;
+                :}
                 ;
 
 boolean         ::= LiteralBoolean:b
-                    {:  :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Boolean");
+                    nPadre.setAttribute("Valor",b);          
+                    RESULT = nPadre;
+                :}
                 ;
 
 string          ::= LiteralString:s
-                    {:  :}
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("String");
+                    nPadre.setAttribute("Valor",s);
+                    RESULT = nPadre;
+                :}
                 ;

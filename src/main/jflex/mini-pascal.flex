@@ -145,28 +145,28 @@ Punto                       =   \.
     {DosPuntos}                     {return symbol(sym.DosPuntos);}
     {BracketAbrir}                  {return symbol(sym.BracketAbrir);}        
     {BracketCerrar}                 {return symbol(sym.BracketCerrar);}
-    {OperadorMayorIgual}            {return symbol(sym.OperadorMayorIgual);}
-    {OperadorMenorIgual}            {return symbol(sym.OperadorMenorIgual);}
-    {OperadorIgual}                 {return symbol(sym.OperadorIgual);}
-    {OperadorMayor}                 {return symbol(sym.OperadorMayor);}
-    {OperadorMenor}                 {return symbol(sym.OperadorMenor);}
-    {OperadorAnd}                   {return symbol(sym.OperadorAnd);}
-    {OperadorOr}                    {return symbol(sym.OperadorOr);}
-    {OperadorNot}                   {return symbol(sym.OperadorNot);}
-    {OperadorSuma}                  {return symbol(sym.OperadorSuma);}
-    {OperadorResta}                 {return symbol(sym.OperadorResta);}
-    {OperadorMultiplicacion}        {return symbol(sym.OperadorMultiplicacion);}
-    {OperadorMod}                   {return symbol(sym.OperadorMod);}
-    {OperadorDivision}              {return symbol(sym.OperadorDivision);}
-    {OperadorDivisionSpecial}       {return symbol(sym.OperadorDivisionSpecial);}
-    {Tipo}                          {return symbol(sym.Tipo);}
-    {TipoChar}                      {return symbol(sym.TipoChar);}
-    {TipoInteger}                   {return symbol(sym.TipoInteger);}
-    {TipoBoolean}                   {return symbol(sym.TipoBoolean);}
-    {TipoString}                    {return symbol(sym.TipoString);}
-    {LiteralCaracter}               {return symbol(sym.LiteralCaracter, yytext().charAt(1));System.out.pritnln(yytext().charAt(1));}
-    {LiteralEntero}                 {return symbol(sym.LiteralEntero, new Integer(Integer.parseInt(yytext())));}
-    {LiteralBoolean}                {return symbol(sym.LiteralBoolean);}
+    {OperadorMayorIgual}            {return symbol(sym.OperadorMayorIgual,yytext());}
+    {OperadorMenorIgual}            {return symbol(sym.OperadorMenorIgual,yytext());}
+    {OperadorIgual}                 {return symbol(sym.OperadorIgual,yytext());}
+    {OperadorMayor}                 {return symbol(sym.OperadorMayor,yytext());}
+    {OperadorMenor}                 {return symbol(sym.OperadorMenor,yytext());}
+    {OperadorAnd}                   {return symbol(sym.OperadorAnd,yytext());}
+    {OperadorOr}                    {return symbol(sym.OperadorOr,yytext());}
+    {OperadorNot}                   {return symbol(sym.OperadorNot,yytext());}
+    {OperadorSuma}                  {return symbol(sym.OperadorSuma,yytext());}
+    {OperadorResta}                 {return symbol(sym.OperadorResta,yytext());}
+    {OperadorMultiplicacion}        {return symbol(sym.OperadorMultiplicacion,yytext());}
+    {OperadorMod}                   {return symbol(sym.OperadorMod,yytext());}
+    {OperadorDivision}              {return symbol(sym.OperadorDivision,yytext());}
+    {OperadorDivisionSpecial}       {return symbol(sym.OperadorDivisionSpecial,yytext());}
+    {Tipo}                          {return symbol(sym.Tipo,yytext());}
+    {TipoChar}                      {return symbol(sym.TipoChar,yytext());}
+    {TipoInteger}                   {return symbol(sym.TipoInteger,yytext());}
+    {TipoBoolean}                   {return symbol(sym.TipoBoolean,yytext());}
+    {TipoString}                    {return symbol(sym.TipoString,yytext());}
+    {LiteralCaracter}               {System.out.println(yytext().charAt(1));return symbol(sym.LiteralCaracter, yytext().charAt(1));}
+    {LiteralEntero}                 {return symbol(sym.LiteralEntero, yytext());}
+    {LiteralBoolean}                {return symbol(sym.LiteralBoolean,yytext());}
     {ParentesisAbrir}               {return symbol(sym.ParentesisAbrir);}
     {ParentesisCerrar}              {return symbol(sym.ParentesisCerrar);}
     {Var}                           {return symbol(sym.Var);}
