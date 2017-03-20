@@ -6,7 +6,6 @@ import java_cup.runtime.*;
 
 %class PascalFlexer
 %unicode
-%debug
 %line
 %column
 %int
@@ -26,20 +25,7 @@ import java_cup.runtime.*;
       }
 %}
 
-CabeceraPrograma    =   program{WhiteSpace}+{Identificador} ( \({Identificador}(, {Identificador})* \) )?
 Comentario          =   \{{Caracter}*\}  |  \(\*{Caracter}*\*\) 
-Literal             =   {LiteralEntero}|{LiteralBoolean}|{LiteralCaracter}|{LiteralString}
-TipoArray           =   array\[{TipoIndice}\] of {TipoDato}
-TipoDato            =   {TipoInteger}|{TipoChar}|{TipoString}
-DefinicionTipos     =   type{WhiteSpace}+{DefinicionTipo}(;{DefinicionTipo})*;
-DefinicionTipo      =   {Identificador} = {TipoDato}
-ExpresionWrite      =   write{WhiteSpace}*\(({LiteralString}|{LiteralCaracter}) (, {Identificador})? \)
-ExpresionWriteLn    =   writeln{WhiteSpace}*\({LiteralString}|{LiteralCaracter}\)
-ExpresionRead       =   read{WhiteSpace}*\({Identificador}\)
-DeclaracionVariables=   var {Identificador} (,{Identificador})*:
-TipoIndice          =   {TipoPredefinido} | {TipoSubRango}
-TipoSubRango        =   {TipoDato}\.\.{TipoDato}
-TipoPredefinido     =   char | integer | boolean
 
 
 //Funciones
@@ -49,7 +35,6 @@ Read                        =   read | readln
 //Tipos de datos
 Array                       =	array
 Of                          =	of
-Tipo                        =	type
 Var                         =	var
 TipoBoolean                 =   boolean
 TipoChar                    =	char
@@ -98,7 +83,6 @@ Procedure                   =   procedure
 Function                    =   function
 Identificador               =	{Letra}({Letra}|{Digito})*
 PuntoComa                   =	;
-PuntoPunto                  =	\.\.
 WhiteSpace                  =	{LineTerminator} | [ \t\f]
 LineTerminator              =	\r|\n|\r\n
 ParentesisAbrir             =	\(
@@ -144,6 +128,7 @@ Punto                       =   \.
     {DosPuntos}                     {return symbol(sym.DosPuntos);}
     {BracketAbrir}                  {return symbol(sym.BracketAbrir);}        
     {BracketCerrar}                 {return symbol(sym.BracketCerrar);}
+    {OperadorDiferente}             {return symbol(sym.OperadorDiferente);}
     {OperadorMayorIgual}            {return symbol(sym.OperadorMayorIgual,yytext());}
     {OperadorMenorIgual}            {return symbol(sym.OperadorMenorIgual,yytext());}
     {OperadorIgual}                 {return symbol(sym.OperadorIgual,yytext());}
@@ -158,7 +143,6 @@ Punto                       =   \.
     {OperadorMod}                   {return symbol(sym.OperadorMod,yytext());}
     {OperadorDivision}              {return symbol(sym.OperadorDivision,yytext());}
     {OperadorDivisionSpecial}       {return symbol(sym.OperadorDivisionSpecial,yytext());}
-    {Tipo}                          {return symbol(sym.Tipo,yytext());}
     {TipoChar}                      {return symbol(sym.TipoChar,yytext());}
     {TipoInteger}                   {return symbol(sym.TipoInteger,yytext());}
     {TipoBoolean}                   {return symbol(sym.TipoBoolean,yytext());}

@@ -38,9 +38,8 @@ public class ParserTest {
             scanner = new PascalFlexer(br);
             parser = new Parser(scanner);
             
-            parseSymbol = parser.debug_parse();
-            
-            //parser.parse();
+            //parseSymbol = parser.debug_parse();
+            parser.parse();
             
             
         } catch (FileNotFoundException  ex) {
