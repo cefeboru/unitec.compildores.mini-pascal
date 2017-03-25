@@ -1,8 +1,11 @@
 program ;
 var
     a: integer;
-procedure
-    : string;
+procedure asd();
+a
+begin
+end;
+
 begin
    a := 10;
 end.
