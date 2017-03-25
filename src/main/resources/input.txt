@@ -1,5 +1,5 @@
 program repeatUntilLoop;
-
+var
     a: integer;
     variablename: array [5] of integer;
 
@@ -8,5 +8,5 @@ begin
    repeat
       writeln('value of a: ', a);
       a := a + 1;
-   Until ((a = 20) and ((not a=1) or (not a<=0)));
+   until ((a = 20) and ((not a=1) or (not a<=0)));
 end.

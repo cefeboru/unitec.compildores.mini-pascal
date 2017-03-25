@@ -39,7 +39,7 @@ public class ParserTest {
             parser = new Parser(scanner);
             
             //parseSymbol = parser.debug_parse();
-            parser.parse();
+            parseSymbol = parser.parse();
             
             
         } catch (FileNotFoundException  ex) {
