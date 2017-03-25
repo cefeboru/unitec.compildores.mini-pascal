@@ -1,11 +1,10 @@
-program ;
+program asd;
 var
-    a: integer;
+    a :integer;
 procedure asd();
-a
 begin
+    a := 10;
 end;
-
 begin
-   a := 10;
+    for a := 10  to 20 
 end.
