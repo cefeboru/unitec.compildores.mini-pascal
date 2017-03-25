@@ -18,16 +18,17 @@ import org.w3c.dom.Node;
 
 
 parser code {:
+        
         @Override
 	public void report_error(String message, Object info) {
-            
+
             if (info instanceof String)
                     System.err.println(" " + info + " " + message + "\n");
             else {
                     StringBuffer m = new StringBuffer("Error ");
                     if (info instanceof java_cup.runtime.Symbol) {
                         m.append(("(Se ha encontrado el token \"" + ((Symbol)info).value + "\" en la linea "
-                            + ((Symbol)info).left + 1 + ", columna " + ((Symbol)info).right + " " + 1) + ")");
+                            + ((Symbol)info).left  + ", columna " + ((Symbol)info).right) + ")");
                     }
                     if (message.equals("Couldn't repair and continue parse"))
                         m.append(" ");//: No existe una regla por los momentos para este token.
@@ -68,6 +69,12 @@ parser code {:
             report_error(message, info);
             throw new RuntimeException("Fatal Syntax Error");
         }
+
+        @Override
+        public int error_sync_size(){
+            return 1;
+        }
+        
 :};
 
 action code {:
@@ -245,16 +252,9 @@ program         ::= Program var:i PuntoComa block:b Punto
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
                 :}
-                | Program var:i error block:b Punto
+                |  error PuntoComa block:b Punto
                 {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Simbolo \":\" faltante",a);
-
-                    iniXML();
-                    nodoPadre = xmlDocument.createElement("Program"); 
-                    if (i != null) { nodoPadre.appendChild(i); }
-                    if(b != null) { nodoPadre.appendChild(b); }
-                    escribirXML();
+                    report_error("Algo esta malo en programa","");
                 :}
                 ;
 
@@ -306,18 +306,8 @@ decl            ::= Var vardecls:vd
                     } else RESULT = null;
                     
                 :}
-                |   error vardecls:vd
-                {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Error en declaracion de variables",a);
-
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Declaration");
-                    if (vd != null) { 
-                        nPadre.appendChild(vd); 
-                        RESULT = nPadre;                    
-                    } else RESULT = null;
-                    
+                | error vardecls:vd {:
+                    parser.report_error("Error en la declaracion de variablesasd","");
                 :}
                 |   functionDecl:f
                 {:
@@ -376,6 +366,7 @@ procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerr
 
                     RESULT = nPadre;                    
                 :}
+                | error ParentesisAbrir
                 ;
 
 procInlineDecls  ::= {: RESULT = null; :}
@@ -397,18 +388,6 @@ procInlineDecls  ::= {: RESULT = null; :}
 
 procInlineDecl  ::= Var vardecls:vd
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("VarsDeclarations");
-                    if (vd != null){
-                        nPadre.appendChild(vd);
-                        RESULT = nPadre;
-                    }               
-                :}
-                | error vardecls:vd
-                 {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Error en declaracion de variables",a);
-
                     iniXML();
                     Element nPadre = xmlDocument.createElement("VarsDeclarations");
                     if (vd != null){
@@ -442,23 +421,6 @@ inlineArgs      ::= inlineArg:ia
                         RESULT = nPadre;
                     }
                 :}
-                |   inlineArg:ia error inlineArgs:ias
-                {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Simbolo \";\" faltante",a);
-
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Arguments");
-                    if(ia != null && ias == null) {
-                        RESULT = ia;
-                    } else if(ia == null && ias != null) {
-                        RESULT = ias;
-                    } else if(ia == null && ias == null) {
-                        nPadre.appendChild(ia);
-                        nPadre.appendChild(ias);
-                        RESULT = nPadre;
-                    }
-                :}
                 ;
 
 inlineArg       ::= Var vars:vs DosPuntos identtype:i
@@ -475,42 +437,8 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:i
                     }
                     RESULT = nPadre;
                 :}
-                |   Var vars:vs error identtype:i
-                {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Simbolo \":\" faltante",a);
-
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("inlineArg");
-                    if(vs != null) {
-                        nPadre.appendChild(vs);
-                    }
-                    if( i != null ) {
-                        Element nType = xmlDocument.createElement("Type");
-                        nType.setAttribute("Value",i);
-                        nPadre.appendChild(nType);                        
-                    }
-                    RESULT = nPadre;
-                :}
                 |   vars:vs DosPuntos identtype:i 
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("inlineArg");
-                    if(vs != null) {
-                        nPadre.appendChild(vs);
-                    }
-                    if( i != null ) {
-                        Element nType = xmlDocument.createElement("Type");
-                        nType.setAttribute("Value",i);
-                        nPadre.appendChild(nType);                        
-                    }
-                    RESULT = nPadre;
-                :}
-                |   vars:vs error identtype:i 
-                {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Simbolo \":\" faltante",a);
-
                     iniXML();
                     Element nPadre = xmlDocument.createElement("inlineArg");
                     if(vs != null) {
@@ -539,39 +467,15 @@ vardecls        ::= /* Empty */ {: RESULT = null; :}
                         nPadre.appendChild(vs);
                         RESULT = nPadre;
                     } else RESULT = null;
-                :}
-                |  vardecl:v error vardecls:vs
+                :} 
+                | error PuntoComa vardecls:vs 
                 {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Punto y Coma Faltante",a);
-
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("VarsDeclarations");
-                    if(v != null && vs == null ){
-                        RESULT = v;
-                    } else if(v == null && vs != null){
-                        RESULT = vs;
-                    } else if(v != null && vs != null){
-                        nPadre.appendChild(v);
-                        nPadre.appendChild(vs);
-                        RESULT = nPadre;
-                    } else RESULT = null;
+                    parser.report_error("Hubo error en declaracion de variable.","");
                 :}
                 ;
 
 vardecl         ::= vars:vs DosPuntos type:t
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("VarDeclaration");
-                    if (vs != null) { nPadre.appendChild(vs); }
-                    nPadre.appendChild(t);
-                    RESULT = nPadre;                    
-                :}
-                | vars:vs error type:t
-                {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Simbolo \":\" Faltante",a);
-
                     iniXML();
                     Element nPadre = xmlDocument.createElement("VarDeclaration");
                     if (vs != null) { nPadre.appendChild(vs); }
@@ -589,17 +493,6 @@ vars            ::= var:v
                 :}
                 |   var:v Coma vars:vs
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Variables");
-                    if (v != null) { nPadre.appendChild(v); }
-                    if (vs != null) { nPadre.appendChild(vs); }
-                    RESULT = nPadre;                    
-                :}
-                |   var:v error vars:vs
-                {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Simbolo \",\" Faltante",a);
-
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Variables");
                     if (v != null) { nPadre.appendChild(v); }
@@ -701,23 +594,6 @@ stmts           ::= stmt:s
                         RESULT = nPadre;
                     } else RESULT = null;
                 :}
-                | stmt:s error stmts:ss
-                {:
-                    Symbol a = (Symbol) CUP$Parser$stack.peek();
-                    report_error("Simbolo \";\" Faltante",a);
-
-                    Element nPadre = xmlDocument.createElement("Statements");
-                    iniXML();
-                    if(s != null && ss == null){
-                        RESULT = s;
-                    } else if(s == null && ss != null){
-                        RESULT = ss;
-                    } else if(s != null && ss != null){
-                        nPadre.appendChild(s);
-                        nPadre.appendChild(ss);
-                        RESULT = nPadre;
-                    } else RESULT = null;
-                :}
                 ;
 
 stmt            ::= /* Empty */ {: RESULT = null; :}
@@ -781,19 +657,6 @@ stmt            ::= /* Empty */ {: RESULT = null; :}
 
 blockstmt       ::= Begin stmts:s End
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Block");
-                    if (s != null) { nPadre.appendChild(s); }             
-                    RESULT = nPadre;
-                :}
-                | error stmts:s End
-                {:
-                     
-
-
-
-
-
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Block");
                     if (s != null) { nPadre.appendChild(s); }             

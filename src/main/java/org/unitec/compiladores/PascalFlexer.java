@@ -454,10 +454,10 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
       StringBuffer string = new StringBuffer();
 
       private Symbol symbol(int type) {
-        return new Symbol(type, yyline, yycolumn);
+        return new Symbol(type, yyline+1, yycolumn+1);
       }
       private Symbol symbol(int type, Object value) {
-        return new Symbol(type, yyline, yycolumn, value);
+        return new Symbol(type, yyline+1, yycolumn+1, value);
       }
 
 
