@@ -14,15 +14,14 @@ import java_cup.runtime.*;
 %public
 
 %{
-    
-      StringBuffer string = new StringBuffer();
+    StringBuffer string = new StringBuffer();
 
-      private Symbol symbol(int type) {
+    private Symbol symbol(int type) {
         return new Symbol(type, yyline+1, yycolumn+1);
-      }
-      private Symbol symbol(int type, Object value) {
+    }
+    private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline+1, yycolumn+1, value);
-      }
+    }
 %}
 
 Comentario          =   \{{Caracter}*\}  |  \(\*{Caracter}*\*\) 
@@ -99,6 +98,7 @@ Digito                      =	[0-9]
 DosPuntos                   =	:
 DosPuntosIgual              =	:=
 Punto                       =   \.
+PuntoPunto                  =   \.\.
 
 %state COMMENT
 %state COMILLA_SIMPLE
@@ -122,6 +122,7 @@ Punto                       =   \.
     {Repeat}                        {return symbol(sym.Repeat);}
     {Until}                         {return symbol(sym.Until);}
     {Coma}                          {return symbol(sym.Coma); }
+    {PuntoPunto}                    {return symbol(sym.PuntoPunto);}
     {Punto}                         {return symbol(sym.Punto);}
     {PuntoComa}                     {return symbol(sym.PuntoComa);}
     {DosPuntosIgual}                {return symbol(sym.DosPuntosIgual);}
@@ -147,7 +148,7 @@ Punto                       =   \.
     {TipoInteger}                   {return symbol(sym.TipoInteger,yytext());}
     {TipoBoolean}                   {return symbol(sym.TipoBoolean,yytext());}
     {TipoString}                    {return symbol(sym.TipoString,yytext());}
-    {LiteralCaracter}               {System.out.println(yytext().charAt(1));return symbol(sym.LiteralCaracter, yytext().charAt(1));}
+    {LiteralCaracter}               {return symbol(sym.LiteralCaracter, yytext().charAt(1));}
     {LiteralEntero}                 {return symbol(sym.LiteralEntero, yytext());}
     {LiteralBoolean}                {return symbol(sym.LiteralBoolean,yytext());}
     {ParentesisAbrir}               {return symbol(sym.ParentesisAbrir);}

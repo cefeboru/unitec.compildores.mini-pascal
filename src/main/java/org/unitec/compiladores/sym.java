@@ -8,9 +8,10 @@ package org.unitec.compiladores;
 /** CUP generated interface containing symbol constants. */
 public interface sym {
   /* terminals */
+  public static final int PuntoPunto = 52;
   public static final int OperadorDiferente = 12;
   public static final int Begin = 29;
-  public static final int PuntoComa = 53;
+  public static final int PuntoComa = 54;
   public static final int Coma = 41;
   public static final int BracketCerrar = 38;
   public static final int Until = 36;
@@ -27,7 +28,7 @@ public interface sym {
   public static final int Else = 28;
   public static final int Read = 3;
   public static final int Then = 27;
-  public static final int Punto = 52;
+  public static final int Punto = 53;
   public static final int OperadorOr = 18;
   public static final int While = 34;
   public static final int To = 32;
@@ -40,12 +41,12 @@ public interface sym {
   public static final int OperadorNot = 19;
   public static final int Function = 51;
   public static final int error = 1;
-  public static final int LiteralCaracter = 55;
+  public static final int LiteralCaracter = 56;
   public static final int ParentesisAbrir = 47;
   public static final int OperadorResta = 21;
   public static final int LlaveAbrir = 45;
   public static final int Do = 33;
-  public static final int LiteralString = 57;
+  public static final int LiteralString = 58;
   public static final int ComillaDentro = 40;
   public static final int OperadorIgual = 11;
   public static final int OperadorMod = 23;
@@ -59,13 +60,13 @@ public interface sym {
   public static final int OperadorMultiplicacion = 22;
   public static final int Program = 49;
   public static final int BracketAbrir = 37;
-  public static final int LiteralEntero = 54;
+  public static final int LiteralEntero = 55;
   public static final int OperadorDivision = 24;
   public static final int TipoString = 10;
   public static final int OperadorMayorIgual = 15;
   public static final int Procedure = 50;
   public static final int OperadorMenor = 14;
-  public static final int LiteralBoolean = 56;
+  public static final int LiteralBoolean = 57;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -119,6 +120,7 @@ public interface sym {
   "Program",
   "Procedure",
   "Function",
+  "PuntoPunto",
   "Punto",
   "PuntoComa",
   "LiteralEntero",
