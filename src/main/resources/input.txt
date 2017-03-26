@@ -1,11 +1,21 @@
-program ;
-var
-    a: integer;
-procedure asd();
-a
+Program HelloWorld(output)
+var 
+    a : integer;
+    b:integer;
+    c:char;
+procedure x(var c: integer; a, b:char);
 begin
+    for b:= 2 to c do
+        if a=3 then
+            begin
+                readln('asd');
+            end
+        else
+            writeln('meow');
+
 end;
 
 begin
-   a := 10;
+    writeln('Hello, world!');
+    c := x();
 end.

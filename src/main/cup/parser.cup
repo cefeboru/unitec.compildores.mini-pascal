@@ -2,26 +2,37 @@ import java_cup.runtime.*;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.StringWriter;
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element; 
+import org.w3c.dom.Element;  
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+
 
 parser code {:
-        public void report_error(String message) {
-            System.err.println(message);
-	}
-
-	@Override
-	public void syntax_error(Symbol s){
-            System.err.print( "Syntax error: " + sym.terminalNames[s.sym] + ", Linea: " + s.left + ", Columna: " + s.right + "; " ); 
+        
+        @Override
+	public void report_error(String message, Object info) {
+            System.err.print("Syntax error: " ); 
             expected();
+            System.err.println("pero se encontró el token \'" + ((Symbol)info).value + "\' en la Linea: " + ((Symbol)info).left + ", Columna: " + ((Symbol)info).right + ". " ); 
+        }
+
+        @Override
+	public void syntax_error(Symbol s){
+            System.err.print("Syntax error: " ); 
+            expected();
+            System.err.println("pero se encontró el token \'" + sym.terminalNames[s.sym] + "\' en la Linea: " + s.left + ", Columna: " + s.right + ". " ); 
 	}
 
- 
         public void expected(){
             List<Integer> token_list = this.expected_token_ids();
             if (token_list.size() <= 0){
@@ -30,21 +41,21 @@ parser code {:
             String expected_tokens = "";
             for (int i = 0 ; i < token_list.size(); i++){
                     int id = token_list.get(i);
-                    if (id == 1){
-                            continue;
+                    if (id == 1){ //error
+                        continue;
                     }
                     String terminal_name = sym.terminalNames[id];
                     if (i == token_list.size() - 1){
-                            expected_tokens += terminal_name;
+                        expected_tokens += terminal_name;
                     }else{
-                            expected_tokens += terminal_name + " , ";
+                        expected_tokens += terminal_name + " , ";
                     }
             }
-            System.err.println("Tokens esperados: [" + expected_tokens + "]");
+            System.err.print("Se esperaba alguno de los siguientes tokens: [" + expected_tokens + "] ");
         };
 
         public void report_fatal_error(String message, Object info) {
-            report_error(message);
+            report_error(message, info);
             throw new RuntimeException("Fatal Syntax Error");
         }
 
@@ -94,27 +105,27 @@ terminal Element  Read;
 terminal Element  Array;
 terminal Element  Of;
 terminal Element  Var;
-terminal String  TipoBoolean;
-terminal String  TipoChar;
-terminal String  TipoInteger;
-terminal String  TipoString;
+terminal String   TipoBoolean;
+terminal String   TipoChar;
+terminal String   TipoInteger;
+terminal String   TipoString;
 
 //Operadores
-terminal String  OperadorIgual;
-terminal String  OperadorDiferente;
-terminal String  OperadorMayor;
-terminal String  OperadorMenor;
-terminal String  OperadorMayorIgual;
-terminal String  OperadorMenorIgual;
-terminal String  OperadorAnd;
-terminal String  OperadorOr;
-terminal String  OperadorNot;
-terminal String  OperadorSuma;
-terminal String  OperadorResta;
-terminal String  OperadorMultiplicacion;
-terminal String  OperadorMod;
-terminal String  OperadorDivision;
-terminal String  OperadorDivisionSpecial;
+terminal String   OperadorIgual;
+terminal String   OperadorDiferente;
+terminal String   OperadorMayor;
+terminal String   OperadorMenor;
+terminal String   OperadorMayorIgual;
+terminal String   OperadorMenorIgual;
+terminal String   OperadorAnd;
+terminal String   OperadorOr;
+terminal String   OperadorNot;
+terminal String   OperadorSuma;
+terminal String   OperadorResta;
+terminal String   OperadorMultiplicacion;
+terminal String   OperadorMod;
+terminal String   OperadorDivision;
+terminal String   OperadorDivisionSpecial;
 
 //Estructuras de control
 terminal Element  If;
@@ -130,23 +141,24 @@ terminal Element  Repeat;
 terminal Element  Until;
 
 //Otros
-terminal String  BracketAbrir;
-terminal String  BracketCerrar;
-terminal String  ComillaSimple;
-terminal String  ComillaDentro;
-terminal String  Coma;
-terminal String  DosPuntos;
-terminal String  DosPuntosIgual;
-terminal String  Identificador;
-terminal String  LlaveAbrir;
-terminal String  LlaveCerrar;
-terminal String  ParentesisAbrir;
-terminal String  ParentesisCerrar;
-terminal String  Program;
-terminal String  Procedure;
-terminal String  Function;
-terminal String  Punto;
-terminal String  PuntoComa;
+terminal String   BracketAbrir;
+terminal String   BracketCerrar;
+terminal String   ComillaSimple;
+terminal String   ComillaDentro;
+terminal String   Coma;
+terminal String   DosPuntos;
+terminal String   DosPuntosIgual;
+terminal String   Identificador;
+terminal String   LlaveAbrir;
+terminal String   LlaveCerrar;
+terminal String   ParentesisAbrir;
+terminal String   ParentesisCerrar;
+terminal String   Program;
+terminal String   Procedure;
+terminal String   Function;
+terminal String   PuntoPunto;
+terminal String   Punto;
+terminal String   PuntoComa;
 
 /*Literales*/
 terminal String         LiteralEntero;
@@ -156,12 +168,11 @@ terminal String         LiteralString;
 
 /* Non terminals */
 nonterminal Element              expr_list;
-nonterminal Element              expr;      // used to store evaluated subexpressions
+nonterminal Element              expr;
 nonterminal Element              literal;
 nonterminal Element              program;
 nonterminal Element              block;
 nonterminal Element              blockProc;
-nonterminal Element              identifier;
 nonterminal Element              decls;
 nonterminal Element              decl;
 nonterminal Element              typedecl;
@@ -218,22 +229,28 @@ precedence right DosPuntosIgual;
 precedence left OperadorIgual, OperadorMenor, OperadorMayor, OperadorMenorIgual, OperadorMayorIgual, OperadorDiferente;
 precedence left OperadorSuma, OperadorResta, OperadorOr;
 precedence left OperadorMultiplicacion, OperadorDivision, OperadorMod, OperadorDivisionSpecial, OperadorAnd;
+precedence left Else, PuntoComa;
 precedence left error;
 
-precedence left Else, PuntoComa;
 
-program         ::= Program var:i PuntoComa block:b Punto
+program         ::= Program var:v PuntoComa block:b Punto
                 {:
                     iniXML();
                     nodoPadre = xmlDocument.createElement("Program"); 
-                    if (i != null) { nodoPadre.appendChild(i); }
+                    if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
                 :}
-                |  error PuntoComa block:b Punto
+                |   Program var:v1 ParentesisAbrir vars:v2 ParentesisCerrar PuntoComa block:b Punto
                 {:
-                    report_error("Algo esta malo en programa");
+                    iniXML();
+                    nodoPadre = xmlDocument.createElement("Program"); 
+                    if (v1 != null) { nodoPadre.appendChild(v1); }
+                    if (v2 != null) { nodoPadre.appendChild(v2); }
+                    if(b != null) { nodoPadre.appendChild(b); }
+                    escribirXML();
                 :}
+                |   error PuntoComa block:b Punto
                 ;
 
 block           ::= decls:d Begin stmts:s End
@@ -244,6 +261,8 @@ block           ::= decls:d Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;                    
                 :}
+                |   error Begin stmts:s End
+                |   decls:d Begin error
                 ;
 
 blockProc       ::= procInlineDecls:p Begin stmts:s End
@@ -254,6 +273,8 @@ blockProc       ::= procInlineDecls:p Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;                    
                 :}
+                |   procInlineDecls:p Begin error
+                |   procInlineDecls:p Begin stmts:s error
                 ;
 
 decls           ::= /* empty */ {: RESULT = null; :}
@@ -269,8 +290,7 @@ decls           ::= /* empty */ {: RESULT = null; :}
                         nPadre.appendChild(d);
                         nPadre.appendChild(ds);
                         RESULT = nPadre;
-                    } else RESULT = null;
-                                        
+                    } else RESULT = null;      
                 :}
                 ;
 
@@ -283,9 +303,6 @@ decl            ::= Var vardecls:vd
                         RESULT = nPadre;                    
                     } else RESULT = null;
                     
-                :}
-                | error vardecls:vd {:
-                    report_error("Error en la declaracion de variable");
                 :}
                 |   functionDecl:f
                 {:
@@ -323,6 +340,7 @@ functionDecl    ::= Function var:i ParentesisAbrir inlineArgs:in ParentesisCerra
 
                     RESULT = nPadre;                    
                 :}
+                |   Function error
                 ;
 
 procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerrar PuntoComa blockProc:b PuntoComa
@@ -344,14 +362,7 @@ procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerr
 
                     RESULT = nPadre;                    
                 :}
-                | error ParentesisAbrir inlineArgs:in ParentesisCerrar PuntoComa blockProc:b PuntoComa 
-                {: 
-                    report_error("Hubo error en declaracion del procedimiento."); 
-                :}
-                | error PuntoComa blockProc:b PuntoComa 
-                {: 
-                    report_error("Hubo error en declaracion del procedimiento."); 
-                :}
+                |   Procedure error 
                 ;
 
 procInlineDecls  ::= {: RESULT = null; :}
@@ -369,6 +380,7 @@ procInlineDecls  ::= {: RESULT = null; :}
                         RESULT = nPadre;
                     } else RESULT = null;               
                 :}
+                |   error procInlineDecls:pds
                 ;
 
 procInlineDecl  ::= Var vardecls:vd
@@ -453,10 +465,6 @@ vardecls        ::= /* Empty */ {: RESULT = null; :}
                         RESULT = nPadre;
                     } else RESULT = null;
                 :} 
-                | error PuntoComa vardecls:vs 
-                {:
-                    report_error("Hubo error en declaracion de variable.");
-                :}
                 ;
 
 vardecl         ::= vars:vs DosPuntos type:t
@@ -489,7 +497,7 @@ vars            ::= var:v
 var             ::= Identificador:i
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Identificador");
+                    Element nPadre = xmlDocument.createElement("ID");
                     nPadre.setAttribute("Value",i);            
                     RESULT = nPadre;                    
                 :}
@@ -534,11 +542,12 @@ identtype       ::= TipoChar:c
                 ;
 
 
-arraytype       ::= Array BracketAbrir integer:i BracketCerrar Of arrayidenttype:t
+arraytype       ::= Array BracketAbrir literal:l1 PuntoPunto literal:l2 BracketCerrar Of arrayidenttype:t
                 {:  
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ArrayType");
-                    if(i != null){nPadre.setAttribute("InitialSize",i.getAttribute("Value"));}
+                    if(l1 != null){nPadre.appendChild(l1);}
+                    if(l2 != null){nPadre.appendChild(l2);}
                     if(t != null){nPadre.setAttribute("Type",t);}
                     RESULT = nPadre;
                 :}
@@ -579,6 +588,7 @@ stmts           ::= stmt:s
                         RESULT = nPadre;
                     } else RESULT = null;
                 :}
+                |   stmt:s error 
                 ;
 
 stmt            ::= /* Empty */ {: RESULT = null; :}
@@ -647,6 +657,8 @@ blockstmt       ::= Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }             
                     RESULT = nPadre;
                 :}
+                |   Begin stmts:s End error
+                |   error End
                 ;
 
 assignstmt      ::= var:i DosPuntosIgual expr:e 
@@ -657,6 +669,7 @@ assignstmt      ::= var:i DosPuntosIgual expr:e
                     if (e != null) { nPadre.appendChild(e); }                   
                     RESULT = nPadre;
                 :}
+                |   error expr:e
                 ;
 
 ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
@@ -676,6 +689,8 @@ ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                |   If error 
+                |   If expr:e Then error
                 ;
 
 forstmt         ::= For assignstmt:a To expr:e Do stmts:s
@@ -687,6 +702,10 @@ forstmt         ::= For assignstmt:a To expr:e Do stmts:s
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                |   For error To expr:e Do stmts:s  
+                |   For error Do stmts:s 
+                |   For assignstmt:a To error 
+                |   For error stmts:s
                 ;
 
 whilestmt       ::= While expr:e Do stmt:s
@@ -697,6 +716,8 @@ whilestmt       ::= While expr:e Do stmt:s
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                |   While error Do stmt:s
+                |   While error stmt:s
                 ;
 
 repeatstmt      ::= Repeat stmts:s Until expr:e
@@ -707,6 +728,8 @@ repeatstmt      ::= Repeat stmts:s Until expr:e
                     if (e != null) { nPadre.appendChild(e); }
                     RESULT = nPadre;
                 :}
+                |   Repeat error Until expr:e
+                |   Repeat stmts:s Until error
                 ;
 
 writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
@@ -724,6 +747,7 @@ writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
                     if (v != null) { nPadre.appendChild(v); }
                     RESULT = nPadre;
                 :}
+                |   Write error
                 ;
 
 readstmt        ::= Read ParentesisAbrir string:s ParentesisCerrar
@@ -733,6 +757,7 @@ readstmt        ::= Read ParentesisAbrir string:s ParentesisCerrar
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                |   Read error
                 ;
 
 expr            ::= literal:l 
@@ -756,6 +781,12 @@ expr            ::= literal:l
                     if (v != null) { nPadre.appendChild(v);}
                     if (el != null) { nPadre.appendChild(el);}
                     RESULT = nPadre;
+                :}
+                |   var:v ParentesisAbrir ParentesisCerrar
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("FunctionCall");
+                    if (v != null) { nPadre.appendChild(v);}
                 :}
                 |   expr:e1 opRelacion:op expr:e2
                 {:
@@ -790,6 +821,7 @@ expr            ::= literal:l
                     if (e != null) { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
+                |   error expr:e2
                 ;
 
 exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
@@ -800,9 +832,11 @@ exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
                     if (e2 != null) { nPadre.appendChild(e2);}
                     RESULT = nPadre;
                 :}
+                |   ParentesisAbrir expr:e1 ParentesisCerrar error
                 ;
+
 exprOpLog       ::= /* Empty */
-                | opLogico:op exprLogical:e
+                |   opLogico:op exprLogical:e
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Expression");
@@ -810,6 +844,7 @@ exprOpLog       ::= /* Empty */
                     if (e != null)  { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
+                |   error exprLogical:e
                 ;
 
 opRelacion      ::= OperadorIgual:op
