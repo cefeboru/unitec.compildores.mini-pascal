@@ -1,9 +1,0 @@
-program hola;
-procedure ()
-var 
-    a:integer
-begin
-    a:= a
-    if a=
-end.
-
