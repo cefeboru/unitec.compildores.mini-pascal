@@ -6,14 +6,12 @@
 package org.unitec.compiladores;
 
 import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import javax.swing.JFileChooser;
-import java_cup.runtime.Symbol;
 import javax.swing.JFrame;
-import org.unitec.compiladores.PascalFlexer;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -107,6 +105,8 @@ public class MainGui extends javax.swing.JFrame {
         JFileChooser fileChooser = new JFileChooser();
         String userDir = System.getProperty("user.dir");
         fileChooser.setCurrentDirectory(new File(userDir + "/src/main/resources"));
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Pascal", "pas");
+        fileChooser.setFileFilter(filter);
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
