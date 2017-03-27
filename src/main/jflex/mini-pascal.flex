@@ -161,7 +161,7 @@ PuntoPunto                  =   \.\.
     {Write}                         {return symbol(sym.Write);}
     {Read}                          {return symbol(sym.Read);}
     {Identificador}                 {return symbol(sym.Identificador, yytext());} 
-    .                               {throw new Error("Illegal character <"+yytext()+">");}
+    .                               {throw new Error("Error Lexico: Se ha encontrado un token inválido: \'"+ yytext() + "\' en la Linea: " + (yyline +1) + ", Columna: " + (yycolumn+1) );}
 }
 
 <COMMENT> {

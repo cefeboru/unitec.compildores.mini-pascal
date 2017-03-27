@@ -1,4 +1,9 @@
-Program asd;
+program hola;
+procedure ()
+var 
+    a:integer
 begin
-    for a:=2 a
+    a:= a
+    if a=
 end.
+

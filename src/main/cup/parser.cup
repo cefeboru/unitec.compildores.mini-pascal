@@ -32,7 +32,7 @@ parser code {:
 
         @Override
 	public void syntax_error(Symbol s){
-            System.err.print("Syntax error: " ); 
+            System.err.print("Error Sintáctico: " ); 
             expected();
             System.err.println("pero se encontró el token \'" + sym.terminalNames[s.sym] + "\' en la Linea: " + s.left + ", Columna: " + s.right + ". " ); 
 	}
@@ -147,8 +147,6 @@ terminal Element  Until;
 //Otros
 terminal String   BracketAbrir;
 terminal String   BracketCerrar;
-terminal String   ComillaSimple;
-terminal String   ComillaDentro;
 terminal String   Coma;
 terminal String   DosPuntos;
 terminal String   DosPuntosIgual;
@@ -171,7 +169,6 @@ terminal String         LiteralBoolean;
 terminal String         LiteralString;
 
 /* Non terminals */
-nonterminal Element              expr_list;
 nonterminal Element              expr;
 nonterminal Element              literal;
 nonterminal Element              program;
@@ -179,13 +176,9 @@ nonterminal Element              block;
 nonterminal Element              blockProc;
 nonterminal Element              decls;
 nonterminal Element              decl;
-nonterminal Element              typedecl;
 nonterminal Element              vardecls;
 nonterminal Element              vardecl;
-nonterminal Element              procdecls;
-nonterminal Element              procdecl;
 nonterminal Element              forstmt;
-nonterminal Element              varFor;
 
 nonterminal Element              functionDecl;
 nonterminal Element              inlineArgs;
@@ -200,8 +193,6 @@ nonterminal Element              arraytype;
 nonterminal String               arrayidenttype;
 nonterminal Element              vars;
 nonterminal Element              var;
-nonterminal Element              expresions;
-nonterminal Element              opexpr;
 
 nonterminal Element              exprlist;
 nonterminal Element              exprLogical;
@@ -217,10 +208,8 @@ nonterminal Element              ifstmt;
 nonterminal Element              whilestmt;
 nonterminal Element              repeatstmt;
 nonterminal Element              blockstmt;
-
 nonterminal Element              writestmt;
 nonterminal Element              readstmt;
-
 
 nonterminal Element              integer;
 nonterminal Element              character;
@@ -256,6 +245,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                 :}
                 |   error block:b Punto             {: report_error("program1",""); :}
                 |   Program error               {: report_error("program2",""); :}
+                |   program error
                 ;
 
 block           ::= decls:d Begin stmts:s End
@@ -295,6 +285,7 @@ decls           ::= /* empty */ {: RESULT = null; :}
                         RESULT = nPadre;
                     } else RESULT = null;      
                 :}
+                |   decls:ds error {: report_error("decls1",""); :}
                 ;
 
 decl            ::= Var vardecls:vd
@@ -320,6 +311,7 @@ decl            ::= Var vardecls:vd
                     Element nPadre = xmlDocument.createElement("Declaration");
                     if (p != null) { nPadre.appendChild(p); RESULT = nPadre;}                    
                 :}
+                |   decl:d error
                 ;
 
 functionDecl    ::= Function var:i ParentesisAbrir inlineArgs:in ParentesisCerrar DosPuntos type:t PuntoComa blockProc:b PuntoComa
@@ -586,7 +578,7 @@ stmts           ::= stmt:s
                         RESULT = nPadre;
                     } else RESULT = null;
                 :}
-                |   error stmts:s
+                |   error stmts:s {: report_error("stms1",""); :}
                 ;
 
 stmt            ::= /* Empty */ {: RESULT = null; :}
@@ -646,6 +638,7 @@ stmt            ::= /* Empty */ {: RESULT = null; :}
                     if (s != null) { nPadre.appendChild(s); }                 
                     RESULT = nPadre;
                 :}
+                |   stmt:s error    {: report_error("stmt1",""); :}
                 ;
 
 blockstmt       ::= Begin stmts:s End
@@ -655,6 +648,7 @@ blockstmt       ::= Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }             
                     RESULT = nPadre;
                 :}
+                |   blockstmt error
                 ;
 
 assignstmt      ::= var:i DosPuntosIgual expr:e 
@@ -664,7 +658,8 @@ assignstmt      ::= var:i DosPuntosIgual expr:e
                     if (i != null) { nPadre.appendChild(i); }
                     if (e != null) { nPadre.appendChild(e); }                   
                     RESULT = nPadre;
-                :}
+                :}  
+                |   assignstmt error
                 ;
 
 ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
@@ -684,6 +679,7 @@ ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                |   ifstmt error
                 ;
 
 forstmt         ::= For assignstmt:a To expr:e Do stmts:s
@@ -695,6 +691,7 @@ forstmt         ::= For assignstmt:a To expr:e Do stmts:s
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                |   forstmt error
                 ;
 
 whilestmt       ::= While expr:e Do stmt:s
@@ -705,6 +702,7 @@ whilestmt       ::= While expr:e Do stmt:s
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                |   whilestmt error
                 ;
 
 repeatstmt      ::= Repeat stmts:s Until expr:e
@@ -715,6 +713,7 @@ repeatstmt      ::= Repeat stmts:s Until expr:e
                     if (e != null) { nPadre.appendChild(e); }
                     RESULT = nPadre;
                 :}
+                |   repeatstmt error
                 ;
 
 writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
@@ -732,6 +731,7 @@ writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
                     if (v != null) { nPadre.appendChild(v); }
                     RESULT = nPadre;
                 :}
+                |   writestmt error
                 ;
 
 readstmt        ::= Read ParentesisAbrir var:v ParentesisCerrar
@@ -741,6 +741,7 @@ readstmt        ::= Read ParentesisAbrir var:v ParentesisCerrar
                     if (v != null) { nPadre.appendChild(v); }
                     RESULT = nPadre;
                 :}
+                |   readstmt error
                 ;
 
 expr            ::= literal:l 
