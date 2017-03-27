@@ -29,14 +29,15 @@ public class XMLTreeView {
         DefaultMutableTreeNode top = new DefaultMutableTreeNode(file);
 
         saxTree = new SAXTreeBuilder(top);
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+        SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         try {
             SAXParser saxParser = saxParserFactory.newSAXParser();
-            saxParser.parse(new InputSource(new FileInputStream(file)),saxTree);
+            saxParser.parse(new InputSource(new FileInputStream(file)), saxTree);
         } catch (Exception ex) {
             top.add(new DefaultMutableTreeNode(ex.getMessage()));
         }
         JTree tree = new JTree(saxTree.getTree());
+        expandAllNodes(tree, 0, tree.getRowCount());
         JScrollPane scrollPane = new JScrollPane(tree);
 
         frame.getContentPane().add("Center", scrollPane);
@@ -44,6 +45,15 @@ public class XMLTreeView {
 
     }
 
+    private void expandAllNodes(JTree tree, int startingIndex, int rowCount) {
+        for (int i = startingIndex; i < rowCount; ++i) {
+            tree.expandRow(i);
+        }
+
+        if (tree.getRowCount() != rowCount) {
+            expandAllNodes(tree, rowCount, tree.getRowCount());
+        }
+    }
 }
 
 class SAXTreeBuilder extends DefaultHandler {

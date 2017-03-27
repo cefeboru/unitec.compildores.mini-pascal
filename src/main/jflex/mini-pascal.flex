@@ -166,6 +166,7 @@ PuntoPunto                  =   \.\.
 
 <COMMENT> {
     {LlaveCerrar}               {yybegin(YYINITIAL);}
+    {LineTerminator}            {}
     .                           {}
 }
 
