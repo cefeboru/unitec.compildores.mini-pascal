@@ -539,13 +539,9 @@ public class Parser extends java_cup.runtime.lr_parser {
         
         @Override
 	public void report_error(String message, Object info) {
-            if (info instanceof String)
-                System.err.println(" " + info + " " + message + "\n");
-            else {
-                System.err.print("Syntax error: " ); 
-                expected();
-                System.err.println("pero se encontró el token \'" + ((Symbol)info).value + "\' en la Linea: " + ((Symbol)info).left + ", Columna: " + ((Symbol)info).right + ". " ); 
-            } 
+            System.err.print("Syntax error: " ); 
+            expected();
+            System.err.println("pero se encontró el token \'" + ((Symbol)info).value + "\' en la Linea: " + ((Symbol)info).left + ", Columna: " + ((Symbol)info).right + ". " ); 
         }
 
         @Override
@@ -710,7 +706,7 @@ class CUP$Parser$actions {
 		int bleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int bright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Element b = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 report_error("program1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -719,7 +715,7 @@ class CUP$Parser$actions {
           case 4: // program ::= Program error 
             {
               Element RESULT =null;
-		 report_error("program2",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -749,7 +745,7 @@ class CUP$Parser$actions {
           case 6: // block ::= block error 
             {
               Element RESULT =null;
-		 report_error("block1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("block",3, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -779,7 +775,7 @@ class CUP$Parser$actions {
           case 8: // blockProc ::= blockProc error 
             {
               Element RESULT =null;
-		 report_error("blockProc1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("blockProc",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -827,7 +823,7 @@ class CUP$Parser$actions {
 		int dsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int dsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Element ds = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 report_error("decls1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("decls",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -957,7 +953,7 @@ class CUP$Parser$actions {
           case 18: // functionDecl ::= Function error 
             {
               Element RESULT =null;
-		 report_error("functiondecl1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("functionDecl",10, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1014,7 +1010,7 @@ class CUP$Parser$actions {
           case 21: // procedureDecl ::= Procedure error 
             {
               Element RESULT =null;
-		 report_error("proceduredecl1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("procedureDecl",13, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1211,7 +1207,7 @@ class CUP$Parser$actions {
 		int vsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int vsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Element vs = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 report_error("vardecls1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("vardecls",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1223,7 +1219,7 @@ class CUP$Parser$actions {
 		int vsleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int vsright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Element vs = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 report_error("vardecls2",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("vardecls",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1516,7 +1512,7 @@ class CUP$Parser$actions {
 		int sleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Element s = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 report_error("stms1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("stmts",29, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;
@@ -1673,7 +1669,7 @@ class CUP$Parser$actions {
 		int sleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).left;
 		int sright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)).right;
 		Element s = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-1)).value;
-		 report_error("stmt1",""); 
+
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("stmt",30, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
           return CUP$Parser$result;

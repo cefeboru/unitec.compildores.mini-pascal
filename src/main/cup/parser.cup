@@ -21,13 +21,9 @@ parser code {:
         
         @Override
 	public void report_error(String message, Object info) {
-            if (info instanceof String)
-                System.err.println(" " + info + " " + message + "\n");
-            else {
-                System.err.print("Syntax error: " ); 
-                expected();
-                System.err.println("pero se encontró el token \'" + ((Symbol)info).value + "\' en la Linea: " + ((Symbol)info).left + ", Columna: " + ((Symbol)info).right + ". " ); 
-            } 
+            System.err.print("Syntax error: " ); 
+            expected();
+            System.err.println("pero se encontró el token \'" + ((Symbol)info).value + "\' en la Linea: " + ((Symbol)info).left + ", Columna: " + ((Symbol)info).right + ". " ); 
         }
 
         @Override
@@ -245,8 +241,8 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
                 :}
-                |   error block:b Punto             {: report_error("program1",""); :}
-                |   Program error               {: report_error("program2",""); :}
+                |   error block:b Punto        
+                |   Program error              
                 ;
 
 block           ::= decls:d Begin stmts:s End
@@ -257,7 +253,7 @@ block           ::= decls:d Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;                    
                 :}
-                |   block error {: report_error("block1",""); :}
+                |   block error 
                 ;
 
 blockProc       ::= procInlineDecls:p Begin stmts:s End
@@ -268,7 +264,7 @@ blockProc       ::= procInlineDecls:p Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;                    
                 :}
-                |   blockProc error {: report_error("blockProc1",""); :}
+                |   blockProc error 
                 ;
 
 decls           ::= /* empty */ {: RESULT = null; :}
@@ -286,7 +282,7 @@ decls           ::= /* empty */ {: RESULT = null; :}
                         RESULT = nPadre;
                     } else RESULT = null;      
                 :}
-                |   decls:ds error {: report_error("decls1",""); :}
+                |   decls:ds error 
                 ;
 
 decl            ::= Var vardecls:vd
@@ -336,7 +332,7 @@ functionDecl    ::= Function var:i ParentesisAbrir inlineArgs:in ParentesisCerra
 
                     RESULT = nPadre;                    
                 :}
-                |   Function error {: report_error("functiondecl1",""); :}
+                |   Function error
                 ;
 
 procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerrar PuntoComa blockProc:b PuntoComa
@@ -358,7 +354,7 @@ procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerr
 
                     RESULT = nPadre;                    
                 :}
-                |   Procedure error {: report_error("proceduredecl1",""); :}
+                |   Procedure error 
                 ;
 
 procInlineDecls  ::= {: RESULT = null; :}
@@ -454,8 +450,8 @@ vardecls        ::=  /* Empty */
                         RESULT = nPadre;
                     } else RESULT = null;
                 :} 
-                |   error PuntoComa vardecls:vs {: report_error("vardecls1",""); :}
-                |   error vardecls:vs   {: report_error("vardecls2",""); :}
+                |   error PuntoComa vardecls:vs 
+                |   error vardecls:vs  
                 ;
 
 vardecl         ::= vars:vs DosPuntos type:t
@@ -579,7 +575,7 @@ stmts           ::= stmt:s
                         RESULT = nPadre;
                     } else RESULT = null;
                 :}
-                |   error stmts:s {: report_error("stms1",""); :}
+                |   error stmts:s 
                 ;
 
 stmt            ::= /* Empty */ {: RESULT = null; :}
@@ -639,7 +635,7 @@ stmt            ::= /* Empty */ {: RESULT = null; :}
                     if (s != null) { nPadre.appendChild(s); }                 
                     RESULT = nPadre;
                 :}
-                |   stmt:s error    {: report_error("stmt1",""); :}
+                |   stmt:s error  
                 ;
 
 blockstmt       ::= Begin stmts:s End
