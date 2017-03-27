@@ -451,15 +451,14 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
   private int zzFinalHighSurrogate = 0;
 
   /* user code: */
-    
-      StringBuffer string = new StringBuffer();
+    StringBuffer string = new StringBuffer();
 
-      private Symbol symbol(int type) {
+    private Symbol symbol(int type) {
         return new Symbol(type, yyline+1, yycolumn+1);
-      }
-      private Symbol symbol(int type, Object value) {
+    }
+    private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline+1, yycolumn+1, value);
-      }
+    }
 
 
   /**
@@ -846,7 +845,7 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { throw new Error("Illegal character <"+yytext()+">");
+            { throw new Error("Error Lexico: Se ha encontrado un token inválido: \'"+ yytext() + "\' en la Linea: " + (yyline +1) + ", Columna: " + (yycolumn+1) );
             }
           case 61: break;
           case 2: 
@@ -942,7 +941,7 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
             }
           case 84: break;
           case 25: 
-            { yybegin(YYINITIAL);return symbol(sym.LiteralString,string.toString());
+            { string.append("\'");
             }
           case 85: break;
           case 26: 
@@ -1010,7 +1009,7 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
             }
           case 101: break;
           case 42: 
-            { System.out.println(yytext().charAt(1));return symbol(sym.LiteralCaracter, yytext().charAt(1));
+            { return symbol(sym.LiteralCaracter, yytext().charAt(1));
             }
           case 102: break;
           case 43: 

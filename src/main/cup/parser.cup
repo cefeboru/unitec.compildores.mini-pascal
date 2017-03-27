@@ -21,14 +21,18 @@ parser code {:
         
         @Override
 	public void report_error(String message, Object info) {
-            System.err.print("Syntax error: " ); 
-            expected();
-            System.err.println("pero se encontró el token \'" + ((Symbol)info).value + "\' en la Linea: " + ((Symbol)info).left + ", Columna: " + ((Symbol)info).right + ". " ); 
+            if (info instanceof String)
+                System.err.println(" " + info + " " + message + "\n");
+            else {
+                System.err.print("Syntax error: " ); 
+                expected();
+                System.err.println("pero se encontró el token \'" + ((Symbol)info).value + "\' en la Linea: " + ((Symbol)info).left + ", Columna: " + ((Symbol)info).right + ". " ); 
+            } 
         }
 
         @Override
 	public void syntax_error(Symbol s){
-            System.err.print("Syntax error: " ); 
+            System.err.print("Error Sintáctico: " ); 
             expected();
             System.err.println("pero se encontró el token \'" + sym.terminalNames[s.sym] + "\' en la Linea: " + s.left + ", Columna: " + s.right + ". " ); 
 	}
@@ -55,8 +59,7 @@ parser code {:
         };
 
         public void report_fatal_error(String message, Object info) {
-            report_error(message, info);
-            throw new RuntimeException("Fatal Syntax Error");
+            throw new RuntimeException("Error Fatal Sintáctico, no se pudo recuperar del problema.");
         }
 
         @Override
@@ -143,8 +146,6 @@ terminal Element  Until;
 //Otros
 terminal String   BracketAbrir;
 terminal String   BracketCerrar;
-terminal String   ComillaSimple;
-terminal String   ComillaDentro;
 terminal String   Coma;
 terminal String   DosPuntos;
 terminal String   DosPuntosIgual;
@@ -167,7 +168,6 @@ terminal String         LiteralBoolean;
 terminal String         LiteralString;
 
 /* Non terminals */
-nonterminal Element              expr_list;
 nonterminal Element              expr;
 nonterminal Element              literal;
 nonterminal Element              program;
@@ -175,13 +175,9 @@ nonterminal Element              block;
 nonterminal Element              blockProc;
 nonterminal Element              decls;
 nonterminal Element              decl;
-nonterminal Element              typedecl;
 nonterminal Element              vardecls;
 nonterminal Element              vardecl;
-nonterminal Element              procdecls;
-nonterminal Element              procdecl;
 nonterminal Element              forstmt;
-nonterminal Element              varFor;
 
 nonterminal Element              functionDecl;
 nonterminal Element              inlineArgs;
@@ -196,8 +192,6 @@ nonterminal Element              arraytype;
 nonterminal String               arrayidenttype;
 nonterminal Element              vars;
 nonterminal Element              var;
-nonterminal Element              expresions;
-nonterminal Element              opexpr;
 
 nonterminal Element              exprlist;
 nonterminal Element              exprLogical;
@@ -213,10 +207,8 @@ nonterminal Element              ifstmt;
 nonterminal Element              whilestmt;
 nonterminal Element              repeatstmt;
 nonterminal Element              blockstmt;
-
 nonterminal Element              writestmt;
 nonterminal Element              readstmt;
-
 
 nonterminal Element              integer;
 nonterminal Element              character;
@@ -250,7 +242,9 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
                 :}
-                |   error PuntoComa block:b Punto
+                |   error block:b Punto             {: report_error("program1",""); :}
+                |   Program error               {: report_error("program2",""); :}
+                |   program error
                 ;
 
 block           ::= decls:d Begin stmts:s End
@@ -261,8 +255,7 @@ block           ::= decls:d Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;                    
                 :}
-                |   error Begin stmts:s End
-                |   decls:d Begin error
+                |   block error {: report_error("block1",""); :}
                 ;
 
 blockProc       ::= procInlineDecls:p Begin stmts:s End
@@ -273,8 +266,7 @@ blockProc       ::= procInlineDecls:p Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;                    
                 :}
-                |   procInlineDecls:p Begin error
-                |   procInlineDecls:p Begin stmts:s error
+                |   blockProc error {: report_error("blockProc1",""); :}
                 ;
 
 decls           ::= /* empty */ {: RESULT = null; :}
@@ -292,6 +284,7 @@ decls           ::= /* empty */ {: RESULT = null; :}
                         RESULT = nPadre;
                     } else RESULT = null;      
                 :}
+                |   decls:ds error {: report_error("decls1",""); :}
                 ;
 
 decl            ::= Var vardecls:vd
@@ -317,6 +310,7 @@ decl            ::= Var vardecls:vd
                     Element nPadre = xmlDocument.createElement("Declaration");
                     if (p != null) { nPadre.appendChild(p); RESULT = nPadre;}                    
                 :}
+                |   decl:d error
                 ;
 
 functionDecl    ::= Function var:i ParentesisAbrir inlineArgs:in ParentesisCerrar DosPuntos type:t PuntoComa blockProc:b PuntoComa
@@ -340,7 +334,7 @@ functionDecl    ::= Function var:i ParentesisAbrir inlineArgs:in ParentesisCerra
 
                     RESULT = nPadre;                    
                 :}
-                |   Function error
+                |   Function error {: report_error("functiondecl1",""); :}
                 ;
 
 procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerrar PuntoComa blockProc:b PuntoComa
@@ -362,7 +356,7 @@ procedureDecl   ::= Procedure var:i ParentesisAbrir inlineArgs:in ParentesisCerr
 
                     RESULT = nPadre;                    
                 :}
-                |   Procedure error 
+                |   Procedure error {: report_error("proceduredecl1",""); :}
                 ;
 
 procInlineDecls  ::= {: RESULT = null; :}
@@ -380,7 +374,6 @@ procInlineDecls  ::= {: RESULT = null; :}
                         RESULT = nPadre;
                     } else RESULT = null;               
                 :}
-                |   error procInlineDecls:pds
                 ;
 
 procInlineDecl  ::= Var vardecls:vd
@@ -398,7 +391,7 @@ procInlineDecl  ::= Var vardecls:vd
 inlineArgs      ::= inlineArg:ia
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Arguments");
+                    Element nPadre = xmlDocument.createElement("inlineArg");
                     if(ia != null) {
                         nPadre.appendChild(ia);
                         RESULT = nPadre;
@@ -408,15 +401,9 @@ inlineArgs      ::= inlineArg:ia
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Arguments");
-                    if(ia != null && ias == null) {
-                        RESULT = ia;
-                    } else if(ia == null && ias != null) {
-                        RESULT = ias;
-                    } else if(ia == null && ias == null) {
-                        nPadre.appendChild(ia);
-                        nPadre.appendChild(ias);
-                        RESULT = nPadre;
-                    }
+                    nPadre.appendChild(ia);
+                    nPadre.appendChild(ias);
+                    RESULT = nPadre;
                 :}
                 ;
 
@@ -450,8 +437,8 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:i
                 :}
                 ;
 
-vardecls        ::= /* Empty */ {: RESULT = null; :}
-                |  vardecl:v PuntoComa vardecls:vs
+vardecls        ::=  /* Empty */
+                |   vardecl:v PuntoComa vardecls:vs
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("VarsDeclarations");
@@ -465,6 +452,8 @@ vardecls        ::= /* Empty */ {: RESULT = null; :}
                         RESULT = nPadre;
                     } else RESULT = null;
                 :} 
+                |   error PuntoComa vardecls:vs {: report_error("vardecls1",""); :}
+                |   error vardecls:vs   {: report_error("vardecls2",""); :}
                 ;
 
 vardecl         ::= vars:vs DosPuntos type:t
@@ -574,7 +563,7 @@ stmts           ::= stmt:s
                     if (s != null) { nPadre.appendChild(s); RESULT = nPadre;}
                     
                 :}
-                | stmt:s PuntoComa stmts:ss
+                |   stmt:s PuntoComa stmts:ss
                 {:
                     Element nPadre = xmlDocument.createElement("Statements");
                     iniXML();
@@ -588,7 +577,7 @@ stmts           ::= stmt:s
                         RESULT = nPadre;
                     } else RESULT = null;
                 :}
-                |   stmt:s error 
+                |   error stmts:s {: report_error("stms1",""); :}
                 ;
 
 stmt            ::= /* Empty */ {: RESULT = null; :}
@@ -648,6 +637,7 @@ stmt            ::= /* Empty */ {: RESULT = null; :}
                     if (s != null) { nPadre.appendChild(s); }                 
                     RESULT = nPadre;
                 :}
+                |   stmt:s error    {: report_error("stmt1",""); :}
                 ;
 
 blockstmt       ::= Begin stmts:s End
@@ -657,8 +647,7 @@ blockstmt       ::= Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }             
                     RESULT = nPadre;
                 :}
-                |   Begin stmts:s End error
-                |   error End
+                |   blockstmt error
                 ;
 
 assignstmt      ::= var:i DosPuntosIgual expr:e 
@@ -668,8 +657,8 @@ assignstmt      ::= var:i DosPuntosIgual expr:e
                     if (i != null) { nPadre.appendChild(i); }
                     if (e != null) { nPadre.appendChild(e); }                   
                     RESULT = nPadre;
-                :}
-                |   error expr:e
+                :}  
+                |   assignstmt error
                 ;
 
 ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
@@ -689,8 +678,7 @@ ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
-                |   If error 
-                |   If expr:e Then error
+                |   ifstmt error
                 ;
 
 forstmt         ::= For assignstmt:a To expr:e Do stmts:s
@@ -702,10 +690,7 @@ forstmt         ::= For assignstmt:a To expr:e Do stmts:s
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
-                |   For error To expr:e Do stmts:s  
-                |   For error Do stmts:s 
-                |   For assignstmt:a To error 
-                |   For error stmts:s
+                |   forstmt error
                 ;
 
 whilestmt       ::= While expr:e Do stmt:s
@@ -716,8 +701,7 @@ whilestmt       ::= While expr:e Do stmt:s
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
-                |   While error Do stmt:s
-                |   While error stmt:s
+                |   whilestmt error
                 ;
 
 repeatstmt      ::= Repeat stmts:s Until expr:e
@@ -728,8 +712,7 @@ repeatstmt      ::= Repeat stmts:s Until expr:e
                     if (e != null) { nPadre.appendChild(e); }
                     RESULT = nPadre;
                 :}
-                |   Repeat error Until expr:e
-                |   Repeat stmts:s Until error
+                |   repeatstmt error
                 ;
 
 writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
@@ -747,17 +730,17 @@ writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
                     if (v != null) { nPadre.appendChild(v); }
                     RESULT = nPadre;
                 :}
-                |   Write error
+                |   writestmt error
                 ;
 
-readstmt        ::= Read ParentesisAbrir string:s ParentesisCerrar
+readstmt        ::= Read ParentesisAbrir var:v ParentesisCerrar
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ReadStatement");
-                    if (s != null) { nPadre.appendChild(s); }
+                    if (v != null) { nPadre.appendChild(v); }
                     RESULT = nPadre;
                 :}
-                |   Read error
+                |   readstmt error
                 ;
 
 expr            ::= literal:l 
@@ -821,7 +804,6 @@ expr            ::= literal:l
                     if (e != null) { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
-                |   error expr:e2
                 ;
 
 exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
@@ -832,7 +814,6 @@ exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
                     if (e2 != null) { nPadre.appendChild(e2);}
                     RESULT = nPadre;
                 :}
-                |   ParentesisAbrir expr:e1 ParentesisCerrar error
                 ;
 
 exprOpLog       ::= /* Empty */
@@ -844,7 +825,6 @@ exprOpLog       ::= /* Empty */
                     if (e != null)  { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
-                |   error exprLogical:e
                 ;
 
 opRelacion      ::= OperadorIgual:op

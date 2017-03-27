@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.unitec.compiladores.PascalFlexer;
 
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -34,7 +35,7 @@ public class ParserTest {
         Parser parser = null;
         Symbol parseSymbol = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/input.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/input.pas"));
             scanner = new PascalFlexer(br);
             parser = new Parser(scanner);
             
