@@ -1,5 +1,7 @@
 program hola;
-{asdaa}
+{asd
+
+aa}
 var 
     a:integer;
 begin
@@ -9,4 +11,5 @@ begin
             for a:=3 to 20 do
         end;
 end.
+
 

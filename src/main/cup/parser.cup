@@ -59,7 +59,10 @@ parser code {:
         };
 
         public void report_fatal_error(String message, Object info) {
-            throw new RuntimeException("Error Fatal Sintáctico, no se pudo recuperar del problema.");
+            throw new Error("Error Fatal Sintáctico, no se pudo recuperar del problema.");
+        }
+
+        public void unrecovered_syntax_error(Symbol s) {
         }
 
         @Override
@@ -244,7 +247,6 @@ program         ::= Program var:v PuntoComa block:b Punto
                 :}
                 |   error block:b Punto             {: report_error("program1",""); :}
                 |   Program error               {: report_error("program2",""); :}
-                |   program error
                 ;
 
 block           ::= decls:d Begin stmts:s End
@@ -679,6 +681,7 @@ ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
                     RESULT = nPadre;
                 :}
                 |   ifstmt error
+                |   error Else stmt:s2
                 ;
 
 forstmt         ::= For assignstmt:a To expr:e Do stmts:s

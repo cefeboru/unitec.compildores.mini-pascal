@@ -108,7 +108,7 @@ PuntoPunto                  =   \.\.
     {WhiteSpace}                    {}
     {LlaveAbrir}                    {yybegin(COMMENT);}
     {ComillaSimple}                 {yybegin(COMILLA_SIMPLE);}
-    {LlaveCerrar}                   {return symbol(sym.LlaveCerrar);}
+    {LlaveCerrar}                   {throw new Error("Error Lexico: Se ha encontrado un token inválido: \'"+ yytext() + "\' en la Linea: " + (yyline +1) + ", Columna: " + (yycolumn+1) );}
     {Program}                       {return symbol(sym.Program);}
     {Procedure}                     {return symbol(sym.Procedure);}
     {Function}                      {return symbol(sym.Function);}
