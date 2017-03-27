@@ -1,6 +1,7 @@
 program hola;
+{asdaa}
 var 
-    a:integer
+    a:integer;
 begin
     a:= a;
     if a=2 then

@@ -941,7 +941,7 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
             }
           case 84: break;
           case 25: 
-            { string.append("\'");
+            { yybegin(YYINITIAL);return symbol(sym.LiteralString,string.toString());
             }
           case 85: break;
           case 26: 
