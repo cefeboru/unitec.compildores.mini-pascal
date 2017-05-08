@@ -4,14 +4,20 @@ var
     m:string;
 procedure x();
 begin
-
+    repeat
+        writeln('value of a: ', a);
+        a := a + 1;$
+    until a = 20;
+    a := a + 3 ;
 end;
 
 function y(q,w : integer; var l: char):integer;
 var
     b:integer;    
 begin
-
+{HOLA
+(sd
+f)}
 end;
 
 begin

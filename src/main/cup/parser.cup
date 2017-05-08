@@ -1,5 +1,6 @@
 import java_cup.runtime.*;
 import java.util.List;
+import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -241,8 +242,8 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
                 :}
-                |   error block:b Punto        
-                |   Program error              
+                | error block Punto
+                | Program var:v PuntoComa block:b error
                 ;
 
 block           ::= decls:d Begin stmts:s End
@@ -253,7 +254,7 @@ block           ::= decls:d Begin stmts:s End
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;                    
                 :}
-                |   block error 
+                |   error End
                 ;
 
 blockProc       ::= procInlineDecls:p Begin stmts:s End
@@ -288,25 +289,18 @@ decls           ::= /* empty */ {: RESULT = null; :}
 decl            ::= Var vardecls:vd
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Declaration");
-                    if (vd != null) { 
-                        nPadre.appendChild(vd); 
-                        RESULT = nPadre;                    
-                    } else RESULT = null;
-                    
+                    RESULT = vd;
                 :}
                 |   functionDecl:f
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Declaration");
-                    if (f != null) { nPadre.appendChild(f); RESULT = nPadre;}
+                    RESULT = f;
                                         
                 :}
                 |   procedureDecl:p
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Declaration");
-                    if (p != null) { nPadre.appendChild(p); RESULT = nPadre;}                    
+                    RESULT = p;                   
                 :}
                 |   decl:d error
                 ;
@@ -458,7 +452,20 @@ vardecl         ::= vars:vs DosPuntos type:t
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("VarDeclaration");
-                    if (vs != null) { nPadre.appendChild(vs); }
+                    if (vs != null) { 
+                        ArrayList<Element> allVsNodes = new ArrayList();
+                        Node tmp = vs.getLastChild();
+                        while (tmp.getParentNode() != null) {
+                            tmp = tmp.getParentNode();
+                            allVsNodes.add((Element) tmp);
+                        }
+                        /*for (int i = allVsNodes.size()-1; i >= 0; i--) {
+                            nPadre.appendChild(allVsNodes.get(i));
+                        }*/
+                        for (int i = 0; i < allVsNodes.size(); i++) {
+                            nPadre.appendChild(allVsNodes.get(i));
+                        }
+                    }
                     nPadre.appendChild(t);
                     RESULT = nPadre;                    
                 :}
@@ -467,17 +474,13 @@ vardecl         ::= vars:vs DosPuntos type:t
 vars            ::= var:v
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Variable");
-                    if (v != null) { nPadre.appendChild(v); }
-                    RESULT = nPadre;                    
+                    RESULT = v;                    
                 :}
                 |   var:v Coma vars:vs
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Variables");
-                    if (v != null) { nPadre.appendChild(v); }
-                    if (vs != null) { nPadre.appendChild(vs); }
-                    RESULT = nPadre;                    
+                    v.appendChild(vs);
+                    RESULT = v;                    
                 :}
                 ;
 
@@ -579,61 +582,45 @@ stmts           ::= stmt:s
                 ;
 
 stmt            ::= /* Empty */ {: RESULT = null; :}
-                | assignstmt:as
+                | assignstmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (as != null) { nPadre.appendChild(as); }                 
-                    RESULT = nPadre;
+                    iniXML();               
+                    RESULT = s;
                 :}
-                | ifstmt:is
+                | ifstmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (is != null) { nPadre.appendChild(is); }                 
-                    RESULT = nPadre;
+                    iniXML();              
+                    RESULT = s;
                 :}
                 | forstmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (s != null) { nPadre.appendChild(s); }                 
-                    RESULT = nPadre;
+                    iniXML();             
+                    RESULT = s;
                 :}
                 | whilestmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (s != null) { nPadre.appendChild(s); }                 
-                    RESULT = nPadre;
+                    iniXML();   
+                    RESULT = s;
                 :}
                 | repeatstmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (s != null) { nPadre.appendChild(s); }                 
-                    RESULT = nPadre;
+                    iniXML();          
+                    RESULT = s;
                 :}
                 | readstmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (s != null) { nPadre.appendChild(s); }                 
-                    RESULT = nPadre;
+                    iniXML();          
+                    RESULT = s;
                 :}
                 | writestmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (s != null) { nPadre.appendChild(s); }                 
-                    RESULT = nPadre;
+                    iniXML();       
+                    RESULT = s;
                 :}
                 | blockstmt:s
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Statement");
-                    if (s != null) { nPadre.appendChild(s); }                 
-                    RESULT = nPadre;
+                    iniXML();             
+                    RESULT = s;
                 :}
                 |   stmt:s error  
                 ;
@@ -641,7 +628,7 @@ stmt            ::= /* Empty */ {: RESULT = null; :}
 blockstmt       ::= Begin stmts:s End
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Block");
+                    Element nPadre = xmlDocument.createElement("Body");
                     if (s != null) { nPadre.appendChild(s); }             
                     RESULT = nPadre;
                 :}
@@ -729,7 +716,7 @@ writestmt       ::= Write ParentesisAbrir string:s ParentesisCerrar
                     if (v != null) { nPadre.appendChild(v); }
                     RESULT = nPadre;
                 :}
-                |   writestmt error
+                |   error ParentesisCerrar
                 ;
 
 readstmt        ::= Read ParentesisAbrir var:v ParentesisCerrar
@@ -744,17 +731,13 @@ readstmt        ::= Read ParentesisAbrir var:v ParentesisCerrar
 
 expr            ::= literal:l 
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Expression");
-                    if (l != null) { nPadre.appendChild(l); }                   
-                    RESULT = nPadre;
+                    iniXML();                
+                    RESULT = l;
                 :}
                 |   var:v
                 {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Expression");
-                    if (v != null) { nPadre.appendChild(v); }                   
-                    RESULT = nPadre;
+                    iniXML();             
+                    RESULT = v;
                 :}
                 |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
                 {:
@@ -971,33 +954,25 @@ exprlist        ::= expr:e
                 :}
                 ;
 
-literal         ::= integer:l
+literal         ::= integer:i
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Literal");
-                    if (l != null) { nPadre.appendChild(l);}
-                    RESULT = nPadre;
+                    RESULT = i;
                 :}
                 |   character:c
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Literal");
-                    if (c != null) { nPadre.appendChild(c);}
-                    RESULT = nPadre;
+                    RESULT = c;
                 :}                
                 |   boolean:b
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Literal");
-                    if (b != null) { nPadre.appendChild(b);}
-                    RESULT = nPadre;
+                    RESULT = b;
                 :}
                 |   string:s
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Literal");
-                    if (s != null) { nPadre.appendChild(s);}
-                    RESULT = nPadre;
+                    RESULT = s;
                 :}
                 ;
 

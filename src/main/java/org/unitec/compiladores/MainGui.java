@@ -9,8 +9,11 @@ import java.awt.event.WindowAdapter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java_cup.runtime.Symbol;
+import java_cup.runtime.XMLElement;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -122,9 +125,15 @@ public class MainGui extends javax.swing.JFrame {
             BufferedReader br = new BufferedReader(new FileReader(tf_direction.getText()));
             scanner = new PascalFlexer(br);
             parser = new Parser(scanner);
-            parser.parse();
+            Symbol Sym = parser.parse();
+            System.out.println((XMLElement)Sym.value);
+            if(Sym.sym == 0)
+                JOptionPane.showMessageDialog(this, "Se Compilo correctamente el archivo!");
+            else 
+                JOptionPane.showMessageDialog(this, "Se encontraron erroes en el archivo!");
         } catch (Exception ex) {
             System.out.println(ex);
+            JOptionPane.showMessageDialog(this, "Se encontraron erroes en el archivo!"); 
         }
     }//GEN-LAST:event_btn_compileMouseClicked
 
