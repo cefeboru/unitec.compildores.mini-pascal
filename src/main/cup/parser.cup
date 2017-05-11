@@ -233,12 +233,27 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
                 :}
-                |   Program var:v1 ParentesisAbrir vars:v2 ParentesisCerrar PuntoComa block:b Punto
+                |   Program var:v1 ParentesisAbrir vars:vs ParentesisCerrar PuntoComa block:b Punto
                 {:
                     iniXML();
                     nodoPadre = xmlDocument.createElement("Program"); 
                     if (v1 != null) { nodoPadre.appendChild(v1); }
-                    if (v2 != null) { nodoPadre.appendChild(v2); }
+                    if (vs != null) { 
+                        Element nPadre = xmlDocument.createElement("ProgramArgs");
+                        ArrayList<Element> asd = new ArrayList();
+                        NodeList temp = vs.getChildNodes();
+                        if (temp.getLength() > 0) {
+                            Node parent = temp.item((temp.getLength() - 1)).getParentNode();
+                            asd.add((Element) parent);
+                        }
+                        for (int i = 0; i < temp.getLength(); i++) {
+                            asd.add((Element) temp.item(i));
+                        }
+                        for (int i = 0; i < asd.size(); i++) {
+                            nPadre.appendChild(asd.get(i));
+                        }
+                        nodoPadre.appendChild(nPadre);
+                    }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
                 :}
@@ -371,11 +386,7 @@ procInlineDecls  ::= {: RESULT = null; :}
 procInlineDecl  ::= Var vardecls:vd
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("VarsDeclarations");
-                    if (vd != null){
-                        nPadre.appendChild(vd);
-                        RESULT = nPadre;
-                    }               
+                    RESULT = vd;
                 :}
                 ;
 
@@ -383,11 +394,7 @@ procInlineDecl  ::= Var vardecls:vd
 inlineArgs      ::= inlineArg:ia
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("inlineArg");
-                    if(ia != null) {
-                        nPadre.appendChild(ia);
-                        RESULT = nPadre;
-                    }
+                    RESULT = ia;
                 :}
                 |   inlineArg:ia PuntoComa inlineArgs:ias
                 {:
@@ -399,30 +406,60 @@ inlineArgs      ::= inlineArg:ia
                 :}
                 ;
 
-inlineArg       ::= Var vars:vs DosPuntos identtype:i
+inlineArg       ::= Var vars:vs DosPuntos identtype:t
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("inlineArg");
                     if(vs != null) {
-                        nPadre.appendChild(vs);
+                        ArrayList<Element> asd = new ArrayList();
+                        if (!vs.hasChildNodes()) {
+                            nPadre.appendChild(vs);
+                        } else {
+                            NodeList temp = vs.getChildNodes();
+                            if (temp.getLength() > 0) {
+                                Node parent = temp.item((temp.getLength() - 1)).getParentNode();
+                                asd.add((Element) parent);
+                            }
+                            for (int i = 0; i < temp.getLength(); i++) {
+                                asd.add((Element) temp.item(i));
+                            }
+                            for (int i = 0; i < asd.size(); i++) {
+                                nPadre.appendChild(asd.get(i));
+                            }
+                        }
                     }
-                    if( i != null ) {
+                    if( t != null ) {
                         Element nType = xmlDocument.createElement("Type");
-                        nType.setAttribute("Value",i);
+                        nType.setAttribute("Value",t);
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
                 :}
-                |   vars:vs DosPuntos identtype:i 
+                |   vars:vs DosPuntos identtype:t 
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("inlineArg");
                     if(vs != null) {
-                        nPadre.appendChild(vs);
+                       ArrayList<Element> asd = new ArrayList();
+                        if (!vs.hasChildNodes()) {
+                            nPadre.appendChild(vs);
+                        } else {
+                            NodeList temp = vs.getChildNodes();
+                            if (temp.getLength() > 0) {
+                                Node parent = temp.item((temp.getLength() - 1)).getParentNode();
+                                asd.add((Element) parent);
+                            }
+                            for (int i = 0; i < temp.getLength(); i++) {
+                                asd.add((Element) temp.item(i));
+                            }
+                            for (int i = 0; i < asd.size(); i++) {
+                                nPadre.appendChild(asd.get(i));
+                            }
+                        }
                     }
-                    if( i != null ) {
+                    if( t != null ) {
                         Element nType = xmlDocument.createElement("Type");
-                        nType.setAttribute("Value",i);
+                        nType.setAttribute("Value",t);
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
@@ -433,15 +470,13 @@ vardecls        ::=  /* Empty */
                 |   vardecl:v PuntoComa vardecls:vs
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("VarsDeclarations");
                     if(v != null && vs == null ){
                         RESULT = v;
                     } else if(v == null && vs != null){
                         RESULT = vs;
                     } else if(v != null && vs != null){
-                        nPadre.appendChild(v);
-                        nPadre.appendChild(vs);
-                        RESULT = nPadre;
+                        vs.appendChild(v);
+                        RESULT = vs;
                     } else RESULT = null;
                 :} 
                 |   error PuntoComa vardecls:vs 
