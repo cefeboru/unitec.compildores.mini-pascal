@@ -1,15 +1,11 @@
 program hola;
-{asd
-
-aa}
 var 
-    a:integer;
+    a,b,c,d:integer;
 begin
-    a:= a;
-    if a=2 then
-        begin
-            for a:=3 to 20 do
-        end;
+    repeat
+        writeln('value of a: ', a);
+        a := a + 1;
+    until a = 20;
 end.
 
 
