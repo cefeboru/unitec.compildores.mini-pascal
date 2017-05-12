@@ -6,7 +6,7 @@ procedure x();
 begin
     repeat
         writeln('value of a: ', a);
-        a := a + 1;$
+        a := a + 1;
     until a = 20;
     a := a + 3 ;
 end;

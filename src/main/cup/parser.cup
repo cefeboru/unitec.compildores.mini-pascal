@@ -70,22 +70,24 @@ parser code {:
 :};
 
 action code {:
+
+        public static TablaSimbolos ts = new TablaSimbolos();
         /* Contruccion del arbol en XML */
 
         Document xmlDocument = null;    
         Element nodoPadre = null; 
 
         private void iniXML() {
-        if (xmlDocument == null) {
-            try {
-                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                xmlDocument = docBuilder.newDocument();//Crear el documento XML
-            } catch (Exception e) {
-                System.err.println("el Arbol tiene ERROR: " + e.getMessage());
+            if (xmlDocument == null) {
+                try {
+                    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                    xmlDocument = docBuilder.newDocument();//Crear el documento XML
+                } catch (Exception e) {
+                    System.err.println("el Arbol tiene ERROR: " + e.getMessage());
+                }
             }
         }
-    }
 
     public void escribirXML() throws javax.xml.transform.TransformerConfigurationException, javax.xml.transform.TransformerException {
         //Escribir el archivo XML         
