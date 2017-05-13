@@ -187,4 +187,5 @@ public class MainGui extends javax.swing.JFrame {
     private javax.swing.JButton btn_tree;
     private javax.swing.JTextField tf_direction;
     // End of variables declaration//GEN-END:variables
+    public TablaSimbolos ts = new TablaSimbolos();
 }

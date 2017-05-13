@@ -19,6 +19,9 @@ public class TablaSimbolos {
     HashMap<String, Simbolo> Simbolos = new HashMap();
     String formatString = "%s \t %s \t %s \t %s \t %s \t %s \t %s";
 
+    public void Add(Simbolo S){
+        Simbolos.put(S.getId(), S);
+    }
     
     public Simbolo getSimbolo(String id){
         return Simbolos.get(id);
@@ -62,7 +65,8 @@ public class TablaSimbolos {
                     S.getTipo(),
                     String.valueOf(S.isVariable()),
                     String.valueOf(S.isFuncion()),
-                    String.valueOf(S.isParametro())
+                    String.valueOf(S.isParametro()),
+                    String.valueOf(S.getPosicionMemoria())
             );
             System.out.println(output);
         }

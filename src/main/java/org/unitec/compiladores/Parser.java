@@ -538,7 +538,7 @@ public class Parser extends java_cup.runtime.lr_parser {
 
 
 
-        
+    
         @Override
 	public void report_error(String message, Object info) {
             System.err.print("Syntax error: " ); 
@@ -593,22 +593,23 @@ public class Parser extends java_cup.runtime.lr_parser {
 class CUP$Parser$actions {
 
 
+
         /* Contruccion del arbol en XML */
 
         Document xmlDocument = null;    
         Element nodoPadre = null; 
 
         private void iniXML() {
-        if (xmlDocument == null) {
-            try {
-                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                xmlDocument = docBuilder.newDocument();//Crear el documento XML
-            } catch (Exception e) {
-                System.err.println("el Arbol tiene ERROR: " + e.getMessage());
+            if (xmlDocument == null) {
+                try {
+                    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                    xmlDocument = docBuilder.newDocument();//Crear el documento XML
+                } catch (Exception e) {
+                    System.err.println("el Arbol tiene ERROR: " + e.getMessage());
+                }
             }
         }
-    }
 
     public void escribirXML() throws javax.xml.transform.TransformerConfigurationException, javax.xml.transform.TransformerException {
         //Escribir el archivo XML         
@@ -657,6 +658,9 @@ class CUP$Parser$actions {
                     if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
+                    //POPULAR LA TABLA DE SIMBOLOS
+                    //RAIZ DEL ARBOL = nodoPadre
+                    Helpers.llenarTablaSimbolos(nodoPadre);
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -828,21 +832,7 @@ class CUP$Parser$actions {
                         RESULT = ds;
                     } else if (d != null && ds != null) {
                         nPadre.appendChild(d);
-                        if (!ds.getNodeName().equals("Declarations")) {
-                            nPadre.appendChild(ds);
-                        }else{
-                            Element nodoPadre = xmlDocument.createElement("ProgramArgs");
-                            ArrayList<Element> asd = new ArrayList();
-                            NodeList temp = ds.getChildNodes();
-                            for (int i = 0; i < temp.getLength(); i++) {
-                                asd.add((Element) temp.item(i));
-                            }
-                            for (int i = 0; i < asd.size(); i++) {
-                                nPadre.appendChild(asd.get(i));
-                            }
-                            nodoPadre.appendChild(nPadre);
-                            }
-                       
+                        nPadre.appendChild(ds);
                         RESULT = nPadre;
                     } else RESULT = null;      
                 
@@ -1142,6 +1132,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("inlineArg");
+                    nPadre.setAttribute("byRef","true");
                     if(vs != null) {
                         ArrayList<Element> asd = new ArrayList();
                         if (!vs.hasChildNodes()) {
@@ -1184,6 +1175,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("inlineArg");
+                    nPadre.setAttribute("byRef","false");
                     if(vs != null) {
                        ArrayList<Element> asd = new ArrayList();
                         if (!vs.hasChildNodes()) {

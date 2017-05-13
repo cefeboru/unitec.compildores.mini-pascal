@@ -28,6 +28,14 @@ public class Simbolo {
         this.parametro = false;
         this.posicionMemoria = 0;
     }
+
+    public Simbolo(String id, String valor, String tipo) {
+        this.id = id;
+        this.tipo = tipo;
+        this.valor = valor;
+    }
+    
+    
     
     public Simbolo(String id, String valor, String tipo, boolean variable, boolean funcion, boolean parametro, int posicionMemoria) {
         this.id = id;
