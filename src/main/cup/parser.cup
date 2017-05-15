@@ -19,7 +19,7 @@ import org.w3c.dom.Node;
 
 
 parser code {:
-    
+        
         @Override
 	public void report_error(String message, Object info) {
             System.err.print("Syntax error: " ); 
@@ -70,23 +70,22 @@ parser code {:
 :};
 
 action code {:
-
         /* Contruccion del arbol en XML */
 
         Document xmlDocument = null;    
         Element nodoPadre = null; 
 
         private void iniXML() {
-            if (xmlDocument == null) {
-                try {
-                    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                    xmlDocument = docBuilder.newDocument();//Crear el documento XML
-                } catch (Exception e) {
-                    System.err.println("el Arbol tiene ERROR: " + e.getMessage());
-                }
+        if (xmlDocument == null) {
+            try {
+                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                xmlDocument = docBuilder.newDocument();//Crear el documento XML
+            } catch (Exception e) {
+                System.err.println("el Arbol tiene ERROR: " + e.getMessage());
             }
         }
+    }
 
     public void escribirXML() throws javax.xml.transform.TransformerConfigurationException, javax.xml.transform.TransformerException {
         //Escribir el archivo XML         
@@ -233,9 +232,6 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
-                    //POPULAR LA TABLA DE SIMBOLOS
-                    //RAIZ DEL ARBOL = nodoPadre
-                    Helpers.llenarTablaSimbolos(nodoPadre);
                 :}
                 |   Program var:v1 ParentesisAbrir vars:vs ParentesisCerrar PuntoComa block:b Punto
                 {:
@@ -414,7 +410,6 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("inlineArg");
-                    nPadre.setAttribute("byRef","true");
                     if(vs != null) {
                         ArrayList<Element> asd = new ArrayList();
                         if (!vs.hasChildNodes()) {
@@ -444,7 +439,6 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("inlineArg");
-                    nPadre.setAttribute("byRef","false");
                     if(vs != null) {
                        ArrayList<Element> asd = new ArrayList();
                         if (!vs.hasChildNodes()) {
