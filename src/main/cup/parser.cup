@@ -294,8 +294,23 @@ decls           ::= /* empty */ {: RESULT = null; :}
                         RESULT = ds;
                     } else if (d != null && ds != null) {
                         nPadre.appendChild(d);
-                        nPadre.appendChild(ds);
+                        if (!ds.getNodeName().equals("Declarations")) {
+                            nPadre.appendChild(ds);
+                        }else{
+                            Element nodoPadre = xmlDocument.createElement("ProgramArgs");
+                            ArrayList<Element> asd = new ArrayList();
+                            NodeList temp = ds.getChildNodes();
+                            for (int i = 0; i < temp.getLength(); i++) {
+                                asd.add((Element) temp.item(i));
+                            }
+                            for (int i = 0; i < asd.size(); i++) {
+                                nPadre.appendChild(asd.get(i));
+                            }
+                            nodoPadre.appendChild(nPadre);
+                        }
+                       
                         RESULT = nPadre;
+
                     } else RESULT = null;      
                 :}
                 |   decls:ds error 
