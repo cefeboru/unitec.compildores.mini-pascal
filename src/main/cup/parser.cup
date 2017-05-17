@@ -232,6 +232,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
+                    SemanticParser.llenarTablaSimbolos(nodoPadre);
                 :}
                 |   Program var:v1 ParentesisAbrir vars:vs ParentesisCerrar PuntoComa block:b Punto
                 {:
@@ -256,6 +257,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                     }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
+                    SemanticParser.llenarTablaSimbolos(nodoPadre);
                 :}
                 | error block Punto
                 | Program var:v PuntoComa block:b error

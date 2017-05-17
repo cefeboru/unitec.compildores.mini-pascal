@@ -5,6 +5,7 @@
  */
 package org.unitec.compiladores;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,23 +17,30 @@ import java.util.Set;
  */
 public class TablaSimbolos {
 
-    HashMap<String, Simbolo> Simbolos = new HashMap();
-    String formatString = "%s \t %s \t %s \t %s \t %s \t %s \t %s";
+    ArrayList<Simbolo> Simbolos = new ArrayList();
+    String formatHeader = "%-20s %-20s %-15s %-15s %-15s %-15s %-18s";
+    String formatBody = "%-20s %-20s %-15s %-15s %-15s %-15s %-18s";
 
     public void Add(Simbolo S){
-        Simbolos.put(S.getId(), S);
+        Simbolos.add(S);
     }
     
-    public Simbolo getSimbolo(String id){
-        return Simbolos.get(id);
-    }
-    
-    public boolean existeId(String id){
-        Simbolo S = this.getSimbolo(id);
-        if(S != null){
-            return true;
+    public Simbolo getSimbolo(int index) throws Exception{
+        if(index >= 0 && index < Simbolos.size()){
+            return Simbolos.get(index);
+        } else {
+            throw new Exception("Symbol not found");
         }
-        return false;
+    }
+    
+    public int getSymbolIndex(String id){
+        for (int i = 0; i < Simbolos.size(); i++) {
+            Simbolo S = Simbolos.get(i);
+            if(S.getId().equals(id)){
+                return i;
+            }
+        }
+        return -1;
     } 
     
     public void clear(){
@@ -41,11 +49,8 @@ public class TablaSimbolos {
     
     @Override
     public String toString() {
-        Set set = Simbolos.entrySet();
-        Iterator iterator = set.iterator();
-
         String headers = String.format(
-                formatString,
+                formatHeader,
                 "ID",
                 "VALOR",
                 "TIPO",
@@ -55,11 +60,9 @@ public class TablaSimbolos {
                 "POSICION MEMORIA"
         );
         System.out.println(headers);
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            Simbolo S = (Simbolo) entry.getValue();
+        for (Simbolo S: Simbolos) {
             String output = String.format(
-                    formatString,
+                    formatBody,
                     S.getId(),
                     S.getValor(),
                     S.getTipo(),

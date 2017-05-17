@@ -138,7 +138,7 @@ public class MainGui extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_compileMouseClicked
 
     private void btn_treeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_treeMouseClicked
-        JFrame frame = new JFrame("XMLTreeView: [ games.xml ]");
+        JFrame frame = new JFrame("XMLTreeView: [ AST.xml ]");
         frame.setSize(400, 400);
 
         frame.addWindowListener(new WindowAdapter() {

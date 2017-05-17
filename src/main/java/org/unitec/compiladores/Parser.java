@@ -657,6 +657,7 @@ class CUP$Parser$actions {
                     if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
+                    SemanticParser.llenarTablaSimbolos(nodoPadre);
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -711,6 +712,7 @@ class CUP$Parser$actions {
                     }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
+                    SemanticParser.llenarTablaSimbolos(nodoPadre);
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
