@@ -13,6 +13,15 @@ public class Simbolo {
     private String id;
     private String valor;
     private String tipo;
+    private String ambito;
+
+    public String getAmbito() {
+        return ambito;
+    }
+
+    public void setAmbito(String ambito) {
+        this.ambito = ambito;
+    }
     private boolean variable;
     private boolean funcion;
     private boolean parametro;
@@ -28,19 +37,28 @@ public class Simbolo {
         this.parametro = false;
         this.posicionMemoria = 0;
     }
-
-    public Simbolo(String id, String valor, String tipo) {
+    
+     public Simbolo(String id, String valor, String tipo) {
         this.id = id;
         this.tipo = tipo;
         this.valor = valor;
+        this.ambito = null;
+    }
+    
+    public Simbolo(String id, String valor, String tipo, String ambito) {
+        this.id = id;
+        this.tipo = tipo;
+        this.valor = valor;
+        this.ambito = ambito;
     }
     
     
     
-    public Simbolo(String id, String valor, String tipo, boolean variable, boolean funcion, boolean parametro, int posicionMemoria) {
+    public Simbolo(String id, String valor, String tipo, String ambito, boolean variable, boolean funcion, boolean parametro, int posicionMemoria) {
         this.id = id;
         this.valor = valor;
         this.tipo = tipo;
+        this.ambito = ambito;
         this.variable = variable;
         this.funcion = funcion;
         this.parametro = parametro;

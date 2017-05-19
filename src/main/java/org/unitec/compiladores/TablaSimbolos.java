@@ -18,8 +18,8 @@ import java.util.Set;
 public class TablaSimbolos {
 
     ArrayList<Simbolo> Simbolos = new ArrayList();
-    String formatHeader = "%-20s %-20s %-15s %-15s %-15s %-15s %-18s";
-    String formatBody = "%-20s %-20s %-15s %-15s %-15s %-15s %-18s";
+    String formatHeader = "%-20s %-20s %-20s %-15s %-15s %-15s %-15s %-18s";
+    String formatBody = "%-20s %-20s %-20s %-15s %-15s %-15s %-15s %-18s";
 
     public void Add(Simbolo S){
         Simbolos.add(S);
@@ -54,6 +54,7 @@ public class TablaSimbolos {
                 "ID",
                 "VALOR",
                 "TIPO",
+                "AMBITO",
                 "ES VARIABLE",
                 "ES FUNCION",
                 "ES PARAMETRO",
@@ -66,6 +67,7 @@ public class TablaSimbolos {
                     S.getId(),
                     S.getValor(),
                     S.getTipo(),
+                    S.getAmbito(),
                     String.valueOf(S.isVariable()),
                     String.valueOf(S.isFuncion()),
                     String.valueOf(S.isParametro()),

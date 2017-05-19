@@ -29,26 +29,64 @@ public class SemanticParser {
         for (int j = 0; j < nodos.getLength(); j++) {
             Node padre = nodos.item(j).getParentNode();
             if (padre.getNodeName().equals("Declarations")) {
-                ts = addChildNodes(nodos.item(j), ts);
+                ts = SemanticParser.addChildSymbols(nodos.item(j), ts);
             } else {
-                //TODO NODE BLOCK
+                
+                String ID = getAttribute(padre.getParentNode(), "ID");
+                ///Simbolo S = new Simbolo(ID,null,"");
+                NodeList inlineArgs = ((Element) padre.getParentNode()).getElementsByTagName("inlineArg");
+                System.out.println("SIZE: " + inlineArgs.getLength());    
+                ts = addArgumentSymbols(inlineArgs, ts, ID);
+                ts = addChildSymbols(nodos.item(j), ts, ID);
             }
 
         }
         return ts;
     }
 
-    public static TablaSimbolos addChildNodes(Node element, TablaSimbolos ts) {
+    public static TablaSimbolos addChildSymbols(Node element, TablaSimbolos ts) {
         NodeList hijos = element.getChildNodes();
         if (hijos.getLength() > 0) {
             String tipo = getAttribute(hijos.item(hijos.getLength() - 1), "Value");
             for (int i = 0; i < hijos.getLength() - 1; i++) {
                 Node child = hijos.item(i);
                 String id = getAttribute(child, "Value");
-                Simbolo S = new Simbolo(id, "", tipo);
+                Simbolo S = new Simbolo(id, null, tipo);
                 ts.Add(S);
             }
         }
+        return ts;
+    }
+
+    public static TablaSimbolos addChildSymbols(Node element, TablaSimbolos ts, String ambito) {
+        NodeList hijos = element.getChildNodes();
+        if (hijos.getLength() > 0) {
+            String tipo = getAttribute(hijos.item(hijos.getLength() - 1), "Value");
+            for (int i = 0; i < hijos.getLength() - 1; i++) {
+                Node child = hijos.item(i);
+                String id = getAttribute(child, "Value");
+                Simbolo S = new Simbolo(id, null, tipo, ambito);
+                ts.Add(S);
+            }
+        }
+        return ts;
+    }
+
+    public static TablaSimbolos addArgumentSymbols(NodeList arguments, TablaSimbolos ts, String ambito) {
+        for (int j = 0; j < arguments.getLength(); j++) {
+            Node element = arguments.item(j);
+            NodeList hijos = element.getChildNodes();
+            if (hijos.getLength() > 0) {
+                String tipo = getAttribute(hijos.item(hijos.getLength() - 1), "Value");
+                for (int i = 0; i < hijos.getLength() - 1; i++) {
+                    Node child = hijos.item(i);
+                    String id = getAttribute(child, "Value");
+                    Simbolo S = new Simbolo(id, null, tipo, ambito,false, false, true, 0);
+                    ts.Add(S);
+                }
+            }
+        }
+
         return ts;
     }
 

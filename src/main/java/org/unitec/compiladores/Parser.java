@@ -942,7 +942,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("FunctionDeclaration");
-                    if (i != null) { nPadre.appendChild(i); }
+                    nPadre.setAttribute("ID", i.getAttribute("Value"));
                     if (in != null) { nPadre.appendChild(in); }
                     if (t != null) { nPadre.appendChild(t); }
                     if (b != null) { nPadre.appendChild(b); }
@@ -969,7 +969,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("FunctionDeclaration");
-                    if (i != null) { nPadre.appendChild(i); }
+                    nPadre.setAttribute("ID", i.getAttribute("Value"));
                     if (t != null) { nPadre.appendChild(t); }
                     if (b != null) { nPadre.appendChild(b); }
 
@@ -1004,7 +1004,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ProcedureDeclaration");
-                    if (i != null) { nPadre.appendChild(i); }
+                    nPadre.setAttribute("ID", i.getAttribute("Value"));
                     if (in != null) { nPadre.appendChild(in); }
                     if (b != null) { nPadre.appendChild(b); }
 
@@ -1027,7 +1027,7 @@ class CUP$Parser$actions {
 		
                     iniXML(); 
                     Element nPadre = xmlDocument.createElement("ProcedureDeclaration");
-                    if (i != null) { nPadre.appendChild(i); }
+                    nPadre.setAttribute("ID", i.getAttribute("Value"));
                     if (b != null) { nPadre.appendChild(b); }
 
                     RESULT = nPadre;                    
