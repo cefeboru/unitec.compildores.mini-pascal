@@ -31,11 +31,16 @@ public class SemanticParser {
             if (padre.getNodeName().equals("Declarations")) {
                 ts = SemanticParser.addChildSymbols(nodos.item(j), ts);
             } else {
-                
-                String ID = getAttribute(padre.getParentNode(), "ID");
-                ///Simbolo S = new Simbolo(ID,null,"");
+                Node parentParent = padre.getParentNode();
+                String ID = getAttribute(parentParent, "ID");
+                if (parentParent.getNodeName().equals("FunctionDeclaration")) {
+                    Simbolo S = new Simbolo(ID,null,getAttribute(parentParent,"Type"),null,false,true,false,0);
+                    ts.Add(S);
+                }else{
+                    Simbolo S = new Simbolo(ID,null,null,null,false,true,false,0);
+                    ts.Add(S);
+                }
                 NodeList inlineArgs = ((Element) padre.getParentNode()).getElementsByTagName("inlineArg");
-                System.out.println("SIZE: " + inlineArgs.getLength());    
                 ts = addArgumentSymbols(inlineArgs, ts, ID);
                 ts = addChildSymbols(nodos.item(j), ts, ID);
             }

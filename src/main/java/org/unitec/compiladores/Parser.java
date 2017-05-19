@@ -943,8 +943,8 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("FunctionDeclaration");
                     nPadre.setAttribute("ID", i.getAttribute("Value"));
+                    nPadre.setAttribute("Type", t.getAttribute("Value"));
                     if (in != null) { nPadre.appendChild(in); }
-                    if (t != null) { nPadre.appendChild(t); }
                     if (b != null) { nPadre.appendChild(b); }
 
                     RESULT = nPadre;                    
@@ -970,7 +970,7 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("FunctionDeclaration");
                     nPadre.setAttribute("ID", i.getAttribute("Value"));
-                    if (t != null) { nPadre.appendChild(t); }
+                    nPadre.setAttribute("Type", t.getAttribute("Value"));
                     if (b != null) { nPadre.appendChild(b); }
 
                     RESULT = nPadre;                    

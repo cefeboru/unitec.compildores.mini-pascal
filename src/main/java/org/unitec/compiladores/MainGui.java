@@ -126,7 +126,6 @@ public class MainGui extends javax.swing.JFrame {
             scanner = new PascalFlexer(br);
             parser = new Parser(scanner);
             Symbol Sym = parser.parse();
-            System.out.println((XMLElement)Sym.value);
             if(Sym.sym == 0)
                 JOptionPane.showMessageDialog(this, "Se Compilo correctamente el archivo!");
             else 
