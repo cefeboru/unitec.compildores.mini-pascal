@@ -34,10 +34,11 @@ public class SemanticParser {
                 Node parentParent = padre.getParentNode();
                 String ID = getAttribute(parentParent, "ID");
                 if (parentParent.getNodeName().equals("FunctionDeclaration")) {
-                    Simbolo S = new Simbolo(ID,null,getAttribute(parentParent,"Type"),null,false,true,false,0);
+                    String type = "function(" + getAttribute(parentParent,"Type") + ")";
+                    Simbolo S = new Simbolo(ID,null,type,"main",false,true,false,0);
                     ts.Add(S);
                 }else{
-                    Simbolo S = new Simbolo(ID,null,null,null,false,true,false,0);
+                    Simbolo S = new Simbolo(ID,null,"procedure","main",false,true,false,0);
                     ts.Add(S);
                 }
                 NodeList inlineArgs = ((Element) padre.getParentNode()).getElementsByTagName("inlineArg");
@@ -56,7 +57,7 @@ public class SemanticParser {
             for (int i = 0; i < hijos.getLength() - 1; i++) {
                 Node child = hijos.item(i);
                 String id = getAttribute(child, "Value");
-                Simbolo S = new Simbolo(id, null, tipo);
+                Simbolo S = new Simbolo(id,null,tipo,"main",false,false,false,0);
                 ts.Add(S);
             }
         }

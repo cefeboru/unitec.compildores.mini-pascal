@@ -22,6 +22,7 @@ public class TablaSimbolos {
     String formatBody = "%-20s %-20s %-20s %-15s %-15s %-15s %-15s %-18s";
 
     public void Add(Simbolo S){
+        int itemIndex = this.getSymbolIndex(S.getId());
         Simbolos.add(S);
     }
     
