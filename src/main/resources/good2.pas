@@ -1,6 +1,5 @@
 program hola(asd,dsa);
 var 
-    c: char;
     a,d:integer;
 procedure x(var arg1,arg2:integer);
 var
