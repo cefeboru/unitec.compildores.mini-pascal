@@ -848,8 +848,7 @@ class CUP$Parser$actions {
                         }
                        
                         RESULT = nPadre;
-
-                    } else RESULT = null;      
+                    } else{ RESULT = null; }      
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("decls",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-1)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1129,7 +1128,14 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Arguments");
                     nPadre.appendChild(ia);
-                    nPadre.appendChild(ias);
+                    ArrayList<Element> asd = new ArrayList();
+                    NodeList temp = ias.getChildNodes();
+                    for (int i = 0; i < temp.getLength(); i++) {
+                        asd.add((Element) temp.item(i));
+                    }
+                    for (int i = 0; i < asd.size(); i++) {
+                        nPadre.appendChild(asd.get(i));
+                    }
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("inlineArgs",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1244,10 +1250,25 @@ class CUP$Parser$actions {
                     if(v != null && vs == null ){
                         RESULT = v;
                     } else if(v == null && vs != null){
-                        RESULT = vs;
+                        Element nPadre = xmlDocument.createElement("VarDeclaration");
+                        nPadre.appendChild(vs);
+                        RESULT = nPadre;
                     } else if(v != null && vs != null){
-                        vs.appendChild(v);
-                        RESULT = vs;
+                        Element nPadre = xmlDocument.createElement("VarDeclarations");
+                        nPadre.appendChild(v);
+                        if (vs.getNodeName().equals("VarDeclaration")) {
+                            nPadre.appendChild(vs);
+                        } else {
+                            ArrayList<Element> asd = new ArrayList();
+                            NodeList temp = vs.getChildNodes();
+                            for (int i = 0; i < temp.getLength(); i++) {
+                                asd.add((Element) temp.item(i));
+                            }
+                            for (int i = 0; i < asd.size(); i++) {
+                                nPadre.appendChild(asd.get(i));
+                            }
+                        }
+                        RESULT = nPadre;
                     } else RESULT = null;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("vardecls",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
