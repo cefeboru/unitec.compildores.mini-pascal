@@ -15,6 +15,8 @@ import org.w3c.dom.NodeList;
  */
 public class SemanticParser {
 
+    String ambitoActual;
+
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) {
         TablaSimbolos ts = new TablaSimbolos();
         ts = llenarVarDeclaration(ts, nodoPadre);
@@ -26,6 +28,7 @@ public class SemanticParser {
 
     private static TablaSimbolos llenarVarDeclaration(TablaSimbolos ts, Element nodoPadre) {
         NodeList nodos = nodoPadre.getElementsByTagName("VarDeclaration");
+
         for (int j = 0; j < nodos.getLength(); j++) {
             Node padre = nodos.item(j).getParentNode();
             if (padre.getNodeName().equals("Declarations")) {
@@ -33,20 +36,33 @@ public class SemanticParser {
             } else {
                 Node parentParent = padre.getParentNode();
                 String ID = getAttribute(parentParent, "ID");
-                if (parentParent.getNodeName().equals("FunctionDeclaration")) {
-                    String type = "function(" + getAttribute(parentParent,"Type") + ")";
-                    Simbolo S = new Simbolo(ID,null,type,"main",false,true,false,0);
-                    ts.Add(S);
-                }else{
-                    Simbolo S = new Simbolo(ID,null,"procedure","main",false,true,false,0);
-                    ts.Add(S);
+                String type = getAttribute(parentParent, "Type");
+                Node firstChild = parentParent.getFirstChild();
+                NodeList arguments = firstChild.getChildNodes();
+
+                String argumentsType = "";
+                for (int i = 0; i < arguments.getLength(); i++) {
+                    Node argument = arguments.item(i);
+                    Node argumentsTypeNode = argument.getLastChild();
+                    for (int k = 0; k < argument.getChildNodes().getLength() - 1; k++) {
+                        if (i == 0 && k == 0) {
+                            argumentsType += getAttribute(argumentsTypeNode, "Value");
+                        } else {
+                            argumentsType += "X" + getAttribute(argumentsTypeNode, "Value");
+                        }
+                    }
                 }
+                type = argumentsType + " -> " + type;
+                Simbolo S = new Simbolo(ID, null, type, "main", false, true, false, 0);
+                ts.Add(S);
+
                 NodeList inlineArgs = ((Element) padre.getParentNode()).getElementsByTagName("inlineArg");
                 ts = addArgumentSymbols(inlineArgs, ts, ID);
                 ts = addChildSymbols(nodos.item(j), ts, ID);
             }
 
         }
+
         return ts;
     }
 
@@ -57,7 +73,7 @@ public class SemanticParser {
             for (int i = 0; i < hijos.getLength() - 1; i++) {
                 Node child = hijos.item(i);
                 String id = getAttribute(child, "Value");
-                Simbolo S = new Simbolo(id,null,tipo,"main",false,false,false,0);
+                Simbolo S = new Simbolo(id, null, tipo, "main", false, false, false, 0);
                 ts.Add(S);
             }
         }
@@ -87,7 +103,7 @@ public class SemanticParser {
                 for (int i = 0; i < hijos.getLength() - 1; i++) {
                     Node child = hijos.item(i);
                     String id = getAttribute(child, "Value");
-                    Simbolo S = new Simbolo(id, null, tipo, ambito,false, false, true, 0);
+                    Simbolo S = new Simbolo(id, null, tipo, ambito, false, false, true, 0);
                     ts.Add(S);
                 }
             }
@@ -97,6 +113,12 @@ public class SemanticParser {
     }
 
     public static String getAttribute(Node element, String atttribute) {
-        return element.getAttributes().getNamedItem(atttribute).getNodeValue();
+        Node attElement = element.getAttributes().getNamedItem(atttribute);
+        if (attElement != null) {
+            return attElement.getNodeValue();
+        } else {
+            return null;
+        }
+
     }
 }

@@ -411,7 +411,9 @@ procInlineDecl  ::= Var vardecls:vd
 inlineArgs      ::= inlineArg:ia
                 {:
                     iniXML();
-                    RESULT = ia;
+                    Element nPadre = xmlDocument.createElement("Arguments");
+                    nPadre.appendChild(ia);
+                    RESULT = nPadre;
                 :}
                 |   inlineArg:ia PuntoComa inlineArgs:ias
                 {:

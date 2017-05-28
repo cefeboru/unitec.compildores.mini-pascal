@@ -18,8 +18,8 @@ import java.util.Set;
 public class TablaSimbolos {
 
     ArrayList<Simbolo> Simbolos = new ArrayList();
-    String formatHeader = "%-20s %-20s %-20s %-15s %-15s %-15s %-15s %-18s";
-    String formatBody = "%-20s %-20s %-20s %-15s %-15s %-15s %-15s %-18s";
+    String formatHeader = "%-20s %-20s %-40s %-15s %-15s %-15s %-15s %-18s";
+    String formatBody = "%-20s %-20s %-40s %-15s %-15s %-15s %-15s %-18s";
 
     public void Add(Simbolo S){
         int itemIndex = this.getSymbolIndex(S.getId());

@@ -1105,7 +1105,9 @@ class CUP$Parser$actions {
 		Element ia = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    RESULT = ia;
+                    Element nPadre = xmlDocument.createElement("Arguments");
+                    nPadre.appendChild(ia);
+                    RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("inlineArgs",11, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
