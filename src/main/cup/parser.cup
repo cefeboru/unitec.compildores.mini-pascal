@@ -234,7 +234,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
-                    SemanticParser.llenarTablaSimbolos(nodoPadre);
+                    //SemanticParser.llenarTablaSimbolos(nodoPadre);
                 :}
                 |   Program var:v1 ParentesisAbrir vars:vs ParentesisCerrar PuntoComa block:b Punto
                 {:
@@ -259,7 +259,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                     }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
-                    SemanticParser.llenarTablaSimbolos(nodoPadre);
+                    //SemanticParser.llenarTablaSimbolos(nodoPadre);
                 :}
                 | error block Punto
                 | Program var:v PuntoComa block:b error
@@ -314,8 +314,7 @@ decls           ::= /* empty */ {: RESULT = null; :}
                         }
                        
                         RESULT = nPadre;
-
-                    } else RESULT = null;      
+                    } else{ RESULT = null; }      
                 :}
                 |   decls:ds error 
                 ;
@@ -422,7 +421,14 @@ inlineArgs      ::= inlineArg:ia
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Arguments");
                     nPadre.appendChild(ia);
-                    nPadre.appendChild(ias);
+                    ArrayList<Element> asd = new ArrayList();
+                    NodeList temp = ias.getChildNodes();
+                    for (int i = 0; i < temp.getLength(); i++) {
+                        asd.add((Element) temp.item(i));
+                    }
+                    for (int i = 0; i < asd.size(); i++) {
+                        nPadre.appendChild(asd.get(i));
+                    }
                     RESULT = nPadre;
                 :}
                 ;
@@ -494,10 +500,25 @@ vardecls        ::=  /* Empty */
                     if(v != null && vs == null ){
                         RESULT = v;
                     } else if(v == null && vs != null){
-                        RESULT = vs;
+                        Element nPadre = xmlDocument.createElement("VarDeclaration");
+                        nPadre.appendChild(vs);
+                        RESULT = nPadre;
                     } else if(v != null && vs != null){
-                        vs.appendChild(v);
-                        RESULT = vs;
+                        Element nPadre = xmlDocument.createElement("VarDeclarations");
+                        nPadre.appendChild(v);
+                        if (vs.getNodeName().equals("VarDeclaration")) {
+                            nPadre.appendChild(vs);
+                        } else {
+                            ArrayList<Element> asd = new ArrayList();
+                            NodeList temp = vs.getChildNodes();
+                            for (int i = 0; i < temp.getLength(); i++) {
+                                asd.add((Element) temp.item(i));
+                            }
+                            for (int i = 0; i < asd.size(); i++) {
+                                nPadre.appendChild(asd.get(i));
+                            }
+                        }
+                        RESULT = nPadre;
                     } else RESULT = null;
                 :} 
                 |   error PuntoComa vardecls:vs 
