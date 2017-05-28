@@ -33,6 +33,8 @@ public class SemanticParser {
             Node padre = nodos.item(j).getParentNode();
             if (padre.getNodeName().equals("Declarations")) {
                 ts = SemanticParser.addChildSymbols(nodos.item(j), ts);
+            } else if (padre.getNodeName().equals("Declarations")){
+            
             } else {
                 Node parentParent = padre.getParentNode();
                 String ID = getAttribute(parentParent, "ID");

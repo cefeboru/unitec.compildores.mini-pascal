@@ -17,8 +17,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
-import java.io.StringWriter;
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -593,32 +591,36 @@ public class Parser extends java_cup.runtime.lr_parser {
 class CUP$Parser$actions {
 
 
+        TablaSimbolos ts = new TablaSimbolos();
+        int offset = 0;
+        String ambito = "main";
+
         /* Contruccion del arbol en XML */
 
         Document xmlDocument = null;    
         Element nodoPadre = null; 
 
         private void iniXML() {
-        if (xmlDocument == null) {
-            try {
-                DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-                xmlDocument = docBuilder.newDocument();//Crear el documento XML
-            } catch (Exception e) {
-                System.err.println("el Arbol tiene ERROR: " + e.getMessage());
+            if (xmlDocument == null) {
+                try {
+                    DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+                    xmlDocument = docBuilder.newDocument();//Crear el documento XML
+                } catch (Exception e) {
+                    System.err.println("el Arbol tiene ERROR: " + e.getMessage());
+                }
             }
         }
-    }
 
-    public void escribirXML() throws javax.xml.transform.TransformerConfigurationException, javax.xml.transform.TransformerException {
-        //Escribir el archivo XML         
-        xmlDocument.appendChild(nodoPadre);
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource origen = new DOMSource(xmlDocument);
-        StreamResult result = new StreamResult(new File("AST.xml"));
-        transformer.transform(origen, result);
-    }
+        public void escribirXML() throws javax.xml.transform.TransformerConfigurationException, javax.xml.transform.TransformerException {
+            //Escribir el archivo XML         
+            xmlDocument.appendChild(nodoPadre);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource origen = new DOMSource(xmlDocument);
+            StreamResult result = new StreamResult(new File("AST.xml"));
+            transformer.transform(origen, result);
+        }
 
   private final Parser parser;
 
@@ -657,7 +659,7 @@ class CUP$Parser$actions {
                     if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
-                    SemanticParser.llenarTablaSimbolos(nodoPadre);
+                    //SemanticParser.llenarTablaSimbolos(nodoPadre);
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -712,7 +714,7 @@ class CUP$Parser$actions {
                     }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
-                    SemanticParser.llenarTablaSimbolos(nodoPadre);
+                    //SemanticParser.llenarTablaSimbolos(nodoPadre);
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("program",2, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1303,6 +1305,7 @@ class CUP$Parser$actions {
                                 asd.add((Element) temp.item(i));
                             }
                             for (int i = 0; i < asd.size(); i++) {
+                                String id = asd.get(i).getAttribute("Value");
                                 nPadre.appendChild(asd.get(i));
                             }
                         }
@@ -1377,6 +1380,18 @@ class CUP$Parser$actions {
                     Element nPadre = xmlDocument.createElement("Type");
                     if(it != null) {
                         nPadre.setAttribute("Value",it);
+                        String size = "";
+                        if(it.equals("integer")){
+                            size = "4";
+                        } else if(it.equals("boolean")){
+                            size = "1";
+                        } else if(it.equals("char")){
+                            size = "1";
+                        } else if(it.equals("string")){
+                            size = "10";
+                        }
+
+                        nPadre.setAttribute("Size",size);
                         RESULT = nPadre;
                     } else RESULT = null;
                 
@@ -1475,8 +1490,8 @@ class CUP$Parser$actions {
 		  
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ArrayType");
-                    if(l1 != null){nPadre.appendChild(l1);}
-                    if(l2 != null){nPadre.appendChild(l2);}
+                    //nPadre.setAttribute("from", l1.getAttribute("Value"));
+                    //nPadre.setAttribute("to", l2.getAttribute("Value"));
                     if(t != null){nPadre.setAttribute("Type",t);}
                     RESULT = nPadre;
                 
@@ -2613,6 +2628,7 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Integer");
                     nPadre.setAttribute("Value",i.toString());
+                    nPadre.setAttribute("Size","4");
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("integer",38, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
