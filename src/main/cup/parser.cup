@@ -234,7 +234,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                     if (v != null) { nodoPadre.appendChild(v); }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
-                    //SemanticParser.llenarTablaSimbolos(nodoPadre);
+                    SemanticParser.llenarTablaSimbolos(nodoPadre);
                 :}
                 |   Program var:v1 ParentesisAbrir vars:vs ParentesisCerrar PuntoComa block:b Punto
                 {:
@@ -259,7 +259,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                     }
                     if(b != null) { nodoPadre.appendChild(b); }
                     escribirXML();
-                    //SemanticParser.llenarTablaSimbolos(nodoPadre);
+                    SemanticParser.llenarTablaSimbolos(nodoPadre);
                 :}
                 | error block Punto
                 | Program var:v PuntoComa block:b error
@@ -458,6 +458,17 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                     if( t != null ) {
                         Element nType = xmlDocument.createElement("Type");
                         nType.setAttribute("Value",t);
+                        String size = "";
+                        if(t.equals("integer")){
+                            size = "4";
+                        } else if(t.equals("boolean")){
+                            size = "1";
+                        } else if(t.equals("char")){
+                            size = "1";
+                        } else if(t.equals("string")){
+                            size = "10";
+                        }
+                        nType.setAttribute("Size",size);
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
@@ -487,6 +498,17 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                     if( t != null ) {
                         Element nType = xmlDocument.createElement("Type");
                         nType.setAttribute("Value",t);
+                        String size = "";
+                        if(t.equals("integer")){
+                            size = "4";
+                        } else if(t.equals("boolean")){
+                            size = "1";
+                        } else if(t.equals("char")){
+                            size = "1";
+                        } else if(t.equals("string")){
+                            size = "10";
+                        }
+                        nType.setAttribute("Size",size);
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;

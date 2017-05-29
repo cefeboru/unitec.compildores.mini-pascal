@@ -1176,6 +1176,17 @@ class CUP$Parser$actions {
                     if( t != null ) {
                         Element nType = xmlDocument.createElement("Type");
                         nType.setAttribute("Value",t);
+                        String size = "";
+                        if(t.equals("integer")){
+                            size = "4";
+                        } else if(t.equals("boolean")){
+                            size = "1";
+                        } else if(t.equals("char")){
+                            size = "1";
+                        } else if(t.equals("string")){
+                            size = "10";
+                        }
+                        nType.setAttribute("Size",size);
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
@@ -1218,6 +1229,17 @@ class CUP$Parser$actions {
                     if( t != null ) {
                         Element nType = xmlDocument.createElement("Type");
                         nType.setAttribute("Value",t);
+                        String size = "";
+                        if(t.equals("integer")){
+                            size = "4";
+                        } else if(t.equals("boolean")){
+                            size = "1";
+                        } else if(t.equals("char")){
+                            size = "1";
+                        } else if(t.equals("string")){
+                            size = "10";
+                        }
+                        nType.setAttribute("Size",size);
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;

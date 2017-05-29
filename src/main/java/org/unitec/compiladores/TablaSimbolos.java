@@ -18,15 +18,31 @@ import java.util.Set;
 public class TablaSimbolos {
 
     ArrayList<Simbolo> Simbolos = new ArrayList();
-    String formatHeader = "%-20s %-20s %-40s %-15s %-15s %-15s %-15s %-18s";
-    String formatBody = "%-20s %-20s %-40s %-15s %-15s %-15s %-15s %-18s";
+    String formatHeader = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-18s";
+    String formatBody = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-18s";
 
-    public void Add(Simbolo S){
-        int itemIndex = this.getSymbolIndex(S.getId());
-        Simbolos.add(S);
+    public int Add(Simbolo S) throws Exception{
+        int itemIndex = this.getSymbolIndex(S);
+        if(itemIndex > 0) {
+            throw new Exception("Ya existe un elemento " + S.getId() + " en el ambito " + S.getAmbito());
+        } else {
+            Simbolos.add(S);
+        }
+        return Simbolos.size() -1;
     }
     
-    public Simbolo getSimbolo(int index) throws Exception{
+    public int Add(Simbolo S, boolean isParameter) throws Exception{
+        int itemIndex = this.getSymbolIndex(S);
+        if(itemIndex > 0) {
+            throw new Exception("Ya existe un elemento " + S.getId() + " en el ambito " + S.getAmbito());
+        } else {
+            Simbolos.add(S);
+        }
+        return Simbolos.size() -1;
+    }
+    
+    
+    public Simbolo getSimbolo(int index) throws Exception {
         if(index >= 0 && index < Simbolos.size()){
             return Simbolos.get(index);
         } else {
@@ -34,15 +50,26 @@ public class TablaSimbolos {
         }
     }
     
-    public int getSymbolIndex(String id){
+    public int getSymbolIndex(Simbolo S){
         for (int i = 0; i < Simbolos.size(); i++) {
-            Simbolo S = Simbolos.get(i);
-            if(S.getId().equals(id)){
+            Simbolo St = Simbolos.get(i);
+            boolean hasSameName = S.getId().equals(St.getId());
+            boolean hasSameScope = S.getAmbito().equals(St.getAmbito());
+            boolean hasSameType = S.getTipo().equals(St.getTipo());
+            if( hasSameName && hasSameScope && hasSameType){
                 return i;
             }
         }
         return -1;
     } 
+    
+    public void replaceNode(Simbolo S, int index) {
+        Simbolos.set(index, S);
+    }
+    
+    private boolean hasSameParameters(Simbolo S1, Simbolo S2) {
+        return false;
+    }
     
     public void clear(){
         Simbolos.clear();
