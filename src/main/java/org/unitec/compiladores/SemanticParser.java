@@ -5,6 +5,7 @@
  */
 package org.unitec.compiladores;
 
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -15,24 +16,89 @@ import org.w3c.dom.NodeList;
  */
 public class SemanticParser {
 
-    String ambitoActual;
+    static String ambitoActual;
+    static TablaSimbolos ts = new TablaSimbolos();
+    static int offset;
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) {
-        TablaSimbolos ts = new TablaSimbolos();
-        ts = llenarVarDeclaration(ts, nodoPadre);
-
+        ambitoActual = "main";
+        recorrerArbol(nodoPadre);
         ts.toString();
-
         return ts;
     }
+    
+    private static void recorrerArbol(Element nodoPadre){
+        NodeList hijos = nodoPadre.getChildNodes();
+        for (int i = 0; i < hijos.getLength(); i++) {
+            Element nodo = (Element)hijos.item(i);            
+            String nodeName = nodo.getNodeName();
+            System.out.println(nodeName);
+            switch(nodeName){
+                case "VarDeclaration":{
+                    String type = ((Element)nodo.getLastChild()).getAttribute("Value");
+                    int size = Integer.parseInt(
+                            ((Element)nodo.getLastChild()).getAttribute("Size")
+                    );
+                    NodeList idList = nodo.getElementsByTagName("ID");
+                    for (int j = 0; j < idList.getLength(); j++) {
+                        String ID = ((Element)idList.item(j)).getAttribute("Value");
+                        Simbolo S = new Simbolo(ID, null, type, ambitoActual, true, false, false, offset);
+                        ts.Add(S);
+                        offset += size;
+                    }
+                    break;
+                }
+                case "inlineArg":{
+                    String type = ((Element)nodo.getLastChild()).getAttribute("Value");
+                    String strSize = ((Element)nodo.getLastChild()).getAttribute("Size");
+                    int size = Integer.parseInt(strSize.isEmpty() ? "0" : strSize);
+                    NodeList idList = nodo.getElementsByTagName("ID");
+                    for (int j = 0; j < idList.getLength(); j++) {
+                        String ID = ((Element)idList.item(j)).getAttribute("Value");
+                        Simbolo S = new Simbolo(ID, null, type, ambitoActual, false, false, true, offset);
+                        ts.Add(S);
+                        offset += size;
+                    }
+                    break;
+                }
+                case "ProcedureDeclaration":{
+                    String ID = nodo.getAttribute("ID");
+                    String type = nodo.getAttribute("Type");
+                    Simbolo S = new Simbolo(ID, null, "void", "main", false, true, false, offset);
+                    ts.Add(S);
+                    ambitoActual = nodo.getAttribute("ID");
+                    int backupOffset = offset;
+                    offset = 0;
+                    recorrerArbol(nodo);
+                    ambitoActual = "main";
+                    offset = backupOffset;
+                    break;
+                }
+                case "FunctionDeclaration": {
+                    String ID = nodo.getAttribute("ID");
+                    String type = nodo.getAttribute("Type");
+                    Simbolo S = new Simbolo(ID, null, type, "main", false, true, false, offset);
+                    ts.Add(S);
+                    ambitoActual = nodo.getAttribute("ID");
+                    recorrerArbol(nodo);
+                    ambitoActual = "main";
+                    break;
+                }
+                default:
+                    recorrerArbol(nodo);
+                
+            }                
+        }
+        
+    }
 
-    private static TablaSimbolos llenarVarDeclaration(TablaSimbolos ts, Element nodoPadre) {
+    private static TablaSimbolos llenarVarDeclaration(Element nodoPadre) {
         NodeList nodos = nodoPadre.getElementsByTagName("VarDeclaration");
 
         for (int j = 0; j < nodos.getLength(); j++) {
             Node padre = nodos.item(j).getParentNode();
             if (padre.getNodeName().equals("Declarations")) {
-                ts = SemanticParser.addChildSymbols(nodos.item(j), ts);
+                SemanticParser.addChildSymbols(nodos.item(j), ts);
             } else if (padre.getNodeName().equals("Declarations")){
             
             } else {
@@ -68,7 +134,7 @@ public class SemanticParser {
         return ts;
     }
 
-    public static TablaSimbolos addChildSymbols(Node element, TablaSimbolos ts) {
+    public static void addChildSymbols(Node element, TablaSimbolos ts) {
         NodeList hijos = element.getChildNodes();
         if (hijos.getLength() > 0) {
             String tipo = getAttribute(hijos.item(hijos.getLength() - 1), "Value");
@@ -79,7 +145,6 @@ public class SemanticParser {
                 ts.Add(S);
             }
         }
-        return ts;
     }
 
     public static TablaSimbolos addChildSymbols(Node element, TablaSimbolos ts, String ambito) {

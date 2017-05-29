@@ -1,6 +1,5 @@
 program hola(asd,dsa);
 var 
-    c: char;
     a,d:integer;
     d: integer;
     a,d:char;
