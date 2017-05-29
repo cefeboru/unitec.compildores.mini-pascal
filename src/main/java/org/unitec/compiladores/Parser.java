@@ -1187,6 +1187,7 @@ class CUP$Parser$actions {
                             size = "10";
                         }
                         nType.setAttribute("Size",size);
+                        nType.setAttribute("isPointer","true");
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
@@ -1240,6 +1241,7 @@ class CUP$Parser$actions {
                             size = "10";
                         }
                         nType.setAttribute("Size",size);
+                        nType.setAttribute("isPointer","false");
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;

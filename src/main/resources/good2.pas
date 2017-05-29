@@ -10,7 +10,7 @@ var
 begin
 end;
 
-function y(q,w : integer; var l: char):integer;
+function y(q,w : integer; var l,n: char):integer;
 var
     b:integer;   
     a,d:integer;

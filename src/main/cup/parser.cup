@@ -469,6 +469,7 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                             size = "10";
                         }
                         nType.setAttribute("Size",size);
+                        nType.setAttribute("isPointer","true");
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
@@ -509,6 +510,7 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                             size = "10";
                         }
                         nType.setAttribute("Size",size);
+                        nType.setAttribute("isPointer","false");
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
