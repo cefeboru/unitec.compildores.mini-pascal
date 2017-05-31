@@ -55,6 +55,10 @@ public class SemanticParser {
                 case "inlineArg":{
                     String type = ((Element)nodo.getLastChild()).getAttribute("Value");
                     String strSize = ((Element)nodo.getLastChild()).getAttribute("Size");
+                    String isPointer = ((Element)nodo.getLastChild()).getAttribute("isPointer");
+                    if (isPointer.equals("true")) {
+                        type = "pointer("+type+")";   
+                    }
                     int size = Integer.parseInt(strSize.isEmpty() ? "0" : strSize);
                     NodeList idList = nodo.getElementsByTagName("ID");
                     for (int j = 0; j < idList.getLength(); j++) {

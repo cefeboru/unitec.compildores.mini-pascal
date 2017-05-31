@@ -1187,6 +1187,7 @@ class CUP$Parser$actions {
                             size = "10";
                         }
                         nType.setAttribute("Size",size);
+                        nType.setAttribute("isPointer","true");
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
@@ -1240,6 +1241,7 @@ class CUP$Parser$actions {
                             size = "10";
                         }
                         nType.setAttribute("Size",size);
+                        nType.setAttribute("isPointer","false");
                         nPadre.appendChild(nType);                        
                     }
                     RESULT = nPadre;
@@ -1455,7 +1457,8 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Type");
                     if(ats != null) {
-                        nPadre.appendChild(ats);
+                        nPadre.setAttribute("Value",ats.getAttribute("Value"));
+                        nPadre.setAttribute("Size",ats.getAttribute("Size"));
                         RESULT = nPadre;
                     } else RESULT = null;
                 
@@ -1535,9 +1538,22 @@ class CUP$Parser$actions {
 		  
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ArrayType");
-                    //nPadre.setAttribute("from", l1.getAttribute("Value"));
-                    //nPadre.setAttribute("to", l2.getAttribute("Value"));
-                    if(t != null){nPadre.setAttribute("Type",t);}
+                    if(t != null){
+                        nPadre.setAttribute("Value","Array."+t+"."+l1.getAttribute("Value")+"."+l2.getAttribute("Value"));
+                        int size = 0;
+                        if(t.equals("integer")){
+                            size = 4;
+                        } else if(t.equals("boolean")){
+                            size = 1;
+                        } else if(t.equals("char")){
+                            size = 1;
+                        } else if(t.equals("string")){
+                            size = 10;
+                        }
+                        int temp1 = Integer.parseInt(l1.getAttribute("Value"));
+                        int temp2 = Integer.parseInt(l2.getAttribute("Value"));
+                        nPadre.setAttribute("Size", ((temp2-temp1+1)*size)+"");
+                    }
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("arraytype",18, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-7)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

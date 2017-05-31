@@ -119,6 +119,7 @@ public class MainGui extends javax.swing.JFrame {
 
     private void btn_compileMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_compileMouseClicked
         SemanticParser.ts.clear();
+        SemanticParser.offset=0;
         System.out.println("--------------------------------------------------------------------------------------------------------------------------");
         PascalFlexer scanner;
         Parser parser = null;
