@@ -50,6 +50,15 @@ public class TablaSimbolos {
         }
     }
     
+     public Simbolo getVariable(String Id) throws Exception {
+        for(Simbolo S : Simbolos){
+            if(S.getId().equals(Id) && S.isVariable()){
+                return S;
+            }
+        }  
+        return null;
+    }
+    
     public int getSymbolIndex(Simbolo S){
         for (int i = 0; i < Simbolos.size(); i++) {
             Simbolo St = Simbolos.get(i);

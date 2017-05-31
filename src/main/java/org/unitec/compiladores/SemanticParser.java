@@ -5,6 +5,7 @@
  */
 package org.unitec.compiladores;
 
+import java.util.ArrayList;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -18,6 +19,11 @@ public class SemanticParser {
     static TablaSimbolos ts = new TablaSimbolos();
     static int offset;
     static String tempType = "";
+    static ArrayList<Element> nodosHoja = new ArrayList();
+    static String tipoActual = "";
+    static String tipoEvaluado = "";
+    static boolean print = false;
+    
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
         recorrerArbol(nodoPadre);
@@ -29,7 +35,7 @@ public class SemanticParser {
         NodeList hijos = nodoPadre.getChildNodes();
         
         for (int i = 0; i < hijos.getLength(); i++) {
-            Element nodo = (Element)hijos.item(i);            
+            Element nodo = (Element)hijos.item(i);
             String nodeName = nodo.getNodeName();
             switch(nodeName){
                 case "VarDeclaration":{
@@ -102,9 +108,41 @@ public class SemanticParser {
                     offset = backupOffset;
                     break;
                 }
-                default:
+                case "Literal": {
+                    String type = nodo.getAttribute("Type");
+                    tipoEvaluado = type ;
+                    if(!tipoActual.isEmpty() && !tipoActual.equals(type)){
+                        throw new Exception("Tipo no compatible");
+                    }
+                    break;
+                }
+                case "Assignment": {
+                    Element IdNode = (Element)nodo.getFirstChild();
+                    String IdValex = IdNode.getAttribute("Value");
+                    Simbolo S = ts.getVariable(IdValex);
+                    tipoActual = S.getTipo();
+                    try {
+                        recorrerArbol(nodo);
+                    }catch(Exception ex){
+                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
+                        String Linea = IdNode.getAttribute("Line");
+                        String Columna = IdNode.getAttribute("Column");
+                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
+                        System.out.println(message);
+                        throw new Exception(message);
+                    } finally {
+                        tipoActual = "";
+                        tipoEvaluado = "";
+                    }
+                    break;
+                }
+                case "ID": {
                     recorrerArbol(nodo);
-                
+                }
+                default:{
+                    recorrerArbol(nodo);
+                    break;
+                }
             }                
         }
         

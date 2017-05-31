@@ -19,6 +19,7 @@ begin
 end;
 begin
     a:= a + 2 * 5 + 6 - 7;
+    c := 2;
     if a=2 then
         begin
             for a:=3 to 20 do

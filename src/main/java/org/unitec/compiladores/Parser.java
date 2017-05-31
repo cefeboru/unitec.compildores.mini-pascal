@@ -1404,7 +1404,9 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ID");
-                    nPadre.setAttribute("Value",i);            
+                    nPadre.setAttribute("Value",i);
+                    nPadre.setAttribute("Line",ileft + "");
+                    nPadre.setAttribute("Column",iright + "");
                     RESULT = nPadre;                    
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("var",21, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2609,7 +2611,11 @@ class CUP$Parser$actions {
 		Element i = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    RESULT = i;
+                    Element nPadre = xmlDocument.createElement("Literal");
+                    nPadre.setAttribute("Type","integer");
+                    nPadre.setAttribute("Value",String.valueOf(i.getAttribute("Value")));
+                    RESULT =nPadre;
+                    //TODO
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2624,7 +2630,10 @@ class CUP$Parser$actions {
 		Element c = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    RESULT = c;
+                    Element nPadre = xmlDocument.createElement("Literal");
+                    nPadre.setAttribute("Type","char");
+                    nPadre.setAttribute("Value",c.getAttribute("Value"));
+                    RESULT =nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2639,7 +2648,10 @@ class CUP$Parser$actions {
 		Element b = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    RESULT = b;
+                    Element nPadre = xmlDocument.createElement("Literal");
+                    nPadre.setAttribute("Type","boolean");
+                    nPadre.setAttribute("Value",b.getAttribute("Value"));
+                    RESULT =nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2654,7 +2666,10 @@ class CUP$Parser$actions {
 		Element s = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    RESULT = s;
+                     Element nPadre = xmlDocument.createElement("Literal");
+                    nPadre.setAttribute("Type","string");
+                    nPadre.setAttribute("Value",s.getAttribute("Value"));
+                    RESULT =nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",1, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
