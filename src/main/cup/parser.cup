@@ -171,6 +171,8 @@ terminal String         LiteralString;
 
 /* Non terminals */
 nonterminal Element              expr;
+nonterminal Element              expr2;
+nonterminal Element              expr3;
 nonterminal Element              literal;
 nonterminal Element              program;
 nonterminal Element              block;
@@ -221,8 +223,8 @@ nonterminal Element              string;
 /*-* Operator Precedences **/
 precedence right DosPuntosIgual;
 precedence left OperadorIgual, OperadorMenor, OperadorMayor, OperadorMenorIgual, OperadorMayorIgual, OperadorDiferente;
-precedence left OperadorSuma, OperadorResta, OperadorOr;
-precedence left OperadorMultiplicacion, OperadorDivision, OperadorMod, OperadorDivisionSpecial, OperadorAnd;
+precedence left OperadorOr;
+precedence left OperadorMod, OperadorDivisionSpecial, OperadorAnd;
 precedence left Else, PuntoComa;
 precedence left error;
 
@@ -863,10 +865,10 @@ readstmt        ::= Read ParentesisAbrir var:v ParentesisCerrar
                 |   readstmt error
                 ;
 
-expr            ::= literal:l 
+expr            ::= expr2:e 
                 {:
                     iniXML();                
-                    RESULT = l;
+                    RESULT = e;
                 :}
                 |   var:v
                 {:
@@ -887,36 +889,59 @@ expr            ::= literal:l
                     Element nPadre = xmlDocument.createElement("FunctionCall");
                     if (v != null) { nPadre.appendChild(v);}
                 :}
-                |   expr:e1 opRelacion:op expr:e2
+                |   expr:e1 OperadorSuma:op expr2:e2
                 {:
                     iniXML();
-                    op.appendChild(e1);
-                    op.appendChild(e2);
-                    RESULT = op;
+                    Element node = xmlDocument.createElement("Plus");
+                    node.appendChild(e1);
+                    node.appendChild(e2);
+                    RESULT = node;
                 :}
-                |   expr:e1 opArit:op expr:e2
+                |   expr:e1 OperadorResta:op expr2:e2
                 {:
                     iniXML();
-                    op.appendChild(e1);
-                    op.appendChild(e2);
-                    RESULT = op;
-                :}
-                |   opUnario:op expr:e
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Expression");
-                    if (op != null) { nPadre.appendChild(op);}
-                    if (e != null) { nPadre.appendChild(e);}
-                    RESULT = nPadre;
-                :}
-                |   exprLogical:e
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Expression");
-                    if (e != null) { nPadre.appendChild(e);}
-                    RESULT = nPadre;
+                    Element node = xmlDocument.createElement("Minus");
+                    node.appendChild(e1);
+                    node.appendChild(e2);
+                    RESULT = node;
                 :}
                 ;
+
+expr2           ::= expr2:e1 OperadorMultiplicacion:op expr3:e2
+                {:
+                    iniXML();
+                    Element node = xmlDocument.createElement("Times");
+                    node.appendChild(e1);
+                    node.appendChild(e2);
+                    RESULT = node;
+                :}
+                | expr2:e1 OperadorDivision:op expr3:e2
+                {:
+                    iniXML();
+                    Element node = xmlDocument.createElement("Div");
+                    node.appendChild(e1);
+                    node.appendChild(e2);
+                    RESULT = node   ;
+                :}
+                |   expr3:e 
+                {:
+                    iniXML();
+                    RESULT = e;
+                :}
+                ;
+
+expr3           ::= literal:l
+                {:
+                    iniXML();
+                    RESULT = l; 
+                :}
+                |   ParentesisAbrir expr:e ParentesisCerrar
+                {:
+                    iniXML();
+                    RESULT = e;
+                :}
+                ;
+
 
 exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
                 {:
@@ -984,35 +1009,7 @@ opRelacion      ::= OperadorIgual:op
                 ;
 
 
-opArit          ::= OperadorSuma:op
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("ArithmeticOp");
-                    if (op != null) { nPadre.setAttribute("Value",op);}
-                    RESULT = nPadre;
-                :}
-                |   OperadorResta:op
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("ArithmeticOp");
-                    if (op != null) { nPadre.setAttribute("Value",op);}
-                    RESULT = nPadre;
-                :}
-                |   OperadorMultiplicacion:op
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("ArithmeticOp");
-                    if (op != null) { nPadre.setAttribute("Value",op);}
-                    RESULT = nPadre;
-                :}
-                |   OperadorDivision:op
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("ArithmeticOp");
-                    if (op != null) { nPadre.setAttribute("Value",op);}
-                    RESULT = nPadre;
-                :}
-                |   OperadorMod:op
+opArit          ::= OperadorMod:op
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ArithmeticOp");
