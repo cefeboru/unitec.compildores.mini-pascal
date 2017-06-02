@@ -170,9 +170,14 @@ terminal String         LiteralBoolean;
 terminal String         LiteralString;
 
 /* Non terminals */
+
 nonterminal Element              expr;
-nonterminal Element              expr2;
-nonterminal Element              expr3;
+nonterminal Element              AritExpr1;
+nonterminal Element              AritExpr2;
+nonterminal Element              AritExpr3;
+nonterminal Element              BoolExpr1;
+nonterminal Element              BoolExpr2;
+nonterminal Element              BoolExpr3;
 nonterminal Element              literal;
 nonterminal Element              program;
 nonterminal Element              block;
@@ -865,15 +870,15 @@ readstmt        ::= Read ParentesisAbrir var:v ParentesisCerrar
                 |   readstmt error
                 ;
 
-expr            ::= expr2:e 
+expr            ::= AritExpr1:e1
                 {:
-                    iniXML();                
-                    RESULT = e;
+                    iniXML();    
+                    RESULT = e1;
                 :}
-                |   var:v
+                |   BoolExpr1:b1 
                 {:
-                    iniXML();             
-                    RESULT = v;
+                    iniXML();
+                    RESULT = b1;
                 :}
                 |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
                 {:
@@ -889,7 +894,24 @@ expr            ::= expr2:e
                     Element nPadre = xmlDocument.createElement("FunctionCall");
                     if (v != null) { nPadre.appendChild(v);}
                 :}
-                |   expr:e1 OperadorSuma:op expr2:e2
+                |   exprLogical:e
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expression");
+                    if (e != null) { nPadre.appendChild(e);}
+                    RESULT = nPadre;
+                :}
+                |   opUnario:op expr:e
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("Expression");
+                    if (op != null) { nPadre.appendChild(op);}
+                    if (e != null) { nPadre.appendChild(e);}
+                    RESULT = nPadre;
+                :}
+                ;
+
+AritExpr1       ::= AritExpr1:e1 OperadorSuma AritExpr2:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Plus");
@@ -897,7 +919,7 @@ expr            ::= expr2:e
                     node.appendChild(e2);
                     RESULT = node;
                 :}
-                |   expr:e1 OperadorResta:op expr2:e2
+                |   AritExpr1:e1 OperadorResta AritExpr2:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Minus");
@@ -905,9 +927,14 @@ expr            ::= expr2:e
                     node.appendChild(e2);
                     RESULT = node;
                 :}
+                |   AritExpr2:e1
+                {:
+                    iniXML();                
+                    RESULT = e1;
+                :}
                 ;
 
-expr2           ::= expr2:e1 OperadorMultiplicacion:op expr3:e2
+AritExpr2           ::= AritExpr2:e1 OperadorMultiplicacion AritExpr3:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Times");
@@ -915,7 +942,7 @@ expr2           ::= expr2:e1 OperadorMultiplicacion:op expr3:e2
                     node.appendChild(e2);
                     RESULT = node;
                 :}
-                | expr2:e1 OperadorDivision:op expr3:e2
+                | AritExpr2:e1 OperadorDivision AritExpr3:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Div");
@@ -923,25 +950,42 @@ expr2           ::= expr2:e1 OperadorMultiplicacion:op expr3:e2
                     node.appendChild(e2);
                     RESULT = node   ;
                 :}
-                |   expr3:e 
+                |   AritExpr3:e 
                 {:
                     iniXML();
                     RESULT = e;
                 :}
                 ;
 
-expr3           ::= literal:l
+AritExpr3           ::= literal:l
                 {:
                     iniXML();
                     RESULT = l; 
+                    
                 :}
-                |   ParentesisAbrir expr:e ParentesisCerrar
+                |   ParentesisAbrir AritExpr1:e ParentesisCerrar
                 {:
                     iniXML();
                     RESULT = e;
                 :}
+                |
+                var:v
+                {:
+                    iniXML();
+                    RESULT = v; 
+                    
+                :}
                 ;
 
+BoolExpr1       ::= AritExpr1:e1 opRelacion:op AritExpr1:e2
+                {:
+                    iniXML();
+                    op.appendChild(e1);
+                    op.appendChild(e2);
+                    RESULT = op;
+                :} 
+                ;
+                
 
 exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
                 {:
