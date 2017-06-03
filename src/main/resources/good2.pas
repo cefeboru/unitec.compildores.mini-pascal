@@ -19,7 +19,7 @@ begin
 end;
 begin
     a:= a + 2 * 5 / 2;
-    if (((a=2) and (a>3)) or (a>3)) then
+    if ((not (a=2) and not (a>3)) or ((a<4) or not (a>3))) then
     begin
         for a:=3 to 20 do
     end;

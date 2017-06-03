@@ -877,6 +877,7 @@ expr            ::= AritExpr1:e1
                 :}
                 |   BoolExpr1:b1 
                 {:
+                    System.out.println("------------"+b1);
                     iniXML();
                     RESULT = b1;
                 :}
@@ -979,7 +980,14 @@ BoolExpr1       ::= BoolExpr1:e1 opLogico:op BoolExpr1:e2
                     op.appendChild(e2);
                     RESULT = op;
                 :} 
-                | ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 ParentesisCerrar
+                |   BoolExpr2:e1
+                {:
+                    iniXML();
+                    RESULT = e1;
+                :} 
+                ;
+
+BoolExpr2       ::= ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 ParentesisCerrar
                 {:
                     iniXML();
                     op.appendChild(e1);
@@ -991,25 +999,12 @@ BoolExpr1       ::= BoolExpr1:e1 opLogico:op BoolExpr1:e2
                     iniXML();
                     RESULT = e1;
                 :} 
-                ;
-
-exprLogical     ::= ParentesisAbrir expr:e1 ParentesisCerrar exprOpLog:e2
+                | OperadorNot:op BoolExpr2:e1
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Expression");
-                    if (e1 != null) { nPadre.appendChild(e1);}
-                    if (e2 != null) { nPadre.appendChild(e2);}
-                    RESULT = nPadre;
-                :}
-                ;
-
-exprOpLog       ::= /* Empty */
-                |   opLogico:op exprLogical:e
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Expression");
-                    if (op != null) { nPadre.appendChild(op);}
-                    if (e != null)  { nPadre.appendChild(e);}
+                    Element nPadre = xmlDocument.createElement("Not");
+                    if (op != null) { nPadre.setAttribute("Value",op);}
+                    nPadre.appendChild(e1);
                     RESULT = nPadre;
                 :}
                 ;
@@ -1075,14 +1070,7 @@ opArit          ::= OperadorMod:op
                 :}
                 ;
 
-opUnario        ::= OperadorNot:op
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("UnaryOp");
-                    if (op != null) { nPadre.setAttribute("Value",op);}
-                    RESULT = nPadre;
-                :}
-                |   OperadorSuma:op
+opUnario        ::= OperadorSuma:op
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("UnaryOp");
