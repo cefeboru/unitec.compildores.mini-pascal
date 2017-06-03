@@ -877,7 +877,6 @@ expr            ::= AritExpr1:e1
                 :}
                 |   BoolExpr1:b1 
                 {:
-                    System.out.println("------------"+b1);
                     iniXML();
                     RESULT = b1;
                 :}
@@ -973,12 +972,14 @@ AritExpr3           ::= literal:l
                 :}
                 ;
 
-BoolExpr1       ::= BoolExpr1:e1 opLogico:op BoolExpr1:e2 
+BoolExpr1       ::= BoolExpr1:e1 OperadorOr:op BoolExpr2:e2
                 {:
                     iniXML();
-                    op.appendChild(e1);
-                    op.appendChild(e2);
-                    RESULT = op;
+                    Element nPadre = xmlDocument.createElement("Or");
+                    nPadre.setAttribute("Value",op);
+                    nPadre.appendChild(e1);
+                    nPadre.appendChild(e2);
+                    RESULT = nPadre;
                 :} 
                 |   BoolExpr2:e1
                 {:
@@ -987,7 +988,23 @@ BoolExpr1       ::= BoolExpr1:e1 opLogico:op BoolExpr1:e2
                 :} 
                 ;
 
-BoolExpr2       ::= ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 ParentesisCerrar
+BoolExpr2       ::= BoolExpr2:e1 OperadorAnd:op BoolExpr3:e2
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("And");
+                    nPadre.setAttribute("Value",op);
+                    nPadre.appendChild(e1);
+                    nPadre.appendChild(e2);
+                    RESULT = nPadre;
+                :} 
+                | BoolExpr3:e1
+                {:
+                    iniXML();
+                    RESULT = e1;
+                :} 
+                ;
+
+BoolExpr3       ::= ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 ParentesisCerrar
                 {:
                     iniXML();
                     op.appendChild(e1);
@@ -999,7 +1016,7 @@ BoolExpr2       ::= ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 Pa
                     iniXML();
                     RESULT = e1;
                 :} 
-                | OperadorNot:op BoolExpr2:e1
+                | OperadorNot:op BoolExpr3:e1
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Not");
