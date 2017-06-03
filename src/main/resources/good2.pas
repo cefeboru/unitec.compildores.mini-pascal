@@ -23,6 +23,6 @@ begin
     begin
         for a:=3 to 20 do
     end;
-    if (a > 20) and (a=1) or (a<2) and (a>3) then
+    if (a > 20) and (a=1) or (a<2) and (-a>+3) then
     
 end.

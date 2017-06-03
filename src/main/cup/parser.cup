@@ -473,7 +473,7 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                         } else if(t.equals("char")){
                             size = "1";
                         } else if(t.equals("string")){
-                            size = "10";
+                            size = "4";
                         }
                         nType.setAttribute("Size",size);
                         nType.setAttribute("isPointer","true");
@@ -514,7 +514,7 @@ inlineArg       ::= Var vars:vs DosPuntos identtype:t
                         } else if(t.equals("char")){
                             size = "1";
                         } else if(t.equals("string")){
-                            size = "10";
+                            size = "4";
                         }
                         nType.setAttribute("Size",size);
                         nType.setAttribute("isPointer","false");
@@ -622,7 +622,7 @@ type            ::= identtype:it
                         } else if(it.equals("char")){
                             size = "1";
                         } else if(it.equals("string")){
-                            size = "10";
+                            size = "4";
                         }
 
                         nPadre.setAttribute("Size",size);
@@ -674,7 +674,7 @@ arraytype       ::= Array BracketAbrir literal:l1 PuntoPunto literal:l2 BracketC
                         } else if(t.equals("char")){
                             size = 1;
                         } else if(t.equals("string")){
-                            size = 10;
+                            size = 4;
                         }
                         int temp1 = Integer.parseInt(l1.getAttribute("Value"));
                         int temp2 = Integer.parseInt(l2.getAttribute("Value"));
@@ -901,15 +901,6 @@ expr            ::= AritExpr1:e1
                     Element nPadre = xmlDocument.createElement("FunctionCall");
                     if (v != null) { nPadre.appendChild(v);}
                 :}
-                |   opUnario:op expr:e
-                {:
-                    iniXML();
-                    Element nPadre = xmlDocument.createElement("Expression");
-                    if (op != null) { nPadre.appendChild(op);}
-                    if (e != null) { nPadre.appendChild(e);}
-                    RESULT = nPadre;
-                :}
-                
                 ;
 
 AritExpr1       ::= AritExpr1:e1 OperadorSuma AritExpr2:e2
@@ -958,7 +949,7 @@ AritExpr2           ::= AritExpr2:e1 OperadorMultiplicacion AritExpr3:e2
                 :}
                 ;
 
-AritExpr3           ::= literal:l
+AritExpr3       ::= literal:l
                 {:
                     iniXML();
                     RESULT = l; 
@@ -969,6 +960,12 @@ AritExpr3           ::= literal:l
                     iniXML();
                     RESULT = v; 
                     
+                :}
+                |  opUnario:op AritExpr3:e1
+                {:
+                    iniXML();
+                    op.appendChild(e1);
+                    RESULT = op;
                 :}
                 ;
 
