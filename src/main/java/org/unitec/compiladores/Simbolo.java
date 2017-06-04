@@ -14,7 +14,21 @@ public class Simbolo {
     private String valor;
     private String tipo;
     private String ambito;
+    private int refIndex = -1;
+    private boolean variable;
+    private boolean funcion;
+    private boolean parametro;
+    private boolean byRef;
+    private int posicionMemoria;
 
+    public int getRefIndex() {
+        return refIndex;
+    }
+
+    public void setRefIndex(int refIndex) {
+        this.refIndex = refIndex;
+    }
+    
     public String getAmbito() {
         return ambito;
     }
@@ -30,11 +44,6 @@ public class Simbolo {
     public void setByRef(boolean byRef) {
         this.byRef = byRef;
     }
-    private boolean variable;
-    private boolean funcion;
-    private boolean parametro;
-    private boolean byRef;
-    private int posicionMemoria;
 
     
     public Simbolo() {
@@ -45,6 +54,7 @@ public class Simbolo {
         this.funcion = false;
         this.parametro = false;
         this.posicionMemoria = 0;
+        
     }
     
      public Simbolo(String id, String valor, String tipo) {

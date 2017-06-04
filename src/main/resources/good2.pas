@@ -3,10 +3,8 @@ var
     a,d:integer;
     c: char;
     e: array[1..10] of integer;
-procedure x2(var arg4:integer; arg5:boolean);
+function x2(var arg4:integer; arg5:boolean):boolean;
 var
-    n:char;
-    a,d:integer;
 begin
 end;
 

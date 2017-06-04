@@ -23,6 +23,7 @@ public class SemanticParser {
     static String tipoActual = "";
     static String tipoEvaluado = "";
     static boolean print = false;
+    static boolean isFunction = false;
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
@@ -115,6 +116,8 @@ public class SemanticParser {
                 case "Literal": {
                     String type = nodo.getAttribute("Type");
                     tipoEvaluado = type;
+                    Linea = nodo.getAttribute("Line");
+                    Columna = nodo.getAttribute("Column");
                     if (!tipoActual.isEmpty() && !tipoActual.equals(type)) {
                         String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
                         String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
@@ -142,11 +145,15 @@ public class SemanticParser {
                     String idValex = nodo.getAttribute("Value");
                     String parentName = nodo.getParentNode().getNodeName();
                     boolean programIsParent = parentName.equals("Program");
+                    Linea = nodo.getAttribute("Line");
+                    Columna = nodo.getAttribute("Column");
                     if (programIsParent) {
                         recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
                         break;
                     }
+                    
                     Simbolo S = ts.getVariable(idValex, ambitoActual);
+                    
                     if (S == null) {
                         String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
                         throw new Exception(String.format(formatString, Linea, Columna, nodo.getAttribute("Value")));
@@ -162,7 +169,8 @@ public class SemanticParser {
                 }
                 case "FunctionCall": {
                     String tipoActualFunction = "";
-                    recorrerArbol(nodo, Linea, Columna);
+                    //recorrerArbol(nodo, Linea, Columna);
+                    comprobarFuncion(nodo);
 
                 }
                 case "GreaterThan":
@@ -177,6 +185,15 @@ public class SemanticParser {
                     tipoActual = tipoActualBKP;
                     break;
                 }
+                case "AND":
+                case "OR":
+                case "NOT":
+                {
+                    String tipoActualBKP = tipoActual;
+                    tipoActual = "boolean";
+                    recorrerArbol(nodo, Linea, Columna);
+                    tipoActual = tipoActualBKP;
+                }   
                 default: {
                     recorrerArbol(nodo, Linea, Columna);
                     break;
@@ -233,5 +250,9 @@ public class SemanticParser {
             }
 
         }
+    }
+
+    private static void comprobarFuncion(Element nodo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -17,7 +17,7 @@ public class TablaSimbolos {
     String formatHeader = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-18s";
     String formatBody = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-18s";
 
-    public int Add(Simbolo S) throws Exception{
+    public int Add(Simbolo S) throws Exception {
         int itemIndex = this.getSymbolIndex(S);
         if(itemIndex > 0) {
             throw new Exception("Ya existe un elemento " + S.getId() + " en el ambito " + S.getAmbito());
@@ -44,6 +44,15 @@ public class TablaSimbolos {
         return null;
     }
      
+     public Simbolo getFunction(String Id) throws Exception {
+        for(Simbolo S : Simbolos){
+            if(S.getId().equals(Id) && S.isVariable()){
+                return S;
+            }
+        }  
+        return null;
+    }
+     
     public Simbolo getVariable(String Id, String ambito) throws Exception {
         for(Simbolo S : Simbolos){
             if(S.getId().equals(Id) && S.isVariable() && S.getAmbito().equals(ambito)){
@@ -58,8 +67,7 @@ public class TablaSimbolos {
             Simbolo St = Simbolos.get(i);
             boolean hasSameName = S.getId().equals(St.getId());
             boolean hasSameScope = S.getAmbito().equals(St.getAmbito());
-            boolean hasSameType = S.getTipo().equals(St.getTipo());
-            if( hasSameName && hasSameScope && hasSameType){
+            if( hasSameName && hasSameScope){
                 return i;
             }
         }

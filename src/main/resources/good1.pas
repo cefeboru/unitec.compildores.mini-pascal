@@ -1,19 +1,12 @@
 program hola;
 var 
     a,b,c,d:integer;
-    e: string;
-function x(var a: integer):integer;
-var
-    b:integer;
-begin
-end;
-function y():integer;
-var
-    a:integer;
+    e: boolean;
+function x2(arg4:integer):boolean;
 begin
 end;
 begin
-    if a + 1 + b > 1 + 2 then
+    a := x2(a);
 end.
 
 
