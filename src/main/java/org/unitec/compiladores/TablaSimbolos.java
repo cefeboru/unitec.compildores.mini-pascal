@@ -46,7 +46,7 @@ public class TablaSimbolos {
      
      public Simbolo getFunction(String Id) throws Exception {
         for(Simbolo S : Simbolos){
-            if(S.getId().equals(Id) && S.isVariable()){
+            if(S.getId().equals(Id) && S.isFuncion()){
                 return S;
             }
         }  

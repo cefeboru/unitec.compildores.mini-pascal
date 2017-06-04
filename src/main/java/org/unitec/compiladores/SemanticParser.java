@@ -23,7 +23,7 @@ public class SemanticParser {
     static String tipoActual = "";
     static String tipoEvaluado = "";
     static boolean print = false;
-    static boolean isFunction = false;
+    static String tipoFuncion = "";
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
@@ -155,6 +155,7 @@ public class SemanticParser {
                     Simbolo S = ts.getVariable(idValex, ambitoActual);
                     
                     if (S == null) {
+                        
                         String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
                         throw new Exception(String.format(formatString, Linea, Columna, nodo.getAttribute("Value")));
                     }
@@ -166,12 +167,43 @@ public class SemanticParser {
                         throw new Exception(message);
                     }
                     recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
+                    break;
                 }
                 case "FunctionCall": {
-                    String tipoActualFunction = "";
-                    //recorrerArbol(nodo, Linea, Columna);
-                    comprobarFuncion(nodo);
-
+                    String tipoBKP = tipoFuncion;
+                    tipoFuncion = "";
+                    Element functionId = (Element)nodo.getFirstChild();
+                    String id = functionId.getAttribute("Value");
+                    Linea = functionId.getAttribute("Line");
+                    Columna = functionId.getAttribute("Column");
+                    Simbolo S = ts.getFunction(id);
+                    String tipoRetorno = "";
+                    
+                    if(S == null) {
+                        String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
+                        throw new Exception(String.format(formatString, Linea, Columna, nodo.getAttribute("Value")));
+                    }
+                    tipoRetorno = S.getTipo().split(" -> ")[1];
+                    
+                    if(nodo.getChildNodes().getLength() > 1){
+                        comprobarFuncion((Element)nodo.getLastChild());
+                        tipoFuncion = tipoFuncion + " -> " + tipoRetorno;
+                    } else {
+                        tipoFuncion = "void -> " + tipoRetorno;
+                    }
+                    if(!tipoActual.equals(tipoRetorno)){
+                        tipoEvaluado = tipoRetorno;
+                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
+                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
+                        throw new Exception(message);
+                    }
+                    if(!tipoFuncion.equals(S.getTipo())){
+                        //EXPLOTAR
+                    }
+                    System.out.println(tipoFuncion);
+                    tipoFuncion = tipoBKP;
+                    
+                    break;
                 }
                 case "GreaterThan":
                 case "LessThan":
@@ -252,7 +284,97 @@ public class SemanticParser {
         }
     }
 
-    private static void comprobarFuncion(Element nodo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void comprobarFuncion(Element nodoPadre) throws Exception {
+         NodeList hijos = nodoPadre.getChildNodes();
+        for (int i = 0; i < hijos.getLength(); i++) {
+            Element nodo = (Element) hijos.item(i);
+            String nodeName = nodo.getNodeName();
+            switch (nodeName){
+                case "ID":{
+                    Simbolo S = ts.getVariable(nodo.getAttribute("Value"), ambitoActual);
+                    if (S == null) {
+                        String message = "(%s,%s) Error: Identificador no encontrado '%s'";
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        throw new Exception(String.format(message, Line, Column, nodo.getAttribute("Value")));
+                    }
+                    if(tipoFuncion.isEmpty())
+                        tipoFuncion += S.getTipo();
+                    else
+                        tipoFuncion += "X"+S.getTipo();
+                    break;
+                }
+                case "Literal":{
+                    String tipo = nodo.getAttribute("Type");
+                    if(tipoFuncion.isEmpty())
+                        tipoFuncion += tipo;
+                    else
+                        tipoFuncion += "X"+tipo;
+                    break;
+                }
+                case "Minus":
+                case "Times":
+                case "Div":{
+                    String tipoBKP = tipoActual;
+                    tipoActual = "integer";
+                    comprobarTipos(nodo);
+                    tipoActual = tipoBKP;
+                    if(tipoFuncion.isEmpty())
+                        tipoFuncion += "integer";
+                    else
+                        tipoFuncion += "Xinteger";
+                    break;
+                }
+                case "Plus":{
+                    String tipoBKP = tipoActual;
+                    tipoActual = "";
+                    comprobarTipos(nodo);
+                    
+                    if(tipoFuncion.isEmpty())
+                        tipoFuncion += tipoActual;
+                    else
+                        tipoFuncion += "X"+tipoActual;
+                    tipoActual = tipoBKP;
+                    break;
+                }
+                case "GreaterThan":
+                case "LessThan":
+                case "Equals":
+                case "LessOrEqual":
+                case "GreaterOrEqual":
+                case "Different": {
+                    String tipoActualBKP = tipoActual;
+                    tipoActual = "";
+                    comprobarTipos(nodo);
+                    tipoActual = tipoActualBKP;
+                    if(tipoFuncion.isEmpty())
+                        tipoFuncion += "boolean";
+                    else
+                        tipoFuncion += "Xboolean";
+                    break;
+                }
+                case "AND":
+                case "OR":
+                case "NOT":
+                {
+                    String tipoActualBKP = tipoActual;
+                    tipoActual = "boolean";
+                    recorrerArbol(nodo,"0","0");
+                    tipoActual = tipoActualBKP;
+                    if(tipoFuncion.isEmpty())
+                        tipoFuncion += "boolean";
+                    else
+                        tipoFuncion += "Xboolean";
+                    break;
+                }
+                case "FunctionCall":{
+                    recorrerArbol(nodo,"0","0");
+                }
+                default:{
+                    //NADA TODAVIA
+                }
+            }
+        }
+        
     }
 }

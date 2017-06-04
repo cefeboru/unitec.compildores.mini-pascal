@@ -6,7 +6,7 @@ function x2(arg4:integer):boolean;
 begin
 end;
 begin
-    a := x2(a);
+    e := x2(e);    
 end.
 
 
