@@ -6,10 +6,6 @@
 package org.unitec.compiladores;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  *
@@ -53,6 +49,15 @@ public class TablaSimbolos {
      public Simbolo getVariable(String Id) throws Exception {
         for(Simbolo S : Simbolos){
             if(S.getId().equals(Id) && S.isVariable()){
+                return S;
+            }
+        }  
+        return null;
+    }
+     
+    public Simbolo getVariable(String Id, String ambito) throws Exception {
+        for(Simbolo S : Simbolos){
+            if(S.getId().equals(Id) && S.isVariable() && S.getAmbito().equals(ambito)){
                 return S;
             }
         }  

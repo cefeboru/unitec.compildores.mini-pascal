@@ -2368,7 +2368,7 @@ class CUP$Parser$actions {
 		Element e2 = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Or");
+                    Element nPadre = xmlDocument.createElement("OR");
                     nPadre.setAttribute("Value",op);
                     nPadre.appendChild(e1);
                     nPadre.appendChild(e2);
@@ -2408,7 +2408,7 @@ class CUP$Parser$actions {
 		Element e2 = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("And");
+                    Element nPadre = xmlDocument.createElement("AND");
                     nPadre.setAttribute("Value",op);
                     nPadre.appendChild(e1);
                     nPadre.appendChild(e2);
@@ -2483,7 +2483,7 @@ class CUP$Parser$actions {
 		Element e1 = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Not");
+                    Element nPadre = xmlDocument.createElement("NOT");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     nPadre.appendChild(e1);
                     RESULT = nPadre;
@@ -2501,7 +2501,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("Equals");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 
@@ -2518,7 +2518,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("Different");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 
@@ -2535,7 +2535,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("GreaterThan");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 
@@ -2552,7 +2552,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("LessThan");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 
@@ -2569,7 +2569,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("LessOrEqual");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 
@@ -2586,7 +2586,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("GreaterOrEqual");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 
@@ -2671,7 +2671,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("LogicalOp");
+                    Element nPadre = xmlDocument.createElement("AND");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 
@@ -2688,7 +2688,7 @@ class CUP$Parser$actions {
 		String op = (String)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("LogicalOp");
+                    Element nPadre = xmlDocument.createElement("OR");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 

@@ -1,4 +1,4 @@
-program hola(asd,dsa);
+program hola;
 var 
     a,d:integer;
     c: char;

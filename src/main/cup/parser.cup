@@ -972,7 +972,7 @@ AritExpr3       ::= literal:l
 BoolExpr1       ::= BoolExpr1:e1 OperadorOr:op BoolExpr2:e2
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Or");
+                    Element nPadre = xmlDocument.createElement("OR");
                     nPadre.setAttribute("Value",op);
                     nPadre.appendChild(e1);
                     nPadre.appendChild(e2);
@@ -988,7 +988,7 @@ BoolExpr1       ::= BoolExpr1:e1 OperadorOr:op BoolExpr2:e2
 BoolExpr2       ::= BoolExpr2:e1 OperadorAnd:op BoolExpr3:e2
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("And");
+                    Element nPadre = xmlDocument.createElement("AND");
                     nPadre.setAttribute("Value",op);
                     nPadre.appendChild(e1);
                     nPadre.appendChild(e2);
@@ -1016,7 +1016,7 @@ BoolExpr3       ::= ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 Pa
                 | OperadorNot:op BoolExpr3:e1
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("Not");
+                    Element nPadre = xmlDocument.createElement("NOT");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     nPadre.appendChild(e1);
                     RESULT = nPadre;
@@ -1026,42 +1026,42 @@ BoolExpr3       ::= ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 Pa
 opRelacion      ::= OperadorIgual:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("Equals");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
                 |   OperadorDiferente:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("Different");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
                 |   OperadorMayor:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("GreaterThan");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
                 |   OperadorMenor:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("LessThan");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
                 |   OperadorMenorIgual:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("LessOrEqual");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
                 |   OperadorMayorIgual:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("RelationalOp");
+                    Element nPadre = xmlDocument.createElement("GreaterOrEqual");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
@@ -1103,14 +1103,14 @@ opUnario        ::= OperadorSuma:op
 opLogico        ::= OperadorAnd:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("LogicalOp");
+                    Element nPadre = xmlDocument.createElement("AND");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
                 |   OperadorOr:op
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("LogicalOp");
+                    Element nPadre = xmlDocument.createElement("OR");
                     if (op != null) { nPadre.setAttribute("Value",op);}
                     RESULT = nPadre;
                 :}
