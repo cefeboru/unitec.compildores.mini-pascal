@@ -161,6 +161,9 @@ public class SemanticParser {
                     }
                     recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
                 }
+                case "FunctionCall": {
+                    
+                }
                 default: {
                     recorrerArbol(nodo, Linea, Columna);
                     break;

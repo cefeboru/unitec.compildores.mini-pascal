@@ -2183,6 +2183,7 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("FunctionCall");
                     if (v != null) { nPadre.appendChild(v);}
+                    RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("expr",0, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2727,7 +2728,16 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ExprList");
                     if (e != null) { nPadre.appendChild(e);}
-                    if (el != null) { nPadre.appendChild(el);}
+                    if (el != null) { 
+                        ArrayList<Element> asd = new ArrayList();
+                        NodeList temp = el.getChildNodes();
+                        for (int i = 0; i < temp.getLength(); i++) {
+                            asd.add((Element) temp.item(i));
+                        }
+                        for (int i = 0; i < asd.size(); i++) {
+                            nPadre.appendChild(asd.get(i));
+                        }
+                    }
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("exprlist",28, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

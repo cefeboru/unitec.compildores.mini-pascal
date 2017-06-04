@@ -900,6 +900,7 @@ expr            ::= AritExpr1:e1
                     iniXML();
                     Element nPadre = xmlDocument.createElement("FunctionCall");
                     if (v != null) { nPadre.appendChild(v);}
+                    RESULT = nPadre;
                 :}
                 ;
 
@@ -1119,16 +1120,25 @@ opLogico        ::= OperadorAnd:op
 exprlist        ::= expr:e
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("ExprList");
+                    Element nPadre = xmlDocument.createElement("Arguments");
                     if (e != null) { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 :}
                 |   expr:e Coma exprlist:el
                 {:
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("ExprList");
+                    Element nPadre = xmlDocument.createElement("Arguments");
                     if (e != null) { nPadre.appendChild(e);}
-                    if (el != null) { nPadre.appendChild(el);}
+                    if (el != null) { 
+                        ArrayList<Element> asd = new ArrayList();
+                        NodeList temp = el.getChildNodes();
+                        for (int i = 0; i < temp.getLength(); i++) {
+                            asd.add((Element) temp.item(i));
+                        }
+                        for (int i = 0; i < asd.size(); i++) {
+                            nPadre.appendChild(asd.get(i));
+                        }
+                    }
                     RESULT = nPadre;
                 :}
                 ;
