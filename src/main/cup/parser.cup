@@ -1149,8 +1149,9 @@ literal         ::= integer:i
                     Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","integer");
                     nPadre.setAttribute("Value",String.valueOf(i.getAttribute("Value")));
+                    nPadre.setAttribute("Line", i.getAttribute("Line"));
+                    nPadre.setAttribute("Column", i.getAttribute("Column"));
                     RESULT =nPadre;
-                    //TODO
                 :}
                 |   character:c
                 {:
@@ -1158,6 +1159,8 @@ literal         ::= integer:i
                     Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","char");
                     nPadre.setAttribute("Value",c.getAttribute("Value"));
+                    nPadre.setAttribute("Line", c.getAttribute("Line"));
+                    nPadre.setAttribute("Column", c.getAttribute("Column"));
                     RESULT =nPadre;
                 :}                
                 |   boolean:b
@@ -1166,14 +1169,18 @@ literal         ::= integer:i
                     Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","boolean");
                     nPadre.setAttribute("Value",b.getAttribute("Value"));
+                    nPadre.setAttribute("Line", b.getAttribute("Line"));
+                    nPadre.setAttribute("Column", b.getAttribute("Column"));
                     RESULT =nPadre;
                 :}
                 |   string:s
                 {:
                     iniXML();
-                     Element nPadre = xmlDocument.createElement("Literal");
+                    Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","string");
                     nPadre.setAttribute("Value",s.getAttribute("Value"));
+                    nPadre.setAttribute("Line", s.getAttribute("Line"));
+                    nPadre.setAttribute("Column", s.getAttribute("Column"));
                     RESULT =nPadre;
                 :}
                 ;
@@ -1184,6 +1191,8 @@ integer         ::= LiteralEntero:i
                     Element nPadre = xmlDocument.createElement("Integer");
                     nPadre.setAttribute("Value",i.toString());
                     nPadre.setAttribute("Size","4");
+                    nPadre.setAttribute("Line", ileft + "");
+                    nPadre.setAttribute("Column", iright + "");
                     RESULT = nPadre;
                 :}
                 ;
@@ -1192,7 +1201,9 @@ character       ::= LiteralCaracter:c
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Character");
-                    nPadre.setAttribute("Value",c.toString());            
+                    nPadre.setAttribute("Value",c.toString());      
+                    nPadre.setAttribute("Line", cleft + "");
+                    nPadre.setAttribute("Column", cright + "");      
                     RESULT = nPadre;
                 :}
                 ;
@@ -1201,7 +1212,9 @@ boolean         ::= LiteralBoolean:b
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Boolean");
-                    nPadre.setAttribute("Value",b);          
+                    nPadre.setAttribute("Value",b);    
+                    nPadre.setAttribute("Line", bleft + "");
+                    nPadre.setAttribute("Column", bright + "");      
                     RESULT = nPadre;
                 :}
                 ;
@@ -1211,6 +1224,8 @@ string          ::= LiteralString:s
                     iniXML();
                     Element nPadre = xmlDocument.createElement("String");
                     nPadre.setAttribute("Value",s);
+                    nPadre.setAttribute("Line", sleft + "");
+                    nPadre.setAttribute("Column", sright  + "");
                     RESULT = nPadre;
                 :}
                 ;

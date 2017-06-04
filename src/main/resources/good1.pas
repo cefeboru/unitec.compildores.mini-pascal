@@ -2,9 +2,9 @@ program hola;
 var 
     a,b,c,d:integer;
     e: string;
-function x():integer;
+function x(var a: integer):integer;
 var
-    a:integer;
+    b:integer;
 begin
 end;
 function y():integer;
@@ -13,11 +13,7 @@ var
 begin
 end;
 begin
-    repeat
-        writeln('value of a: ', a);
-        a := 1 + 2 ;
-    until a = 20;
-    a:=y(a,b,1+1);
+    if a + 1 + b > 1 + 2 then
 end.
 
 

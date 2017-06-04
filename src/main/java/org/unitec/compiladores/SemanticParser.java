@@ -56,9 +56,7 @@ public class SemanticParser {
                     String type = ((Element) nodo.getLastChild()).getAttribute("Value");
                     String strSize = ((Element) nodo.getLastChild()).getAttribute("Size");
                     String isPointer = ((Element) nodo.getLastChild()).getAttribute("isPointer");
-                    if (isPointer.equals("true")) {
-                        type = "pointer(" + type + ")";
-                    }
+                    
                     int size = Integer.parseInt(strSize.isEmpty() ? "0" : strSize);
                     NodeList idList = nodo.getElementsByTagName("ID");
                     for (int j = 0; j < idList.getLength(); j++) {
@@ -69,6 +67,7 @@ public class SemanticParser {
                         }
                         String ID = ((Element) idList.item(j)).getAttribute("Value");
                         Simbolo S = new Simbolo(ID, null, type, ambitoActual, false, false, true, offset);
+                        if (isPointer.equals("true")) S.setByRef(true); else S.setByRef(false);
                         ts.Add(S);
                         offset += size;
                     }
@@ -81,7 +80,7 @@ public class SemanticParser {
                     ambitoActual = nodo.getAttribute("ID");
                     int backupOffset = offset;
                     offset = 0;
-                    recorrerArbol(nodo,Linea,Columna);
+                    recorrerArbol(nodo, Linea, Columna);
                     if (!tempType.isEmpty()) {
                         tempType += " -> void";
                         S.setTipo(tempType);
@@ -100,7 +99,7 @@ public class SemanticParser {
                     int backupOffset = offset;
                     offset = 0;
                     ambitoActual = nodo.getAttribute("ID");
-                    recorrerArbol(nodo,Linea,Columna);
+                    recorrerArbol(nodo, Linea, Columna);
                     if (!tempType.isEmpty()) {
                         tempType += " -> " + type;
                         S.setTipo(tempType);
@@ -134,7 +133,7 @@ public class SemanticParser {
                         throw new Exception(String.format(formatString, Linea, Columna, IdNode.getAttribute("Value")));
                     }
                     tipoActual = S.getTipo();
-                    recorrerArbol(nodo,Line,Column);
+                    recorrerArbol(nodo, Line, Column);
                     tipoActual = "";
                     tipoEvaluado = "";
                     break;
@@ -153,7 +152,7 @@ public class SemanticParser {
                         throw new Exception(String.format(formatString, Linea, Columna, nodo.getAttribute("Value")));
                     }
                     boolean isSameType = S.getTipo().equals(tipoActual);
-                    if(!tipoActual.isEmpty() && !isSameType) {
+                    if (!tipoActual.isEmpty() && !isSameType) {
                         tipoEvaluado = S.getTipo();
                         String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
                         String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
@@ -162,7 +161,21 @@ public class SemanticParser {
                     recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
                 }
                 case "FunctionCall": {
-                    
+                    String tipoActualFunction = "";
+                    recorrerArbol(nodo, Linea, Columna);
+
+                }
+                case "GreaterThan":
+                case "LessThan":
+                case "Equals":
+                case "LessOrEqual":
+                case "GreaterOrEqual":
+                case "Different": {
+                    String tipoActualBKP = tipoActual;
+                    tipoActual = "";
+                    comprobarTipos(nodo);
+                    tipoActual = tipoActualBKP;
+                    break;
                 }
                 default: {
                     recorrerArbol(nodo, Linea, Columna);
@@ -171,5 +184,54 @@ public class SemanticParser {
             }
         }
 
+    }
+
+    private static void comprobarTipos(Element nodoPadre) throws Exception {
+        NodeList hijos = nodoPadre.getChildNodes();
+
+        for (int i = 0; i < hijos.getLength(); i++) {
+            Element nodo = (Element) hijos.item(i);
+            String nodeName = nodo.getNodeName();
+            switch (nodeName) {
+                case "ID": {
+                    Simbolo S = ts.getVariable(nodo.getAttribute("Value"), ambitoActual);
+                    if (S == null) {
+                        String message = "(%s,%s) Error: Identificador no encontrado '%s'";
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        throw new Exception(String.format(message, Line, Column, nodo.getAttribute("Value")));
+                    }
+                    if (tipoActual.isEmpty()) {
+                        tipoActual = S.getTipo();
+                    }
+                    if (!tipoActual.equals(S.getTipo())) {
+                        String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        errorMessage = String.format(errorMessage, Line, Column, tipoActual, S.getTipo());
+                        throw new Exception(errorMessage);
+                    }
+                    break;
+                }
+                case "Literal": {
+                    String type = nodo.getAttribute("Type");
+                    if (tipoActual.isEmpty()) {
+                        tipoActual = type;
+                    }
+                    if (!tipoActual.equals(type)) {
+                        String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        errorMessage = String.format(errorMessage, Line, Column, tipoActual, type);
+                        throw new Exception(errorMessage);
+                    }
+                    break;
+                }
+                default: {
+                    comprobarTipos(nodo);
+                }
+            }
+
+        }
     }
 }

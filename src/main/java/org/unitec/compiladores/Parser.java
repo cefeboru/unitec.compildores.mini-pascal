@@ -2706,7 +2706,7 @@ class CUP$Parser$actions {
 		Element e = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("ExprList");
+                    Element nPadre = xmlDocument.createElement("Arguments");
                     if (e != null) { nPadre.appendChild(e);}
                     RESULT = nPadre;
                 
@@ -2726,7 +2726,7 @@ class CUP$Parser$actions {
 		Element el = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                    Element nPadre = xmlDocument.createElement("ExprList");
+                    Element nPadre = xmlDocument.createElement("Arguments");
                     if (e != null) { nPadre.appendChild(e);}
                     if (el != null) { 
                         ArrayList<Element> asd = new ArrayList();
@@ -2756,8 +2756,9 @@ class CUP$Parser$actions {
                     Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","integer");
                     nPadre.setAttribute("Value",String.valueOf(i.getAttribute("Value")));
+                    nPadre.setAttribute("Line", i.getAttribute("Line"));
+                    nPadre.setAttribute("Column", i.getAttribute("Column"));
                     RESULT =nPadre;
-                    //TODO
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -2775,6 +2776,8 @@ class CUP$Parser$actions {
                     Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","char");
                     nPadre.setAttribute("Value",c.getAttribute("Value"));
+                    nPadre.setAttribute("Line", c.getAttribute("Line"));
+                    nPadre.setAttribute("Column", c.getAttribute("Column"));
                     RESULT =nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2793,6 +2796,8 @@ class CUP$Parser$actions {
                     Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","boolean");
                     nPadre.setAttribute("Value",b.getAttribute("Value"));
+                    nPadre.setAttribute("Line", b.getAttribute("Line"));
+                    nPadre.setAttribute("Column", b.getAttribute("Column"));
                     RESULT =nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2808,9 +2813,11 @@ class CUP$Parser$actions {
 		Element s = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
 		
                     iniXML();
-                     Element nPadre = xmlDocument.createElement("Literal");
+                    Element nPadre = xmlDocument.createElement("Literal");
                     nPadre.setAttribute("Type","string");
                     nPadre.setAttribute("Value",s.getAttribute("Value"));
+                    nPadre.setAttribute("Line", s.getAttribute("Line"));
+                    nPadre.setAttribute("Column", s.getAttribute("Column"));
                     RESULT =nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("literal",7, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2829,6 +2836,8 @@ class CUP$Parser$actions {
                     Element nPadre = xmlDocument.createElement("Integer");
                     nPadre.setAttribute("Value",i.toString());
                     nPadre.setAttribute("Size","4");
+                    nPadre.setAttribute("Line", ileft + "");
+                    nPadre.setAttribute("Column", iright + "");
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("integer",44, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2845,7 +2854,9 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Character");
-                    nPadre.setAttribute("Value",c.toString());            
+                    nPadre.setAttribute("Value",c.toString());      
+                    nPadre.setAttribute("Line", cleft + "");
+                    nPadre.setAttribute("Column", cright + "");      
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("character",45, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2862,7 +2873,9 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Boolean");
-                    nPadre.setAttribute("Value",b);          
+                    nPadre.setAttribute("Value",b);    
+                    nPadre.setAttribute("Line", bleft + "");
+                    nPadre.setAttribute("Column", bright + "");      
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("boolean",46, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -2880,6 +2893,8 @@ class CUP$Parser$actions {
                     iniXML();
                     Element nPadre = xmlDocument.createElement("String");
                     nPadre.setAttribute("Value",s);
+                    nPadre.setAttribute("Line", sleft + "");
+                    nPadre.setAttribute("Column", sright  + "");
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("string",47, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);

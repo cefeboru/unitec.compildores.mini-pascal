@@ -22,9 +22,18 @@ public class Simbolo {
     public void setAmbito(String ambito) {
         this.ambito = ambito;
     }
+
+    public boolean isByRef() {
+        return byRef;
+    }
+
+    public void setByRef(boolean byRef) {
+        this.byRef = byRef;
+    }
     private boolean variable;
     private boolean funcion;
     private boolean parametro;
+    private boolean byRef;
     private int posicionMemoria;
 
     

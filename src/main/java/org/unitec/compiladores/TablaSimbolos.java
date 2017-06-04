@@ -27,17 +27,6 @@ public class TablaSimbolos {
         return Simbolos.size() -1;
     }
     
-    public int Add(Simbolo S, boolean isParameter) throws Exception{
-        int itemIndex = this.getSymbolIndex(S);
-        if(itemIndex > 0) {
-            throw new Exception("Ya existe un elemento " + S.getId() + " en el ambito " + S.getAmbito());
-        } else {
-            Simbolos.add(S);
-        }
-        return Simbolos.size() -1;
-    }
-    
-    
     public Simbolo getSimbolo(int index) throws Exception {
         if(index >= 0 && index < Simbolos.size()){
             return Simbolos.get(index);
