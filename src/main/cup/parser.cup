@@ -187,6 +187,7 @@ nonterminal Element              decl;
 nonterminal Element              vardecls;
 nonterminal Element              vardecl;
 nonterminal Element              forstmt;
+nonterminal Element              FunctionCall;
 
 nonterminal Element              functionDecl;
 nonterminal Element              inlineArgs;
@@ -723,6 +724,10 @@ stmts           ::= stmt:s
                 ;
 
 stmt            ::= /* Empty */ {: RESULT = null; :}
+                |   FunctionCall:fc {:
+                    iniXML();
+                    RESULT = fc;
+                :}
                 | assignstmt:s
                 {:
                     iniXML();               
@@ -887,7 +892,14 @@ expr            ::= AritExpr1:e1
                     op.appendChild(e2);
                     RESULT = op;
                 :} 
-                |   var:v ParentesisAbrir exprlist:el ParentesisCerrar
+                |   FunctionCall:fc
+                {:
+                    iniXML();
+                    RESULT = fc;
+                :}
+                ;
+
+FunctionCall    ::= var:v ParentesisAbrir exprlist:el ParentesisCerrar
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("FunctionCall");

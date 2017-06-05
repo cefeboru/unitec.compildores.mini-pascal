@@ -193,7 +193,7 @@ public class SemanticParser {
                     } else {
                         tipoFuncion = "void -> " + tipoRetorno;
                     }
-                    if (!tipoActual.equals(tipoRetorno)) {
+                    if (!tipoActual.isEmpty() && !tipoActual.equals(tipoRetorno)) {
                         tipoEvaluado = tipoRetorno;
                         String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
                         String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);

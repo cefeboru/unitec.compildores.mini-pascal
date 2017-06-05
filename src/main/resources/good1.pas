@@ -9,7 +9,8 @@ function x3():integer;
 begin
 end;
 begin
-    e := x2(x2(e,1,'a'),3,'e');   
+    e := x2(true,3,'e');
+    x2(e,1,'a');
     e := true;
 end.
 
