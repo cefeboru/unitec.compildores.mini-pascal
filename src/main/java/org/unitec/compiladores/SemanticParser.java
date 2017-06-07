@@ -6,6 +6,8 @@
 package org.unitec.compiladores;
 
 import java.util.ArrayList;
+import org.unitec.compiladores.intermediatecode.Generator;
+import org.unitec.compiladores.intermediatecode.TablaCuadruplos;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -29,6 +31,9 @@ public class SemanticParser {
         ambitoActual = "main";
         recorrerArbol(nodoPadre, "0", "0");
         ts.toString();
+        Generator G = new Generator();
+        G.generateCodeFromAST(nodoPadre);
+        G.print();
         return ts;
     }
 
@@ -243,7 +248,7 @@ public class SemanticParser {
             Element nodo = (Element) hijos.item(i);
             String nodeName = nodo.getNodeName();
             switch (nodeName) {
-                case "ID": {
+                case "Plus": {
                     Simbolo S = ts.getVariable(nodo.getAttribute("Value"), ambitoActual);
                     if (S == null) {
                         String message = "(%s,%s) Error: Identificador no encontrado '%s'";
