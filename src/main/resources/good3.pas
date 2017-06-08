@@ -1,6 +1,7 @@
 program hola;
 var 
-    a,b,c,d:integer;
+    a: array[1..10] of integer;
+    b: array[1..10] of char;
 begin
-    a := a + c + b + d;
+    a[ b[1] + a[2] ] := a[1] + 1;
 end.

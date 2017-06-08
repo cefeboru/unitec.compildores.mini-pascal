@@ -139,4 +139,11 @@ public class Simbolo {
     public void setPosicionMemoria(int posicionMemoria) {
         this.posicionMemoria = posicionMemoria;
     }
+
+    @Override
+    public String toString() {
+        return "Simbolo{" + "id=" + id + ", valor=" + valor + ", tipo=" + tipo + ", ambito=" + ambito + ", refIndex=" + refIndex + ", variable=" + variable + ", funcion=" + funcion + ", parametro=" + parametro + ", byRef=" + byRef + ", posicionMemoria=" + posicionMemoria + '}';
+    }
+    
+    
 }
