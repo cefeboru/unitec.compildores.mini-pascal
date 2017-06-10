@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.unitec.compiladores.intermediatecode.Generator;
 import org.unitec.compiladores.intermediatecode.TablaCuadruplos;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 /**
@@ -26,7 +25,7 @@ public class SemanticParser {
     static String tipoActual = "";
     static String tipoFuncion = "";
     static int numErrores = 0;
-    static boolean debug = false;
+    static boolean debug = true;
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
@@ -51,6 +50,9 @@ public class SemanticParser {
         for (int i = 0; i < hijos.getLength(); i++) {
             Element nodo = (Element) hijos.item(i);
             String nodeName = nodo.getNodeName();
+            if (debug) {
+                System.out.println("RecorrerArbol - " + nodeName);
+            }
             switch (nodeName) {
                 case "VarDeclaration": {
                     String type = ((Element) nodo.getLastChild()).getAttribute("Value");
@@ -175,7 +177,6 @@ public class SemanticParser {
                         throwIncompatibleTypeError(Linea, Columna, currentType);
                     } else {
                         tipoActual = S.getTipo();
-                        System.out.println("ID ESTABLECIO TIPO");
                     }
                     recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
                     break;
@@ -222,9 +223,10 @@ public class SemanticParser {
                         tipoActual = "";
                         comprobarTipos(nodo);
                         tipoActual = tipoActualBKP;
-                    } else if(tipoActual.isEmpty()){
+                    } else if (tipoActual.isEmpty()) {
                         comprobarTipos(nodo);
-                    } else{
+                        tipoActual = "";
+                    } else {
                         throwIncompatibleTypeError(Linea, Columna, "boolean");
                     }
 
@@ -236,9 +238,9 @@ public class SemanticParser {
                     if (!tipoActual.isEmpty() && tipoActual.equals("boolean")) {
                         recorrerArbol(nodo, Linea, Columna);
                         tipoActual = "";
-                    } else if(tipoActual.isEmpty()){
+                    } else if (tipoActual.isEmpty()) {
                         recorrerArbol(nodo, Linea, Columna);
-                    } else{
+                    } else {
                         throwIncompatibleTypeError(Linea, Columna, "boolean");
                     }
                     break;
@@ -246,7 +248,10 @@ public class SemanticParser {
                 case "IfStatement": {
                     Linea = nodo.getAttribute("Line");
                     Columna = nodo.getAttribute("Column");
+                    String tipoBKP = tipoActual;
+                    tipoActual = "boolean";
                     recorrerArbol(nodo, Linea, Columna);
+                    tipoActual = tipoBKP;
                     break;
                 }
                 case "ARRAY": {
@@ -263,8 +268,10 @@ public class SemanticParser {
                         String tipo = S.getTipo().split("\\.")[1];
                         String tipoBKP = tipoActual;
                         if (tipoActual.isEmpty()) {
+                            System.out.println("1");
                             tipoActual = tipo;
                         } else if (tipoActual.equals(tipo)) {
+                            System.out.println("2");
                             tipoActual = "integer";
                             comprobarTipos(nodo);
                             tipoActual = tipoBKP;
@@ -290,6 +297,9 @@ public class SemanticParser {
         for (int i = 0; i < hijos.getLength(); i++) {
             Element nodo = (Element) hijos.item(i);
             String nodeName = nodo.getNodeName();
+            if (debug) {
+                System.out.println("Comprobar Tipos - " + nodeName);
+            }
             switch (nodeName) {
                 case "Literal": {
                     String type = nodo.getAttribute("Type");
@@ -304,7 +314,6 @@ public class SemanticParser {
                     break;
                 }
                 case "ID": {
-
                     String id = nodo.getAttribute("Value");
                     Simbolo S = ts.getVariable(id, ambitoActual);
                     if (S == null) {
@@ -319,7 +328,6 @@ public class SemanticParser {
                             String Line = nodo.getAttribute("Line");
                             String Column = nodo.getAttribute("Column");
                             String currentType = S.getTipo().split("\\.")[0];
-                            System.out.println(currentType);
                             throwIncompatibleTypeError(Line, Column, currentType);
 
                         } else {
@@ -328,11 +336,125 @@ public class SemanticParser {
                     }
                     break;
                 }
-                case "Array": {
+                case "Minus":
+                case "Times":
+                case "Div": {
+                    comprobarArit(nodo);
+                    break;
+                }
+                case "Plus": {
+                    comprobarTipos(nodo);
+                    break;
+                }
+                case "ARRAY": {
+                    String id = nodo.getAttribute("Value");
+                    Simbolo S = ts.getVariable(id, ambitoActual);
+                    String Linea = nodo.getAttribute("Line");
+                    String Columna = nodo.getAttribute("Column");
+                    if (S == null) {
+                        throwNotFoundError(Linea, Columna, id);
+                    } else if (!S.getTipo().startsWith("Array")) {
+                        throwIlegalExpresionError(Linea, Columna);
+                    } else {
+                        String tipo = S.getTipo().split("\\.")[1];
+                        String tipoBKP = tipoActual;
+                        if (tipoActual.isEmpty()) {
+                            tipoActual = "integer";
+                            comprobarTipos(nodo);
+                        } else if (tipoActual.equals(tipo)) {
+                            tipoActual = "integer";
+                            comprobarTipos(nodo);
+
+                        } else {
+                            throwIncompatibleTypeError(Linea, Columna, tipo);
+                        }
+                        tipoActual = tipoBKP;
+                    }
                     break;
                 }
                 default: {
                     comprobarTipos(nodo);
+                }
+            }
+
+        }
+    }
+
+    private static void comprobarArit(Element nodoPadre) throws Exception {
+        NodeList hijos = nodoPadre.getChildNodes();
+        for (int i = 0; i < hijos.getLength(); i++) {
+            Element nodo = (Element) hijos.item(i);
+            String nodeName = nodo.getNodeName();
+            if (debug) {
+                System.out.println("Comprobar Arit - " + nodeName);
+            }
+            switch (nodeName) {
+                case "Literal": {
+                    String type = nodo.getAttribute("Type");
+                    if (tipoActual.isEmpty()) {
+                        tipoActual = type;
+                    }
+                    boolean isInteger = type.equals("integer");
+                    if (!isInteger) {
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        throwIncompatibleTypeError(Line, Column, type);
+                    }
+                    break;
+                }
+                case "ID": {
+                    String id = nodo.getAttribute("Value");
+                    Simbolo S = ts.getVariable(id, ambitoActual);
+                    if (S == null) {
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        throwNotFoundError(Line, Column, id);
+
+                    } else {
+                        boolean isInteger = S.getTipo().equals("integer");
+                        if (!tipoActual.isEmpty() && !isInteger) {
+
+                            String Line = nodo.getAttribute("Line");
+                            String Column = nodo.getAttribute("Column");
+                            String currentType = S.getTipo().split("\\.")[0];
+                            throwIncompatibleTypeError(Line, Column, currentType);
+
+                        } else {
+                            tipoActual = "integer";
+                        }
+                    }
+                    break;
+                }
+                case "ARRAY": {
+                    String id = nodo.getAttribute("Value");
+                    Simbolo S = ts.getVariable(id, ambitoActual);
+                    String Linea = nodo.getAttribute("Line");
+                    String Columna = nodo.getAttribute("Column");
+                    if (S == null) {
+                        throwNotFoundError(Linea, Columna, id);
+                    } else if (!S.getTipo().startsWith("Array")) {
+                        throwIlegalExpresionError(Linea, Columna);
+                    } else {
+                        String tipo = S.getTipo().split("\\.")[1];
+                        String tipoBKP = tipoActual;
+                        boolean isInteger = tipo.equals("integer");
+                        if (tipoActual.isEmpty()) {
+                            tipoActual = "integer";
+                            comprobarTipos(nodo);
+                        } else if (isInteger) {
+                            tipoActual = "integer";
+                            comprobarTipos(nodo);
+
+                        } else {
+                            throwIncompatibleTypeError(Linea, Columna, tipo);
+                        }
+                        tipoActual = tipoBKP;
+                    }
+                    break;
+                }
+                default: {
+                    comprobarArit(nodo);
+                    break;
                 }
             }
 

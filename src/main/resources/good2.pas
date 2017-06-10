@@ -17,7 +17,10 @@ begin
 end;
 begin
     a:= a + 2 * 5 / 2 ;
-    if ((not (a = 2 + c) and not (a > '2')) or ((a<4) or not (c = 2))) then
+    if c = c + 'a' then 
+    begin
+    end;
+    if ((not ( c = '2' + e[0] ) and not (a > 2)) or ((a<4) or not (c = 'a'))) then
     begin
         for a:=3 to 20 do
     end;
