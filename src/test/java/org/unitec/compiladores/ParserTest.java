@@ -35,7 +35,7 @@ public class ParserTest {
         Parser parser = null;
         Symbol parseSymbol = null;
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/good3.pas"));
+            BufferedReader br = new BufferedReader(new FileReader("src/main/resources/good2.pas"));
             scanner = new PascalFlexer(br);
             parser = new Parser(scanner);
             

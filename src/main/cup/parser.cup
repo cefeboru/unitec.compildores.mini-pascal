@@ -199,7 +199,6 @@ nonterminal Element              procInlineDecl;
 nonterminal Element              type;
 nonterminal String               identtype;
 nonterminal Element              arraytype;
-nonterminal String               arrayidenttype;
 nonterminal Element              vars;
 nonterminal Element              var;
 
@@ -607,6 +606,16 @@ var             ::= Identificador:i
                     nPadre.setAttribute("Column",iright + "");
                     RESULT = nPadre;                    
                 :}
+                |   Identificador:i BracketAbrir AritExpr1:e1 BracketCerrar
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("ARRAY");
+                    nPadre.setAttribute("Value",i);
+                    nPadre.setAttribute("Line",ileft + "");
+                    nPadre.setAttribute("Column",iright + "");
+                    nPadre.appendChild(e1);
+                    RESULT = nPadre;                    
+                :}
                 ;
 
 type            ::= identtype:it
@@ -661,7 +670,7 @@ identtype       ::= TipoChar:c
                 ;
 
 
-arraytype       ::= Array BracketAbrir literal:l1 PuntoPunto literal:l2 BracketCerrar Of arrayidenttype:t
+arraytype       ::= Array BracketAbrir literal:l1 PuntoPunto literal:l2 BracketCerrar Of identtype:t
                 {:  
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ArrayType");
@@ -685,19 +694,6 @@ arraytype       ::= Array BracketAbrir literal:l1 PuntoPunto literal:l2 BracketC
                 :}
                 ;
 
-arrayidenttype  ::= TipoChar:c
-                {:
-                   RESULT = c;
-                :}
-                |   TipoBoolean:c
-                {:
-                   RESULT = c;
-                :}
-                |   TipoInteger:c
-                {:
-                   RESULT = c;
-                :}
-                ;
 
 stmts           ::= stmt:s
                 {:
@@ -792,19 +788,24 @@ assignstmt      ::= var:i DosPuntosIgual expr:e
                 |   assignstmt error
                 ;
 
-ifstmt          ::= If expr:e Then stmt:s Else stmt:s2
+ifstmt          ::= If:i expr:e Then stmt:s Else stmt:s2
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("IfStatement");
+                    nPadre.setAttribute("Line",ileft + "");
+                    nPadre.setAttribute("Column",iright + "");
                     if (e != null) { nPadre.appendChild(e); }         
                     if (s != null) { nPadre.appendChild(s); }
                     if (s2 != null) { nPadre.appendChild(s2); }
+
                     RESULT = nPadre;
                 :}
-                |   If expr:e Then stmt:s
+                |   If:i expr:e Then stmt:s
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("IfStatement");
+                    nPadre.setAttribute("Line",ileft + "");
+                    nPadre.setAttribute("Column",iright + "");
                     if (e != null) { nPadre.appendChild(e); }         
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;

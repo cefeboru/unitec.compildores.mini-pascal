@@ -1,6 +1,8 @@
 program hola;
 var 
-    a,b,c,d:integer;
+    a: array[1..10] of char;
+    b:boolean;
+    c: integer;
 begin
-    a := a + c + b + d;
+    1 > b := 1 > 0;
 end.

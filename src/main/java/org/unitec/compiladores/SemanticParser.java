@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.unitec.compiladores.intermediatecode.Generator;
 import org.unitec.compiladores.intermediatecode.TablaCuadruplos;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
 /**
@@ -23,17 +24,24 @@ public class SemanticParser {
     static String tempType = "";
     static ArrayList<Element> nodosHoja = new ArrayList();
     static String tipoActual = "";
-    static String tipoEvaluado = "";
-    static boolean print = false;
     static String tipoFuncion = "";
+    static int numErrores = 0;
+    static boolean debug = false;
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
         recorrerArbol(nodoPadre, "0", "0");
-        ts.toString();
-        Generator G = new Generator();
-        G.generateCodeFromAST(nodoPadre);
-        G.print();
+        if (numErrores > 0) {
+            System.err.println("------------------------------------------------------------------------");
+            String message = "Se encontraron %d error(es), abortando compilación. \n";
+            message = String.format(message, numErrores);
+            System.err.println(message);
+        } else {
+            ts.toString();
+            Generator G = new Generator();
+            G.generateCodeFromAST(nodoPadre);
+            G.print();
+        }
         return ts;
     }
 
@@ -124,13 +132,10 @@ public class SemanticParser {
                 }
                 case "Literal": {
                     String type = nodo.getAttribute("Type");
-                    tipoEvaluado = type;
                     Linea = nodo.getAttribute("Line");
                     Columna = nodo.getAttribute("Column");
                     if (!tipoActual.isEmpty() && !tipoActual.equals(type)) {
-                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
-                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
-                        throw new Exception(message);
+                        throwIncompatibleTypeError(Linea, Columna, type);
                     }
                     break;
                 }
@@ -138,16 +143,14 @@ public class SemanticParser {
                     Element IdNode = (Element) nodo.getFirstChild();
                     String IdValex = IdNode.getAttribute("Value");
                     Simbolo S = ts.getVariable(IdValex, ambitoActual);
-                    String Line = IdNode.getAttribute("Line");
-                    String Column = IdNode.getAttribute("Column");
+                    Linea = IdNode.getAttribute("Line");
+                    Columna = IdNode.getAttribute("Column");
                     if (S == null) {
-                        String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
-                        throw new Exception(String.format(formatString, Linea, Columna, IdNode.getAttribute("Value")));
+                        throwNotFoundError(Linea, Columna, IdValex);
                     }
-                    tipoActual = S.getTipo();
-                    recorrerArbol(nodo, Line, Column);
                     tipoActual = "";
-                    tipoEvaluado = "";
+                    recorrerArbol(nodo, Linea, Columna);
+                    tipoActual = "";
                     break;
                 }
                 case "ID": {
@@ -164,15 +167,15 @@ public class SemanticParser {
                     Simbolo S = ts.getVariable(idValex, ambitoActual);
 
                     if (S == null) {
-                        String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
-                        throw new Exception(String.format(formatString, Linea, Columna, nodo.getAttribute("Value")));
+                        throwNotFoundError(Linea, Columna, idValex);
                     }
                     boolean isSameType = S.getTipo().equals(tipoActual);
                     if (!tipoActual.isEmpty() && !isSameType) {
-                        tipoEvaluado = S.getTipo();
-                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
-                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
-                        throw new Exception(message);
+                        String currentType = S.getTipo().split("\\.")[0];
+                        throwIncompatibleTypeError(Linea, Columna, currentType);
+                    } else {
+                        tipoActual = S.getTipo();
+                        System.out.println("ID ESTABLECIO TIPO");
                     }
                     recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
                     break;
@@ -187,8 +190,8 @@ public class SemanticParser {
                     Simbolo S = ts.getFunction(id);
                     String tipoRetorno = "";
                     if (S == null) {
-                        String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
-                        throw new Exception(String.format(formatString, Linea, Columna, nodo.getAttribute("Value")));
+                        throwNotFoundError(Linea, Columna, id);
+
                     }
                     tipoRetorno = S.getTipo().split(" -> ")[1];
 
@@ -199,16 +202,11 @@ public class SemanticParser {
                         tipoFuncion = "void -> " + tipoRetorno;
                     }
                     if (!tipoActual.isEmpty() && !tipoActual.equals(tipoRetorno)) {
-                        tipoEvaluado = tipoRetorno;
-                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
-                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
-                        throw new Exception(message);
+                        throwIncompatibleTypeError(Linea, Columna, tipoRetorno);
                     }
                     if (!tipoFuncion.equals(S.getTipo())) {
-                        String formatString = "(%s,%s) Error: Función no encontrado '%s' con los parámetros proporcionado";
-                        throw new Exception(String.format(formatString, Linea, Columna, id));
+                        throwFunctionArgsError(Linea, Columna, id);
                     }
-                    System.out.println(tipoFuncion);
                     tipoFuncion = tipoBKP;
 
                     break;
@@ -219,19 +217,63 @@ public class SemanticParser {
                 case "LessOrEqual":
                 case "GreaterOrEqual":
                 case "Different": {
-                    String tipoActualBKP = tipoActual;
-                    tipoActual = "";
-                    comprobarTipos(nodo);
-                    tipoActual = tipoActualBKP;
+                    if (!tipoActual.isEmpty() && tipoActual.equals("boolean")) {
+                        String tipoActualBKP = tipoActual;
+                        tipoActual = "";
+                        comprobarTipos(nodo);
+                        tipoActual = tipoActualBKP;
+                    } else if(tipoActual.isEmpty()){
+                        comprobarTipos(nodo);
+                    } else{
+                        throwIncompatibleTypeError(Linea, Columna, "boolean");
+                    }
+
                     break;
                 }
                 case "AND":
                 case "OR":
                 case "NOT": {
-                    String tipoActualBKP = tipoActual;
-                    tipoActual = "boolean";
+                    if (!tipoActual.isEmpty() && tipoActual.equals("boolean")) {
+                        recorrerArbol(nodo, Linea, Columna);
+                        tipoActual = "";
+                    } else if(tipoActual.isEmpty()){
+                        recorrerArbol(nodo, Linea, Columna);
+                    } else{
+                        throwIncompatibleTypeError(Linea, Columna, "boolean");
+                    }
+                    break;
+                }
+                case "IfStatement": {
+                    Linea = nodo.getAttribute("Line");
+                    Columna = nodo.getAttribute("Column");
                     recorrerArbol(nodo, Linea, Columna);
-                    tipoActual = tipoActualBKP;
+                    break;
+                }
+                case "ARRAY": {
+                    String id = nodo.getAttribute("Value");
+                    Simbolo S = ts.getVariable(id, ambitoActual);
+                    Linea = nodo.getAttribute("Line");
+                    Columna = nodo.getAttribute("Column");
+
+                    if (S == null) {
+                        throwNotFoundError(Linea, Columna, id);
+                    } else if (!S.getTipo().startsWith("Array")) {
+                        throwIlegalExpresionError(Linea, Columna);
+                    } else {
+                        String tipo = S.getTipo().split("\\.")[1];
+                        String tipoBKP = tipoActual;
+                        if (tipoActual.isEmpty()) {
+                            tipoActual = tipo;
+                        } else if (tipoActual.equals(tipo)) {
+                            tipoActual = "integer";
+                            comprobarTipos(nodo);
+                            tipoActual = tipoBKP;
+                        } else {
+                            throwIncompatibleTypeError(Linea, Columna, tipo);
+                        }
+
+                    }
+                    break;
                 }
                 default: {
                     recorrerArbol(nodo, Linea, Columna);
@@ -243,43 +285,50 @@ public class SemanticParser {
     }
 
     private static void comprobarTipos(Element nodoPadre) throws Exception {
+
         NodeList hijos = nodoPadre.getChildNodes();
         for (int i = 0; i < hijos.getLength(); i++) {
             Element nodo = (Element) hijos.item(i);
             String nodeName = nodo.getNodeName();
             switch (nodeName) {
-                case "Plus": {
-                    Simbolo S = ts.getVariable(nodo.getAttribute("Value"), ambitoActual);
-                    if (S == null) {
-                        String message = "(%s,%s) Error: Identificador no encontrado '%s'";
-                        String Line = nodo.getAttribute("Line");
-                        String Column = nodo.getAttribute("Column");
-                        throw new Exception(String.format(message, Line, Column, nodo.getAttribute("Value")));
-                    }
-                    if (tipoActual.isEmpty()) {
-                        tipoActual = S.getTipo();
-                    }
-                    if (!tipoActual.equals(S.getTipo())) {
-                        String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
-                        String Line = nodo.getAttribute("Line");
-                        String Column = nodo.getAttribute("Column");
-                        errorMessage = String.format(errorMessage, Line, Column, tipoActual, S.getTipo());
-                        throw new Exception(errorMessage);
-                    }
-                    break;
-                }
                 case "Literal": {
                     String type = nodo.getAttribute("Type");
                     if (tipoActual.isEmpty()) {
                         tipoActual = type;
                     }
                     if (!tipoActual.equals(type)) {
-                        String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
                         String Line = nodo.getAttribute("Line");
                         String Column = nodo.getAttribute("Column");
-                        errorMessage = String.format(errorMessage, Line, Column, tipoActual, type);
-                        throw new Exception(errorMessage);
+                        throwIncompatibleTypeError(Line, Column, type);
                     }
+                    break;
+                }
+                case "ID": {
+
+                    String id = nodo.getAttribute("Value");
+                    Simbolo S = ts.getVariable(id, ambitoActual);
+                    if (S == null) {
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        throwNotFoundError(Line, Column, id);
+
+                    } else {
+                        boolean isSameType = S.getTipo().equals(tipoActual);
+                        if (!tipoActual.isEmpty() && !isSameType) {
+
+                            String Line = nodo.getAttribute("Line");
+                            String Column = nodo.getAttribute("Column");
+                            String currentType = S.getTipo().split("\\.")[0];
+                            System.out.println(currentType);
+                            throwIncompatibleTypeError(Line, Column, currentType);
+
+                        } else {
+                            tipoActual = S.getTipo();
+                        }
+                    }
+                    break;
+                }
+                case "Array": {
                     break;
                 }
                 default: {
@@ -297,12 +346,13 @@ public class SemanticParser {
             String nodeName = nodo.getNodeName();
             switch (nodeName) {
                 case "ID": {
-                    Simbolo S = ts.getVariable(nodo.getAttribute("Value"), ambitoActual);
+                    String id = nodo.getAttribute("Value");
+                    Simbolo S = ts.getVariable(id, ambitoActual);
                     if (S == null) {
-                        String message = "(%s,%s) Error: Identificador no encontrado '%s'";
                         String Line = nodo.getAttribute("Line");
                         String Column = nodo.getAttribute("Column");
-                        throw new Exception(String.format(message, Line, Column, nodo.getAttribute("Value")));
+                        throwNotFoundError(Line, Column, id);
+
                     }
                     if (tipoFuncion.isEmpty()) {
                         tipoFuncion += S.getTipo();
@@ -379,7 +429,7 @@ public class SemanticParser {
                     break;
                 }
                 case "FunctionCall": {
-                   String tipoBKP = tipoFuncion;
+                    String tipoBKP = tipoFuncion;
                     tipoFuncion = "";
                     Element functionId = (Element) nodo.getFirstChild();
                     String id = functionId.getAttribute("Value");
@@ -388,8 +438,7 @@ public class SemanticParser {
                     String Linea = functionId.getAttribute("Line");
                     String Columna = functionId.getAttribute("Column");
                     if (S == null) {
-                        String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
-                        throw new Exception(String.format(formatString, Linea, Columna, nodo.getAttribute("Value")));
+                        throwNotFoundError(Linea, Columna, id);
                     }
                     tipoRetorno = S.getTipo().split(" -> ")[1];
 
@@ -400,27 +449,68 @@ public class SemanticParser {
                         tipoFuncion = "void -> " + tipoRetorno;
                     }
                     if (!tipoActual.equals(tipoRetorno)) {
-                        tipoEvaluado = tipoRetorno;
-                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
-                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
-                        throw new Exception(message);
+                        throwIncompatibleTypeError(Linea, Columna, tipoRetorno);
                     }
                     if (!tipoFuncion.equals(S.getTipo())) {
-                        String formatString = "(%s,%s) Error: Función no encontrado '%s' con los parámetros proporcionado";
-                        throw new Exception(String.format(formatString, Linea, Columna, id));
+                        throwFunctionArgsError(Linea, Columna, id);
                     }
                     tipoFuncion = tipoBKP;
                     if (tipoFuncion.isEmpty()) {
                         tipoFuncion += tipoRetorno;
                     } else {
-                        tipoFuncion += "X"+tipoRetorno;
+                        tipoFuncion += "X" + tipoRetorno;
                     }
                 }
                 default: {
-                    //NADA TODAVIA
+                    comprobarFuncion(nodo);
                 }
             }
         }
 
     }
+
+    private static void throwNotFoundError(String Linea, String Columna, String ID) throws Exception {
+        String errorMessage = "(%s,%s) Error: Identificador no encontrado '%s'";
+        errorMessage = String.format(errorMessage, Linea, Columna, ID);
+        if (debug) {
+            throw new Exception(errorMessage);
+        } else {
+            System.err.println(errorMessage);
+        }
+        numErrores++;
+    }
+
+    private static void throwIncompatibleTypeError(String Linea, String Columna, String tipo) throws Exception {
+        String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
+        errorMessage = String.format(errorMessage, Linea, Columna, tipoActual, tipo);
+        if (debug) {
+            throw new Exception(errorMessage);
+        } else {
+            System.err.println(errorMessage);
+        }
+        numErrores++;
+    }
+
+    private static void throwFunctionArgsError(String Linea, String Columna, String id) throws Exception {
+        String errorMessage = "(%s,%s) Error: Función no encontrado '%s' con los parámetros proporcionado";
+        errorMessage = String.format(errorMessage, Linea, Columna, id);
+        if (debug) {
+            throw new Exception(errorMessage);
+        } else {
+            System.err.println(errorMessage);
+        }
+        numErrores++;
+    }
+
+    private static void throwIlegalExpresionError(String Linea, String Columna) throws Exception {
+        String errorMessage = "(%s,%s) Error: Expresión Ilegal";
+        errorMessage = String.format(errorMessage, Linea, Columna);
+        if (debug) {
+            throw new Exception(errorMessage);
+        } else {
+            System.err.println(errorMessage);
+        }
+        numErrores++;
+    }
+
 }

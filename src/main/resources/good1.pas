@@ -10,7 +10,7 @@ begin
 end;
 begin
     e := x2(true,3,'e');
-    x2(e,1,'a');
+    x2('a' = 'a',b + e + a,'2');
     e := true;
 end.
 
