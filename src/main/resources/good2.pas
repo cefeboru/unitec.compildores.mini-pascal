@@ -17,10 +17,11 @@ begin
 end;
 begin
     a:= a + 2 * 5 / 2 ;
-    if c = c + 'a' then 
+    if a = e[a] + e[1] * e[2*3+4+'x'] then 
     begin
     end;
-    if ((not ( c = '2' + e[0] ) and not (a > 2)) or ((a<4) or not (c = 'a'))) then
+    e[11*2/3+'aasd'] :=a;
+    if ((not ( a =  e[0] ) and not (a > 2)) or ((a<4) or not (c = 'a'))) then
     begin
         for a:=3 to 20 do
     end;

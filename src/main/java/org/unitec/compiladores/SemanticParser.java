@@ -25,10 +25,11 @@ public class SemanticParser {
     static String tipoActual = "";
     static String tipoFuncion = "";
     static int numErrores = 0;
-    static boolean debug = true;
+    static boolean debug = false;
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
+        numErrores = 0;
         recorrerArbol(nodoPadre, "0", "0");
         if (numErrores > 0) {
             System.err.println("------------------------------------------------------------------------");
@@ -269,6 +270,8 @@ public class SemanticParser {
                         String tipoBKP = tipoActual;
                         if (tipoActual.isEmpty()) {
                             System.out.println("1");
+                            tipoActual = "integer";
+                            comprobarTipos(nodo);
                             tipoActual = tipo;
                         } else if (tipoActual.equals(tipo)) {
                             System.out.println("2");
