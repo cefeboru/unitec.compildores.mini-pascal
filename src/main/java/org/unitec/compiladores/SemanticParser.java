@@ -49,34 +49,13 @@ public class SemanticParser {
                     int size = Integer.parseInt(
                             ((Element) nodo.getLastChild()).getAttribute("Size")
                     );
-                    if (type.startsWith("Array")) {
-                        String split[] = type.split("\\.");
-                        String arrayType = split[1];
-                        Linea = ((Element)nodo.getFirstChild()).getAttribute("Line");
-                        Columna = ((Element)nodo.getFirstChild()).getAttribute("Column");
-                        if (arrayType.equals("string")) {
-                            String formatString = "(%s,%s) Error: No se aceptan arreglos de tipo String";
-                            String message = String.format(formatString, Linea, Columna);
-                            System.err.println(message);
-                        } else {
-                            NodeList idList = nodo.getElementsByTagName("ID");
-                            for (int j = 0; j < idList.getLength(); j++) {
-                                String ID = ((Element) idList.item(j)).getAttribute("Value");
-                                Simbolo S = new Simbolo(ID, null, type, ambitoActual, true, false, false, offset);
-                                ts.Add(S);
-                                offset += size;
-                            }
-                        }
-                    } else {
-                        NodeList idList = nodo.getElementsByTagName("ID");
-                        for (int j = 0; j < idList.getLength(); j++) {
-                            String ID = ((Element) idList.item(j)).getAttribute("Value");
-                            Simbolo S = new Simbolo(ID, null, type, ambitoActual, true, false, false, offset);
-                            ts.Add(S);
-                            offset += size;
-                        }
+                    NodeList idList = nodo.getElementsByTagName("ID");
+                    for (int j = 0; j < idList.getLength(); j++) {
+                        String ID = ((Element) idList.item(j)).getAttribute("Value");
+                        Simbolo S = new Simbolo(ID, null, type, ambitoActual, true, false, false, offset);
+                        ts.Add(S);
+                        offset += size;
                     }
-
                     break;
                 }
                 case "inlineArg": {
@@ -159,18 +138,14 @@ public class SemanticParser {
                     Element IdNode = (Element) nodo.getFirstChild();
                     String IdValex = IdNode.getAttribute("Value");
                     Simbolo S = ts.getVariable(IdValex, ambitoActual);
-                    Linea = IdNode.getAttribute("Line");
-                    Columna = IdNode.getAttribute("Column");
+                    String Line = IdNode.getAttribute("Line");
+                    String Column = IdNode.getAttribute("Column");
                     if (S == null) {
                         String formatString = "(%s,%s) Error: Identificador no encontrado '%s'";
                         throw new Exception(String.format(formatString, Linea, Columna, IdNode.getAttribute("Value")));
                     }
                     tipoActual = S.getTipo();
-                    if(tipoActual.startsWith("Array")) {
-                        String[] split = tipoActual.split("\\.");
-                        tipoActual = split[1];
-                    } 
-                    recorrerArbol(nodo, Linea, Columna);
+                    recorrerArbol(nodo, Line, Column);
                     tipoActual = "";
                     tipoEvaluado = "";
                     break;
@@ -200,26 +175,6 @@ public class SemanticParser {
                         throw new Exception(message);
                     }
                     recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
-                    break;
-                }
-                case "ARRAY": {
-                    String id = nodo.getAttribute("Value");
-                    Simbolo S = ts.getVariable(id, ambitoActual);
-                    System.out.println(S.getTipo());
-                    String type = S.getTipo().split("\\.")[1];
-                    Linea = nodo.getAttribute("Line");
-                    Columna = nodo.getAttribute("Column");
-                    if (!tipoActual.isEmpty() && !type.equals(tipoActual)) {
-                        tipoEvaluado = type;
-                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
-                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
-                        throw new Exception(message);
-                    } else {
-                        String tipoBKP = tipoActual;
-                        tipoActual = "integer";
-                        comprobarTipos(nodo);
-                        tipoActual = tipoBKP;
-                    }
                     break;
                 }
                 case "FunctionCall": {
@@ -253,6 +208,7 @@ public class SemanticParser {
                         String formatString = "(%s,%s) Error: Función no encontrado '%s' con los parámetros proporcionado";
                         throw new Exception(String.format(formatString, Linea, Columna, id));
                     }
+                    System.out.println(tipoFuncion);
                     tipoFuncion = tipoBKP;
 
                     break;
@@ -292,6 +248,26 @@ public class SemanticParser {
             Element nodo = (Element) hijos.item(i);
             String nodeName = nodo.getNodeName();
             switch (nodeName) {
+                case "Plus": {
+                    Simbolo S = ts.getVariable(nodo.getAttribute("Value"), ambitoActual);
+                    if (S == null) {
+                        String message = "(%s,%s) Error: Identificador no encontrado '%s'";
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        throw new Exception(String.format(message, Line, Column, nodo.getAttribute("Value")));
+                    }
+                    if (tipoActual.isEmpty()) {
+                        tipoActual = S.getTipo();
+                    }
+                    if (!tipoActual.equals(S.getTipo())) {
+                        String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
+                        String Line = nodo.getAttribute("Line");
+                        String Column = nodo.getAttribute("Column");
+                        errorMessage = String.format(errorMessage, Line, Column, tipoActual, S.getTipo());
+                        throw new Exception(errorMessage);
+                    }
+                    break;
+                }
                 case "Literal": {
                     String type = nodo.getAttribute("Type");
                     if (tipoActual.isEmpty()) {
@@ -303,47 +279,6 @@ public class SemanticParser {
                         String Column = nodo.getAttribute("Column");
                         errorMessage = String.format(errorMessage, Line, Column, tipoActual, type);
                         throw new Exception(errorMessage);
-                    }
-                    break;
-                }
-                case "ID":{
-                    String id = nodo.getAttribute("Value");
-                    Simbolo S = ts.getVariable(id, ambitoActual);
-                    if(S == null){
-                        String message = "(%s,%s) Error: Identificador no encontrado '%s'";
-                        String Line = nodo.getAttribute("Line");
-                        String Column = nodo.getAttribute("Column");
-                        System.err.println(String.format(message, Line, Column, nodo.getAttribute("Value")));
-                    } else {
-                        boolean isInteger =  S.getTipo().equals(tipoActual);
-                        if(!isInteger){
-                            String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
-                            String Line = nodo.getAttribute("Line");
-                            String Column = nodo.getAttribute("Column");
-                            String currentType = S.getTipo().split("\\.")[0];
-                            errorMessage = String.format(errorMessage, Line, Column, tipoActual, currentType);
-                            System.err.println(errorMessage);
-                        }
-                    }
-                    break;
-                }
-                case "Array":{
-                    String id = nodo.getAttribute("Value");
-                    Simbolo S = ts.getVariable(id, ambitoActual);
-                    System.out.println(S.getTipo());
-                    String type = S.getTipo().split("\\.")[1];
-                    String Linea = nodo.getAttribute("Line");
-                    String Columna = nodo.getAttribute("Column");
-                    if (!tipoActual.isEmpty() && !type.equals(tipoActual)) {
-                        tipoEvaluado = type;
-                        String formatString = "(%s,%s) Error: Tipos incompatibles se encontro '%s' pero se esperaba '%s'";
-                        String message = String.format(formatString, Linea, Columna, tipoEvaluado, tipoActual);
-                        throw new Exception(message);
-                    } else {
-                        String tipoBKP = tipoActual;
-                        tipoActual = "integer";
-                        comprobarTipos(nodo);
-                        tipoActual = tipoBKP;
                     }
                     break;
                 }
@@ -444,7 +379,7 @@ public class SemanticParser {
                     break;
                 }
                 case "FunctionCall": {
-                    String tipoBKP = tipoFuncion;
+                   String tipoBKP = tipoFuncion;
                     tipoFuncion = "";
                     Element functionId = (Element) nodo.getFirstChild();
                     String id = functionId.getAttribute("Value");
@@ -478,7 +413,7 @@ public class SemanticParser {
                     if (tipoFuncion.isEmpty()) {
                         tipoFuncion += tipoRetorno;
                     } else {
-                        tipoFuncion += "X" + tipoRetorno;
+                        tipoFuncion += "X"+tipoRetorno;
                     }
                 }
                 default: {
