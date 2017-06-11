@@ -165,7 +165,7 @@ public class Generator {
                         String tempArg1 = Cuadruplos.getTemp();
                         cuadruploAritmetico(arg2);
                         String tempArg2 = Cuadruplos.getTemp();
-                        
+
                         String temp = Cuadruplos.newTemp();
                         String operacion = rootNode.getAttribute("Value");
                         if (debug) {
@@ -202,10 +202,9 @@ public class Generator {
                 String argName = arg.getNodeName();
                 String operacion = "=[]";
                 String IDArray = rootNode.getAttribute("Value");
-                System.out.println("------"+IDArray);
+                System.out.println("------" + IDArray);
                 if (argName.equals("ID") || argName.equals("Literal")) {
                     String temp = Cuadruplos.newTemp();
-                    //temp = rootNodeID [arg.Value]
                     Cuadruplos.GEN(operacion, IDArray, arg.getAttribute("Value"), temp);
                 } else {
                     cuadruploAritmetico(arg);
@@ -222,25 +221,63 @@ public class Generator {
     }
 
     public void cuadruploAssignment(Element nodo) {
-        String id = ((Element) nodo.getFirstChild()).getAttribute("Value");
-        String assigmentElement = nodo.getFirstChild().getNodeName();
+        /*String id = ((Element) nodo.getFirstChild()).getAttribute("Value");
+         String assigmentElement = nodo.getFirstChild().getNodeName();
+         String operacion = "";
+         Element lastChild = (Element) nodo.getLastChild();
+         String lastChildName = lastChild.getNodeName();
+
+         if (assigmentElement.equals("ARRAY")) {
+         operacion = "[]=";
+         } else {
+         operacion = ":=";
+         }
+
+         if (lastChildName.equals("ID") || lastChildName.equals("Literal")) {
+         Cuadruplos.GEN(operacion, lastChild.getAttribute("Value"), id);
+         } else {
+         if (assigmentElement.equals("ARRAY")) {
+                
+         }else{
+         recorrer(nodo);
+         String lastTemp = Cuadruplos.getTemp();
+         Cuadruplos.GEN(operacion, lastTemp, id);
+         }
+         }*/
+
+        Element arg1 = (Element) nodo.getFirstChild();
+        Element arg2 = (Element) nodo.getLastChild();
+
+        String temp1 = "";
+        String temp2 = "";
         String operacion = "";
-        Element lastChild = (Element) nodo.getLastChild();
-        String lastChildName = lastChild.getNodeName();
+        if (arg2.getNodeName().equals("ID") || arg2.getNodeName().equals("Literal")) {
+            temp2 = arg2.getAttribute("Value");
+        } else {// relational and arithmetic operation, arrays
+            cuadruploAritmetico(arg2);
+            temp2 = Cuadruplos.getTemp();
+        }
 
-        if (assigmentElement.equals("ARRAY")) {
-            operacion = "[]=";
-        } else {
+        if (arg1.getNodeName().equals("ID")) {
+            temp1 = arg1.getAttribute("Value");
             operacion = ":=";
+            Cuadruplos.GEN(operacion, temp2, temp1);
+        } else if (arg1.getNodeName().equals("ARRAY")) {
+            Element arg = (Element) arg1.getFirstChild();
+            String argName = arg.getNodeName();
+            String IDArray = arg1.getAttribute("Value");
+            operacion = "[]=";
+            if (argName.equals("ID") || argName.equals("Literal")) {
+                Cuadruplos.GEN(operacion, IDArray, temp2, arg1.getAttribute("Value"));
+            } else {
+                temp1 = Cuadruplos.getTemp();
+                cuadruploAritmetico(arg);
+                String temp = Cuadruplos.getTemp();
+                Cuadruplos.GEN(operacion, temp, temp1 , arg1.getAttribute("Value"));
+            }
+
         }
 
-        if (lastChildName.equals("ID") || lastChildName.equals("Literal")) {
-            Cuadruplos.GEN(operacion, lastChild.getAttribute("Value"), id);
-        } else {
-            recorrer(nodo);
-            String lastTemp = Cuadruplos.getTemp();
-            Cuadruplos.GEN(operacion, lastTemp, id);
-        }
     }
 
     public void print() {
