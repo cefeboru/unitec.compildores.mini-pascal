@@ -2251,6 +2251,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Plus");
+                    node.setAttribute("Value","+");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -2272,6 +2273,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Minus");
+                    node.setAttribute("Value","-");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -2308,6 +2310,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Times");
+                    node.setAttribute("Value","*");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -2329,6 +2332,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Div");
+                    node.setAttribute("Value","/");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node   ;

@@ -38,8 +38,9 @@ public class SemanticParser {
             System.err.println(message);
         } else {
             ts.toString();
+            System.err.println("------------------------------------------------------------------------");
             Generator G = new Generator();
-            G.generateCodeFromAST(nodoPadre);
+            G.recorrer(nodoPadre);
             G.print();
         }
         return ts;

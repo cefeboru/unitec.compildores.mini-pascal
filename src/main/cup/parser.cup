@@ -921,6 +921,7 @@ AritExpr1       ::= AritExpr1:e1 OperadorSuma AritExpr2:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Plus");
+                    node.setAttribute("Value","+");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -929,6 +930,7 @@ AritExpr1       ::= AritExpr1:e1 OperadorSuma AritExpr2:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Minus");
+                    node.setAttribute("Value","-");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -944,6 +946,7 @@ AritExpr2           ::= AritExpr2:e1 OperadorMultiplicacion AritExpr3:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Times");
+                    node.setAttribute("Value","*");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -952,6 +955,7 @@ AritExpr2           ::= AritExpr2:e1 OperadorMultiplicacion AritExpr3:e2
                 {:
                     iniXML();
                     Element node = xmlDocument.createElement("Div");
+                    node.setAttribute("Value","/");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node   ;

@@ -21,6 +21,7 @@ public class TablaCuadruplos {
     public static final String IF = "IF";
     
     ArrayList<Cuadruplo> cuadruplos = new ArrayList<>();
+    private int tempActual = 0;
     
     /**
     * Used for generating full operations like Arithmetic Operations
@@ -56,7 +57,17 @@ public class TablaCuadruplos {
         cuadruplos.add(new Cuadruplo(op, resultado));
     }
     
+    public String newTemp(){
+        return "t" + ++this.tempActual;
+    }
+    
+    public String getTemp(){
+        return "t" + this.tempActual;
+    }
+    
     public void print(){
+        String Headers = "%-10s %-10s %-10s %-10s";
+        System.out.println(String.format(Headers, "Operacion", "Arg1", "Arg2", "Resultado"));
         for (int i = 0; i < cuadruplos.size(); i++) {
             Cuadruplo C = cuadruplos.get(i);
             System.out.println(C);
