@@ -72,5 +72,6 @@ public class TablaCuadruplos {
             Cuadruplo C = cuadruplos.get(i);
             System.out.println(C);
         }
+        System.out.println("");
     }
 }

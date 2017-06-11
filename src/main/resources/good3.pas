@@ -1,8 +1,7 @@
 program hola;
 var 
-    a: string;
-    b: integer;
+    a: integer;
+    b: Array[1..10] of integer;
 begin
-    a := 'HOLA';
-    b := 2 * 7 + 9 - 3 / 1;
+    a := b[b[1*a]+a*2] + 1*3;
 end.
