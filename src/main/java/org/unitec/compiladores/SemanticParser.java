@@ -39,7 +39,7 @@ public class SemanticParser {
         } else {
             ts.toString();
             System.err.println("------------------------------------------------------------------------");
-            Generator G = new Generator();
+            Generator G = new Generator(ts);
             G.recorrer(nodoPadre);
             G.print();
         }
