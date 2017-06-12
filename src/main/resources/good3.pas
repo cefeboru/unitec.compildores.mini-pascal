@@ -1,7 +1,7 @@
 program hola;
 var 
-    a: array[1..10] of integer;
-    b: array[1..10] of char;
+    a: integer;
+    b: Array[1..10] of integer;
 begin
-    a[ b[1] + a[2] ] := a[1] + 1;
+    b[b[1]] := b[2*5]+3*4;
 end.

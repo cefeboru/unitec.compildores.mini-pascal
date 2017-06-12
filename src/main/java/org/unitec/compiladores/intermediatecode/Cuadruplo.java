@@ -10,10 +10,10 @@ package org.unitec.compiladores.intermediatecode;
  * @author Cesar Bonilla
  */
 public class Cuadruplo {
-    String operacion;
-    String arg1;
-    String arg2;
-    String resultado;
+    String operacion = "";
+    String arg1 = "";
+    String arg2 = "";
+    String resultado = "";
 
     public Cuadruplo(String operacion, String arg1, String arg2, String resultado) {
         this.operacion = operacion;
@@ -67,7 +67,8 @@ public class Cuadruplo {
     
     @Override
     public String toString(){
-        String message = "%s %s %s %s";
+        
+        String message = "%-10s %-10s %-10s %-10s";
         return String.format(message, operacion, arg1, arg2, resultado);
     }
     

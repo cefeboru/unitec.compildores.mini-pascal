@@ -1891,6 +1891,9 @@ class CUP$Parser$actions {
           case 63: // ifstmt ::= If expr Then stmt Else stmt 
             {
               Element RESULT =null;
+		int ileft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)).right;
+		Element i = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-5)).value;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-4)).right;
 		Element e = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-4)).value;
@@ -1903,9 +1906,12 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("IfStatement");
+                    nPadre.setAttribute("Line",ileft + "");
+                    nPadre.setAttribute("Column",iright + "");
                     if (e != null) { nPadre.appendChild(e); }         
                     if (s != null) { nPadre.appendChild(s); }
                     if (s2 != null) { nPadre.appendChild(s2); }
+
                     RESULT = nPadre;
                 
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("ifstmt",38, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-5)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
@@ -1916,6 +1922,9 @@ class CUP$Parser$actions {
           case 64: // ifstmt ::= If expr Then stmt 
             {
               Element RESULT =null;
+		int ileft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).left;
+		int iright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-3)).right;
+		Element i = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-3)).value;
 		int eleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).left;
 		int eright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		Element e = (Element)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
@@ -1925,6 +1934,8 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("IfStatement");
+                    nPadre.setAttribute("Line",ileft + "");
+                    nPadre.setAttribute("Column",iright + "");
                     if (e != null) { nPadre.appendChild(e); }         
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
@@ -2240,6 +2251,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Plus");
+                    node.setAttribute("Value","+");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -2261,6 +2273,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Minus");
+                    node.setAttribute("Value","-");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -2297,6 +2310,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Times");
+                    node.setAttribute("Value","*");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node;
@@ -2318,6 +2332,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element node = xmlDocument.createElement("Div");
+                    node.setAttribute("Value","/");
                     node.appendChild(e1);
                     node.appendChild(e2);
                     RESULT = node   ;
