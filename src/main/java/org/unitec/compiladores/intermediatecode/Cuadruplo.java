@@ -10,25 +10,29 @@ package org.unitec.compiladores.intermediatecode;
  * @author Cesar Bonilla
  */
 public class Cuadruplo {
+    int indice = -1;
     String operacion = "";
     String arg1 = "";
     String arg2 = "";
     String resultado = "";
 
-    public Cuadruplo(String operacion, String arg1, String arg2, String resultado) {
+    public Cuadruplo(int indice, String operacion, String arg1, String arg2, String resultado) {
+        this.indice = indice;
         this.operacion = operacion;
         this.arg1 = arg1;
         this.arg2 = arg2;
         this.resultado = resultado;
     }
 
-    public Cuadruplo(String operacion, String arg1, String resultado) {
+    public Cuadruplo(int indice, String operacion, String arg1, String resultado) {
+        this.indice = indice;
         this.operacion = operacion;
         this.arg1 = arg1;
         this.resultado = resultado;
     }
 
-    public Cuadruplo(String operacion, String resultado) {
+    public Cuadruplo(int indice, String operacion, String resultado) {
+        this.indice = indice;
         this.operacion = operacion;
         this.resultado = resultado;
     }
@@ -68,8 +72,8 @@ public class Cuadruplo {
     @Override
     public String toString(){
         
-        String message = "%-10s %-10s %-10s %-10s";
-        return String.format(message, operacion, arg1, arg2, resultado);
+        String message = "%-10s %-10s %-10s %-10s %-10s";
+        return String.format(message, indice+"", operacion, arg1, arg2, resultado);
     }
     
     

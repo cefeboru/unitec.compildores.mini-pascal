@@ -15,20 +15,20 @@ import org.w3c.dom.NodeList;
  * @author Cesar Bonilla
  */
 public class Generator {
-    
+
     final String SUM = "+";
     final String MINUS = "-";
     final String TIMES = "*";
     final String DIV = "/";
-    
+
     TablaCuadruplos Cuadruplos = new TablaCuadruplos();
     TablaSimbolos TS = new TablaSimbolos();
     String opracionActual = "";
     String ambitoActual = "main";
     int tempCounter = 0;
     boolean debug = true;
-    
-    public Generator(TablaSimbolos TS){
+
+    public Generator(TablaSimbolos TS) {
         this.TS = TS;
     }
 
@@ -49,7 +49,6 @@ public class Generator {
                 case "Minus":
                 case "Times":
                 case "Plus": {
-
                     cuadruploAritmetico(nodo);
                     break;
                 }
@@ -74,11 +73,15 @@ public class Generator {
                 case "LessOrEqual":
                 case "GreaterOrEqual":
                 case "Different": {
+                    this.cuadruplosExpresion(nodo);
                     break;
                 }
                 case "AND":
                 case "OR":
                 case "NOT": {
+
+                    recorrer(nodo);
+
                     break;
                 }
                 default: {
@@ -112,11 +115,11 @@ public class Generator {
                 if (arg1IsFinal && arg2IsFinal) {
                     if (arg1IsArray && arg2IsArray) {
                         cuadruploAritmetico(arg1);
-                        String tempArg1 = Cuadruplos.getTemp();
+                        String tempArg1 = this.getTemp();
                         cuadruploAritmetico(arg2);
-                        String tempArg2 = Cuadruplos.getTemp();
+                        String tempArg2 = this.getTemp();
 
-                        String temp = Cuadruplos.newTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
@@ -124,8 +127,8 @@ public class Generator {
                         Cuadruplos.GEN(operacion, tempArg1, tempArg2, temp);
                     } else if (arg1IsArray) {
                         cuadruploAritmetico(arg1);
-                        String tempArg = Cuadruplos.getTemp();
-                        String temp = Cuadruplos.newTemp();
+                        String tempArg = this.getTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
@@ -133,15 +136,15 @@ public class Generator {
                         Cuadruplos.GEN(operacion, tempArg, arg2.getAttribute("Value"), temp);
                     } else if (arg2IsArray) {
                         cuadruploAritmetico(arg2);
-                        String tempArg = Cuadruplos.getTemp();
-                        String temp = Cuadruplos.newTemp();
+                        String tempArg = this.getTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
                         }
                         Cuadruplos.GEN(operacion, arg1.getAttribute("Value"), tempArg, temp);
                     } else {
-                        String temp = Cuadruplos.newTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
@@ -151,11 +154,11 @@ public class Generator {
                 } else if (arg1IsFinal) {
                     if (arg1IsArray) {
                         cuadruploAritmetico(arg1);
-                        String tempArg1 = Cuadruplos.getTemp();
+                        String tempArg1 = this.getTemp();
                         cuadruploAritmetico(arg2);
-                        String tempArg2 = Cuadruplos.getTemp();
+                        String tempArg2 = this.getTemp();
 
-                        String temp = Cuadruplos.newTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
@@ -163,8 +166,8 @@ public class Generator {
                         Cuadruplos.GEN(operacion, tempArg1, tempArg2, temp);
                     } else {
                         cuadruploAritmetico(arg2);
-                        String lastTemp = Cuadruplos.getTemp();
-                        String temp = Cuadruplos.newTemp();
+                        String lastTemp = this.getTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
@@ -174,11 +177,11 @@ public class Generator {
                 } else if (arg2IsFinal) {
                     if (arg2IsArray) {
                         cuadruploAritmetico(arg1);
-                        String tempArg1 = Cuadruplos.getTemp();
+                        String tempArg1 = this.getTemp();
                         cuadruploAritmetico(arg2);
-                        String tempArg2 = Cuadruplos.getTemp();
+                        String tempArg2 = this.getTemp();
 
-                        String temp = Cuadruplos.newTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
@@ -186,8 +189,8 @@ public class Generator {
                         Cuadruplos.GEN(operacion, tempArg1, tempArg2, temp);
                     } else {
                         cuadruploAritmetico(arg1);
-                        String lastTemp = Cuadruplos.getTemp();
-                        String temp = Cuadruplos.newTemp();
+                        String lastTemp = this.getTemp();
+                        String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
@@ -196,11 +199,11 @@ public class Generator {
                     }
                 } else { // Both are OPs
                     cuadruploAritmetico(arg1);
-                    String tempArg1 = Cuadruplos.getTemp();
+                    String tempArg1 = this.getTemp();
                     cuadruploAritmetico(arg2);
-                    String tempArg2 = Cuadruplos.getTemp();
+                    String tempArg2 = this.getTemp();
 
-                    String temp = Cuadruplos.newTemp();
+                    String temp = this.newTemp();
                     String operacion = nodo.getAttribute("Value");
                     if (debug) {
                         System.out.println("Operacion: " + operacion);
@@ -219,24 +222,24 @@ public class Generator {
                 String indiceInicial = tipo.split("\\.")[2];
                 System.out.println("------" + IDArray);
                 if (argName.equals("ID") || argName.equals("Literal")) {
-                    String newTemp = Cuadruplos.newTemp();
+                    String newTemp = this.newTemp();
                     Cuadruplos.GEN(MINUS, arg.getAttribute("Value"), indiceInicial, newTemp);
-                    String temp = Cuadruplos.getTemp();
-                    newTemp = Cuadruplos.newTemp();
+                    String temp = this.getTemp();
+                    newTemp = this.newTemp();
                     Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
-                    temp = Cuadruplos.getTemp();
-                    newTemp = Cuadruplos.newTemp();
+                    temp = this.getTemp();
+                    newTemp = this.newTemp();
                     Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
                 } else {
                     cuadruploAritmetico(arg);
-                    String temp = Cuadruplos.getTemp();
-                    String newTemp = Cuadruplos.newTemp();
+                    String temp = this.getTemp();
+                    String newTemp = this.newTemp();
                     Cuadruplos.GEN(MINUS, temp, indiceInicial, newTemp);
-                    temp = Cuadruplos.getTemp();
-                    newTemp = Cuadruplos.newTemp();
+                    temp = this.getTemp();
+                    newTemp = this.newTemp();
                     Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
-                    temp = Cuadruplos.getTemp();
-                    newTemp = Cuadruplos.newTemp();
+                    temp = this.getTemp();
+                    newTemp = this.newTemp();
                     Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
                 }
                 break;
@@ -248,30 +251,6 @@ public class Generator {
     }
 
     public void cuadruploAssignment(Element nodo) throws Exception {
-        /*String id = ((Element) nodo.getFirstChild()).getAttribute("Value");
-         String assigmentElement = nodo.getFirstChild().getNodeName();
-         String operacion = "";
-         Element lastChild = (Element) nodo.getLastChild();
-         String lastChildName = lastChild.getNodeName();
-
-         if (assigmentElement.equals("ARRAY")) {
-         operacion = "[]=";
-         } else {
-         operacion = ":=";
-         }
-
-         if (lastChildName.equals("ID") || lastChildName.equals("Literal")) {
-         Cuadruplos.GEN(operacion, lastChild.getAttribute("Value"), id);
-         } else {
-         if (assigmentElement.equals("ARRAY")) {
-                
-         }else{
-         recorrer(nodo);
-         String lastTemp = Cuadruplos.getTemp();
-         Cuadruplos.GEN(operacion, lastTemp, id);
-         }
-         }*/
-
         Element arg1 = (Element) nodo.getFirstChild();
         Element arg2 = (Element) nodo.getLastChild();
 
@@ -282,7 +261,7 @@ public class Generator {
             temp2 = arg2.getAttribute("Value");
         } else {// relational and arithmetic operation, arrays
             cuadruploAritmetico(arg2);
-            temp2 = Cuadruplos.getTemp();
+            temp2 = this.getTemp();
         }
 
         if (arg1.getNodeName().equals("ID")) {
@@ -299,27 +278,121 @@ public class Generator {
             String indiceInicial = tipo.split("\\.")[2];
             if (argName.equals("ID") || argName.equals("Literal")) {
                 String Valex2 = arg.getAttribute("Value");
-                String newTemp = Cuadruplos.newTemp();
+                String newTemp = this.newTemp();
                 Cuadruplos.GEN(MINUS, Valex2, indiceInicial, newTemp);
-                String temp = Cuadruplos.getTemp();
-                newTemp = Cuadruplos.newTemp();
+                String temp = this.getTemp();
+                newTemp = this.newTemp();
                 Cuadruplos.GEN(TIMES, temp, this.getTypeSize(tipo), newTemp);
-                temp = Cuadruplos.getTemp();
+                temp = this.getTemp();
                 Cuadruplos.GEN(operacion, temp, temp2, Valex);
             } else {
                 cuadruploAritmetico(arg);
-                String temp = Cuadruplos.getTemp();
-                String newTemp = Cuadruplos.newTemp();
-                Cuadruplos.GEN(MINUS, temp, indiceInicial , newTemp);
-                temp = Cuadruplos.getTemp();
-                newTemp = Cuadruplos.newTemp();
-                Cuadruplos.GEN(TIMES, temp, this.getTypeSize(tipo) , newTemp);
-                temp = Cuadruplos.getTemp();
-                Cuadruplos.GEN(operacion, temp, temp2 , Valex);
+                String temp = this.getTemp();
+                String newTemp = this.newTemp();
+                Cuadruplos.GEN(MINUS, temp, indiceInicial, newTemp);
+                temp = this.getTemp();
+                newTemp = this.newTemp();
+                Cuadruplos.GEN(TIMES, temp, this.getTypeSize(tipo), newTemp);
+                temp = this.getTemp();
+                Cuadruplos.GEN(operacion, temp, temp2, Valex);
             }
 
         }
 
+    }
+
+    public void cuadruplosExpresion(Element nodo) throws Exception {
+        if(debug){
+            System.out.println("cuadruplosExpresion: " + nodo.getNodeName());
+        }
+        Element arg1 = (Element) nodo.getFirstChild();
+        Element arg2 = (Element) nodo.getLastChild();
+
+        String arg1Name = arg1.getNodeName();
+        String arg2Name = arg2.getNodeName();
+
+        String t1 = "";
+        String t2 = "";
+        String tResultado = "";
+        String op = nodo.getAttribute("Value");
+
+        if (arg1Name.equals("ID") || arg1Name.equals("Literal")) {
+            t1 = this.newTemp();
+            String arg1Value = arg1.getAttribute("Value");
+            Cuadruplos.GEN(":=", arg1Value, t1);
+        } else if (arg1Name.equals("ARRAY")) {
+            cuadruploArray(arg1);
+            t1 = this.getTemp();
+        } else {
+            cuadruploAritmetico(arg1);
+            t1 = this.getTemp();
+        }
+        
+        if (arg2Name.equals("ID") || arg2Name.equals("Literal")) {
+            t2 = this.newTemp();
+            String arg2Value = arg2.getAttribute("Value");
+            Cuadruplos.GEN(":=", arg2Value, t2);
+        } else if (arg2Name.equals("ARRAY")) {
+            cuadruploArray(arg2);
+            t2 = this.getTemp();
+        } else {
+            cuadruploAritmetico(arg2);
+            t2 = this.getTemp();
+        }
+        tResultado = this.newTemp();
+        Cuadruplos.GEN(op, t1, t2,tResultado);
+        
+        int quadV = Cuadruplos.GEN_CONDITIONAL_JUMP("@", tResultado);
+        int quadF = Cuadruplos.GEN_JUMP("@");
+        
+        Element parent = (Element)nodo.getParentNode();
+        String listaV = parent.getAttribute("listaV");
+        String listaF = parent.getAttribute("listaF");
+        if(listaV == null || listaV.isEmpty()){
+            listaV = String.valueOf(quadV);
+        } else {
+            listaV += "," + quadV;
+        }
+        if(listaF == null || listaF.isEmpty()){
+            listaF = String.valueOf(quadF);
+        } else {
+            listaF += "," + quadF;
+        }
+        
+        parent.setAttribute("listaV", listaV);
+        parent.setAttribute("listaF", listaF);        
+    }
+
+    public void cuadruploArray(Element nodo) throws Exception {
+        Element arg = (Element) nodo.getFirstChild();
+        String argName = arg.getNodeName();
+        String operacion = "=[]";
+        String IDArray = nodo.getAttribute("Value");
+        Simbolo S = TS.getVariable(IDArray, ambitoActual);
+        String tipo = S.getTipo();
+        String indiceInicial = tipo.split("\\.")[2];
+        System.out.println("------" + IDArray);
+        if (argName.equals("ID") || argName.equals("Literal")) {
+            String newTemp = this.newTemp();
+            Cuadruplos.GEN(MINUS, arg.getAttribute("Value"), indiceInicial, newTemp);
+            String temp = this.getTemp();
+            newTemp = this.newTemp();
+            Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
+            temp = this.getTemp();
+            newTemp = this.newTemp();
+            Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
+        } else {
+            cuadruploAritmetico(arg);
+            String temp = this.getTemp();
+            String newTemp = this.newTemp();
+            Cuadruplos.GEN(MINUS, temp, indiceInicial, newTemp);
+            temp = this.getTemp();
+            newTemp = this.newTemp();
+            Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
+            temp = this.getTemp();
+            newTemp = this.newTemp();
+            Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
+        }
     }
 
     public void print() {
@@ -327,12 +400,18 @@ public class Generator {
     }
 
     private String getTypeSize(String tipo) {
-        if(tipo.equals("char") || tipo.equals("boolean")){
+        if (tipo.equals("char") || tipo.equals("boolean")) {
             return "1";
         } else {
             return "4";
-        } 
-            
-        
+        }
+    }
+
+    private String getTemp() {
+        return "t" + this.tempCounter;
+    }
+
+    private String newTemp() {
+        return "t" + ++this.tempCounter;
     }
 }
