@@ -55,6 +55,13 @@ public class TablaCuadruplos {
         return cuadruplos.size() - 1;
     }
     
+    
+    public int GEN_JUMP_TRUE(String destination, String condition){
+        int indice = cuadruplos.size();
+        cuadruplos.add(new Cuadruplo(indice,"JTRUE", destination, condition, ""));
+        return indice;
+    }
+    
     /**
     * Generates a jump if the condition is true.
     *
@@ -62,9 +69,9 @@ public class TablaCuadruplos {
     * @param condition variable to be evaluated
     * @return The index of the generated quadruple
     */
-    public int GEN_CONDITIONAL_JUMP(String destination, String condition){
+    public int GEN_JUMP_FALSE(String destination, String condition){
         int indice = cuadruplos.size();
-        cuadruplos.add(new Cuadruplo(indice,"JTRUE", destination, condition, ""));
+        cuadruplos.add(new Cuadruplo(indice,"JFALSE", destination, condition, ""));
         return indice;
     }
     

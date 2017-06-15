@@ -74,14 +74,17 @@ public class Generator {
                 case "GreaterOrEqual":
                 case "Different": {
                     this.cuadruplosExpresion(nodo);
+                    Element parent = (Element)nodo.getParentNode();
+                    String listaV = nodo.getAttribute("listaV");
+                    String listaF = nodo.getAttribute("listaF");
+                    parent.setAttribute("listaV", listaV);
+                    parent.setAttribute("listaF", listaF);
                     break;
                 }
                 case "AND":
                 case "OR":
                 case "NOT": {
-
-                    recorrer(nodo);
-
+                    cuadruploRelacional(nodo);
                     break;
                 }
                 default: {
@@ -213,35 +216,7 @@ public class Generator {
                 break;
             }
             case "ARRAY": {
-                Element arg = (Element) nodo.getFirstChild();
-                String argName = arg.getNodeName();
-                String operacion = "=[]";
-                String IDArray = nodo.getAttribute("Value");
-                Simbolo S = TS.getVariable(IDArray, ambitoActual);
-                String tipo = S.getTipo();
-                String indiceInicial = tipo.split("\\.")[2];
-                System.out.println("------" + IDArray);
-                if (argName.equals("ID") || argName.equals("Literal")) {
-                    String newTemp = this.newTemp();
-                    Cuadruplos.GEN(MINUS, arg.getAttribute("Value"), indiceInicial, newTemp);
-                    String temp = this.getTemp();
-                    newTemp = this.newTemp();
-                    Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
-                    temp = this.getTemp();
-                    newTemp = this.newTemp();
-                    Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
-                } else {
-                    cuadruploAritmetico(arg);
-                    String temp = this.getTemp();
-                    String newTemp = this.newTemp();
-                    Cuadruplos.GEN(MINUS, temp, indiceInicial, newTemp);
-                    temp = this.getTemp();
-                    newTemp = this.newTemp();
-                    Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
-                    temp = this.getTemp();
-                    newTemp = this.newTemp();
-                    Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
-                }
+                this.cuadruploArray(nodo);
                 break;
             }
             default: {
@@ -307,7 +282,8 @@ public class Generator {
         }
         Element arg1 = (Element) nodo.getFirstChild();
         Element arg2 = (Element) nodo.getLastChild();
-
+        Element parent = (Element)nodo.getParentNode();
+        
         String arg1Name = arg1.getNodeName();
         String arg2Name = arg2.getNodeName();
 
@@ -315,6 +291,8 @@ public class Generator {
         String t2 = "";
         String tResultado = "";
         String op = nodo.getAttribute("Value");
+        
+        String parentName = parent.getNodeName();
 
         if (arg1Name.equals("ID") || arg1Name.equals("Literal")) {
             t1 = this.newTemp();
@@ -341,26 +319,40 @@ public class Generator {
         }
         tResultado = this.newTemp();
         Cuadruplos.GEN(op, t1, t2,tResultado);
+        int quadFIndex = -1;
+        int quadVIndex = -1;
         
-        int quadV = Cuadruplos.GEN_CONDITIONAL_JUMP("@", tResultado);
-        int quadF = Cuadruplos.GEN_JUMP("@");
+        if(parentName.equals("AND")){
+            quadFIndex = Cuadruplos.GEN_JUMP_FALSE("@", tResultado);
+        } else if(parentName.equals("OR")){
+            quadVIndex = Cuadruplos.GEN_JUMP_TRUE("@", tResultado);
+        } else {
+            quadFIndex = Cuadruplos.GEN_JUMP_FALSE("@", tResultado);
+        }
+        String listaF = nodo.getAttribute("listaF");
+        String listaV = nodo.getAttribute("listaV");
         
-        Element parent = (Element)nodo.getParentNode();
-        String listaV = parent.getAttribute("listaV");
-        String listaF = parent.getAttribute("listaF");
         if(listaV == null || listaV.isEmpty()){
-            listaV = String.valueOf(quadV);
+            if(quadVIndex != -1){
+                listaV = String.valueOf(quadVIndex);
+            }
         } else {
-            listaV += "," + quadV;
-        }
-        if(listaF == null || listaF.isEmpty()){
-            listaF = String.valueOf(quadF);
-        } else {
-            listaF += "," + quadF;
+            if( quadVIndex != 1){
+                listaV += "," + quadVIndex;
+            }
         }
         
-        parent.setAttribute("listaV", listaV);
+        if(listaF == null || listaF.isEmpty()){
+            if(quadFIndex != -1){
+                listaF = String.valueOf(quadFIndex);
+            }
+        } else {
+            if( quadFIndex != 1){
+                listaF += "," + quadFIndex;
+            }
+        }
         parent.setAttribute("listaF", listaF);        
+        parent.setAttribute("listaV", listaV);   
     }
 
     public void cuadruploArray(Element nodo) throws Exception {
@@ -414,4 +406,122 @@ public class Generator {
     private String newTemp() {
         return "t" + ++this.tempCounter;
     }
+
+    private void cuadruploAND(Element nodo) throws Exception {
+        if(debug){
+            System.out.println("cuadruploAND: " + nodo.getNodeName());
+        }
+        Element arg1 = (Element) nodo.getFirstChild();
+        Element arg2 = (Element) nodo.getLastChild();
+        Element parent = (Element)nodo.getParentNode();
+
+        String arg1Name = arg1.getNodeName();
+        String arg2Name = arg2.getNodeName();
+        
+        String t1 = "";
+                
+        switch (arg1Name) {
+            case "ID":{
+                String arg1Value = arg1.getAttribute("Value");
+                Cuadruplos.GEN_JUMP_FALSE("@", arg1Value);
+                break;
+            }
+            case "Literal":{
+                String arg1Value = arg1.getAttribute("Value");
+                arg1Value = arg1Value.toLowerCase();
+                String temp = this.newTemp();
+                Cuadruplos.GEN(":=", arg1Value, temp);
+                Cuadruplos.GEN_JUMP_FALSE("@", temp);
+                break;
+            }
+            case "ARRAY":{
+                cuadruploArray(arg1);
+                String temp = this.getTemp();
+                Cuadruplos.GEN_JUMP_FALSE("@", temp);
+                break;
+            }
+            case "GreaterThan":
+            case "LessThan":
+            case "Equals":
+            case "LessOrEqual":
+            case "GreaterOrEqual":
+            case "Different":{
+                cuadruplosExpresion(arg1);
+                String listaV = nodo.getAttribute("listaV");
+                String listaF = nodo.getAttribute("listaF");
+                parent.setAttribute("listaV", listaV);
+                parent.setAttribute("listaF", listaF);
+                break;
+            }
+            default:{
+                cuadruploRelacional(arg1);
+                break;
+            }
+                
+        }
+        
+        switch (arg2Name) {
+            case "ID":{
+                String arg2Value = arg2.getAttribute("Value");
+                Cuadruplos.GEN_JUMP_FALSE("@", arg2Value);
+                break;
+            }
+            case "Literal":{
+                String arg2Value = arg2.getAttribute("Value");
+                arg2Value = arg2Value.toLowerCase();
+                String temp = this.newTemp();
+                Cuadruplos.GEN(":=", arg2Value, temp);
+                Cuadruplos.GEN_JUMP_FALSE("@", temp);
+                break;
+            }
+            case "ARRAY":{
+                cuadruploArray(arg2);
+                String temp = this.getTemp();
+                Cuadruplos.GEN_JUMP_FALSE("@", temp);
+                break;
+            }
+            case "GreaterThan":
+            case "LessThan":
+            case "Equals":
+            case "LessOrEqual":
+            case "GreaterOrEqual":
+            case "Different":{
+                cuadruplosExpresion(arg2);
+                String listaV = nodo.getAttribute("listaV");
+                String listaF = nodo.getAttribute("listaF");
+                parent.setAttribute("listaV", listaV);
+                parent.setAttribute("listaF", listaF);
+                break;
+            }
+            default:{
+                cuadruploRelacional(arg2);
+                String listaV = nodo.getAttribute("listaV");
+                String listaF = nodo.getAttribute("listaF");
+                parent.setAttribute("listaV", listaV);
+                parent.setAttribute("listaF", listaF);
+                break;
+            }
+                
+            
+        }
+    }
+
+    private void cuadruploRelacional(Element node) throws Exception {
+        String nodeName = node.getNodeName();
+        
+        switch(nodeName){
+            case "AND":{
+                cuadruploAND(node);
+                break;
+            }
+            case "OR":{
+                break;                
+            }
+            case "NOT":{
+                break;
+            }
+        }
+    }
+    
+    
 }
