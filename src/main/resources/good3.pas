@@ -4,9 +4,17 @@ var
     b: Array[1..10] of integer;
     c: boolean;
 begin
-    if (c) and (a = 2) then
+    if NOT( a > 1) AND (1 > a) then
     begin
-        a := 2 + 2;
+        a := 1;
+    end
+    else if ( a > 2 ) then
+    begin 
+        a := 2;
+    end
+    else
+    begin
+        a := 3;
     end;
 
 end.
