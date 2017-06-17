@@ -99,6 +99,10 @@ public class Generator {
                     cuadruploRepeat(nodo);
                     break;
                 }
+                case "ForStatement":{
+                    cuadruploFor(nodo);
+                    break;
+                }
                 default: {
                     recorrer(nodo);
                     break;
@@ -107,6 +111,7 @@ public class Generator {
         }
 
     }
+
 
     public void cuadruploAritmetico(Element nodo) throws Exception {
         String nodeName = nodo.getNodeName();
@@ -794,6 +799,70 @@ public class Generator {
         this.completa(M1, expression.getAttribute("listaF"));
         int M2 = Cuadruplos.getSize();
         this.completa(M2, expression.getAttribute("listaV"));
+    }
+
+    private void cuadruploFor(Element nodo) throws Exception {
+        NodeList lista = nodo.getChildNodes();
+        Element assignment = (Element)lista.item(0);
+        Element end = (Element)lista.item(1);
+        Element body = (Element)lista.item(2);
+        
+        this.cuadruploAssignment(assignment);
+        Cuadruplo QUAD = Cuadruplos.item(Cuadruplos.getSize()-1);
+        String iterator = QUAD.resultado;   
+        
+        
+        int M1 = Cuadruplos.getSize();
+        
+        
+          
+        
+        String endName = end.getNodeName();
+        switch(endName){
+            case "Literal":
+            case "ID":{
+                String listaV = this.crearLista(Cuadruplos.getSize());
+                String listaF = this.crearLista(Cuadruplos.getSize() + 1);
+                nodo.setAttribute("listaV", listaV);
+                nodo.setAttribute("listaF", listaF); 
+                String idValex = end.getAttribute("Value");
+                Cuadruplos.GEN("if<=", iterator, idValex, "@");
+                Cuadruplos.GEN_GOTO("@");
+                break;
+            }
+            case "ARRAY":{
+                this.cuadruploArray(end);
+                String listaV = this.crearLista(Cuadruplos.getSize());
+                String listaF = this.crearLista(Cuadruplos.getSize() + 1);
+                nodo.setAttribute("listaV", listaV);
+                nodo.setAttribute("listaF", listaF);
+                String temp = this.getTemp();
+                Cuadruplos.GEN("if<=", iterator, temp, "@");
+                Cuadruplos.GEN_GOTO("@");
+                break;
+            }
+            default:
+            {
+                this.cuadruploAritmetico(end);
+                String listaV = this.crearLista(Cuadruplos.getSize());
+                String listaF = this.crearLista(Cuadruplos.getSize() + 1);
+                nodo.setAttribute("listaV", listaV);
+                nodo.setAttribute("listaF", listaF);
+                String temp = this.getTemp();
+                Cuadruplos.GEN("if<=", iterator, temp, "@");
+                Cuadruplos.GEN_GOTO("@");
+                break;
+            }
+        }
+        int M2 = Cuadruplos.getSize();
+        recorrer(body);
+        Cuadruplos.GEN("+", iterator, "1", iterator);
+        Cuadruplos.GEN_GOTO(M1+"");
+        int M3 = Cuadruplos.getSize();
+        
+        this.completa(M2, nodo.getAttribute("listaV"));
+        this.completa(M3, nodo.getAttribute("listaF"));
+        
     }
     
     

@@ -100,4 +100,8 @@ public class TablaCuadruplos {
     public int getSize(){
         return this.cuadruplos.size();
     }
+    
+    public Cuadruplo item(int index){
+        return this.cuadruplos.get(index);
+    }
 }

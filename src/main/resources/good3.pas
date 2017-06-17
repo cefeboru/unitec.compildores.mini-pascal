@@ -1,16 +1,12 @@
 program hola;
 var 
-    a: integer;
+    a,i: integer;
     b: Array[1..10] of integer;
     c: boolean;
 begin
-    repeat
+    for i := 1 to b[1 + 1] do
     begin
-        a := 1 + 2;
-        while true do
-        begin
-            c := false;
-        end;
-    end; 
-    until false
+        a := 1;
+    end;
+    
 end.
