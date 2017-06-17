@@ -56,6 +56,38 @@ public class SemanticParser {
                 System.out.println("RecorrerArbol - " + nodeName);
             }
             switch (nodeName) {
+                case "ReadStatement": {
+                    tipoActual = "";
+                    recorrerArbol(nodo, Linea, Columna);
+                    if (tipoActual.equals("boolean") || tipoActual.startsWith("Array")) {
+                        String tipo = tipoActual;
+                        tipoActual = "[string, integer, char]";
+                        Element arg = (Element) nodo.getFirstChild();
+                        Linea = arg.getAttribute("Line");
+                        Columna = arg.getAttribute("Column");
+                        throwIncompatibleTypeError(Linea, Columna, tipo);
+                        tipoActual = tipo;
+                    }
+                    break;
+                }
+                case "WriteStatement": {
+                    tipoActual = "";
+                    NodeList lista = nodo.getChildNodes();
+                    if (lista.getLength() > 1) {
+                        recorrerArbol(nodo, Linea, Columna);
+                        if (tipoActual.equals("boolean") || tipoActual.startsWith("Array")) {
+                            String tipo = tipoActual;
+                            tipoActual = "[string, integer, char]";
+                            Element arg = (Element) nodo.getFirstChild();
+                            Linea = arg.getAttribute("Line");
+                            Columna = arg.getAttribute("Column");
+                            throwIncompatibleTypeError(Linea, Columna, tipo);
+                            tipoActual = tipo;
+                        }
+                    }
+
+                    break;
+                }
                 case "VarDeclaration": {
                     String type = ((Element) nodo.getLastChild()).getAttribute("Value");
                     int size = Integer.parseInt(
