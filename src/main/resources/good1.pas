@@ -11,7 +11,7 @@ begin
     begin
         e := true;
     end;
-    x2 := true;
+    x2 := (1 >2) and (3>4);
 end;
 begin
     a := 1;
