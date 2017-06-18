@@ -87,6 +87,18 @@ public class TablaCuadruplos {
         return indice;
     }
     
+    public int GEN_PARAM(String Param){
+        int indice = cuadruplos.size();
+        cuadruplos.add(new Cuadruplo(indice, "PARAM", Param, "", ""));
+        return indice;
+    }
+    
+     public int GEN_CALL(String FuncName){
+        int indice = cuadruplos.size();
+        cuadruplos.add(new Cuadruplo(indice, "CALL", FuncName, "", ""));
+        return indice;
+    }
+    
     public void print(){
         String Headers = "%-10s %-10s %-10s %-10s %-10s";
         System.out.println(String.format(Headers,"Cuadruplo", "Operacion", "Arg1", "Arg2", "Resultado"));

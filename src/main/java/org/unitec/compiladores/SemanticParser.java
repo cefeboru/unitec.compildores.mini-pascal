@@ -25,7 +25,8 @@ public class SemanticParser {
     static String tipoActual = "";
     static String tipoFuncion = "";
     static int numErrores = 0;
-    static boolean debug = false;
+    static boolean inAFunction = false;
+    static boolean debug = true;
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
@@ -134,7 +135,9 @@ public class SemanticParser {
                     ambitoActual = nodo.getAttribute("ID");
                     int backupOffset = offset;
                     offset = 0;
+                    inAFunction = true;
                     recorrerArbol(nodo, Linea, Columna);
+                    inAFunction = false;
                     if (!tempType.isEmpty()) {
                         tempType += " -> void";
                         S.setTipo(tempType);
@@ -153,7 +156,9 @@ public class SemanticParser {
                     int backupOffset = offset;
                     offset = 0;
                     ambitoActual = nodo.getAttribute("ID");
+                    inAFunction = true;
                     recorrerArbol(nodo, Linea, Columna);
+                    inAFunction = false;
                     if (!tempType.isEmpty()) {
                         tempType += " -> " + type;
                         S.setTipo(tempType);
@@ -179,6 +184,12 @@ public class SemanticParser {
                     Element IdNode = (Element) nodo.getFirstChild();
                     String IdValex = IdNode.getAttribute("Value");
                     Simbolo S = ts.getVariable(IdValex, ambitoActual);
+                    if(!ambitoActual.equals("main") && S == null){
+                        S = ts.getFunction(IdValex);
+                    }
+                    if(S == null){
+                        S = ts.getVariable(IdValex, "main");
+                    }
                     Linea = IdNode.getAttribute("Line");
                     Columna = IdNode.getAttribute("Column");
                     if (S == null) {
@@ -187,6 +198,7 @@ public class SemanticParser {
                     tipoActual = "";
                     recorrerArbol(nodo, Linea, Columna);
                     tipoActual = "";
+                    
                     break;
                 }
                 case "ID": {
@@ -201,16 +213,29 @@ public class SemanticParser {
                     }
 
                     Simbolo S = ts.getVariable(idValex, ambitoActual);
+                    
+                    if(S == null){
+                        S = ts.getVariable(idValex, "main");
+                    }
+                    
+                    if(inAFunction && tipoActual.isEmpty() && S == null){
+                        S = ts.getFunction(idValex);
+                        tipoActual = S.getTipo();
+                        Element parent = (Element)nodo.getParentNode();
+                        parent.setAttribute("Return", "true");
+                    }
 
                     if (S == null) {
                         throwNotFoundError(Linea, Columna, idValex);
                     }
+                    
                     boolean isSameType = S.getTipo().equals(tipoActual);
                     if (!tipoActual.isEmpty() && !isSameType) {
                         String currentType = S.getTipo().split("\\.")[0];
                         throwIncompatibleTypeError(Linea, Columna, currentType);
                     } else {
-                        tipoActual = S.getTipo();
+                        if(tipoActual.isEmpty())
+                            tipoActual = S.getTipo();
                     }
                     recorrerArbol(nodo, nodo.getAttribute("Line"), nodo.getAttribute("Column"));
                     break;
@@ -639,8 +664,15 @@ public class SemanticParser {
     }
 
     private static void throwIncompatibleTypeError(String Linea, String Columna, String tipo) throws Exception {
-        String errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
+        String errorMessage = "";
+        if(tipo.equals("void")){
+            errorMessage = "(%s,%s) Error: Asignacion invalida, los procedimientos no retornan valor";
+        } else {
+            errorMessage = "(%s,%s) Error: Tipos incompatibles, se esperaba '%s' pero se encontro '%s'";
+        }
+        
         errorMessage = String.format(errorMessage, Linea, Columna, tipoActual, tipo);
+        
         if (debug) {
             throw new Exception(errorMessage);
         } else {

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class TablaSimbolos {
 
     ArrayList<Simbolo> Simbolos = new ArrayList();
-    String formatHeader = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-18s";
-    String formatBody = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-18s";
+    String formatHeader = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
+    String formatBody = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
 
     public int Add(Simbolo S) throws Exception {
         int itemIndex = this.getSymbolIndex(S);
@@ -55,7 +55,7 @@ public class TablaSimbolos {
      
     public Simbolo getVariable(String Id, String ambito) throws Exception {
         for(Simbolo S : Simbolos){
-            if(S.getId().equals(Id) && S.isVariable() && S.getAmbito().equals(ambito)){
+            if(S.getId().equals(Id) && (S.isVariable() || S.isParametro()) && S.getAmbito().equals(ambito)){
                 return S;
             }
         }  
@@ -97,6 +97,7 @@ public class TablaSimbolos {
                 "ES VARIABLE",
                 "ES FUNCION",
                 "ES PARAMETRO",
+                "ES REF",
                 "POSICION MEMORIA"
         );
         System.out.println(headers);
@@ -110,6 +111,7 @@ public class TablaSimbolos {
                     String.valueOf(S.isVariable()),
                     String.valueOf(S.isFuncion()),
                     String.valueOf(S.isParametro()),
+                    String.valueOf(S.isByRef()),
                     String.valueOf(S.getPosicionMemoria())
             );
             System.out.println(output);

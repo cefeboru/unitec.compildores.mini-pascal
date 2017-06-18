@@ -5,6 +5,7 @@
  */
 package org.unitec.compiladores.intermediatecode;
 
+import java.util.ArrayList;
 import org.unitec.compiladores.Simbolo;
 import org.unitec.compiladores.TablaSimbolos;
 import org.w3c.dom.Element;
@@ -16,17 +17,12 @@ import org.w3c.dom.NodeList;
  */
 public class Generator {
 
-    final String SUM = "+";
-    final String MINUS = "-";
-    final String TIMES = "*";
-    final String DIV = "/";
-
     TablaCuadruplos Cuadruplos = new TablaCuadruplos();
     TablaSimbolos TS = new TablaSimbolos();
     String opracionActual = "";
     String ambitoActual = "main";
     int tempCounter = 0;
-    boolean debug = true;
+    boolean debug = false;
 
     public Generator(TablaSimbolos TS) {
         this.TS = TS;
@@ -41,50 +37,29 @@ public class Generator {
                 System.out.println("RecorrerArbol - " + nodeName);
             }
             switch (nodeName) {
-                case "Assignment": {
-                    cuadruploAssignment(nodo);
-                    break;
-                }
-                case "Div":
-                case "Minus":
-                case "Times":
-                case "Plus": {
-                    cuadruploAritmetico(nodo);
-                    break;
-                }
-                case "Literal": {
 
+                case "ProcedureDeclaration": {
+                    String functionName = nodo.getAttribute("ID");
+                    Cuadruplos.GEN_LABEL(functionName);
+                    this.recorrer(nodo);
+                    Cuadruplos.GEN("RET", "", "", "");
                     break;
                 }
-                case "ID": {
-
+                case "FunctionDeclaration": {
+                    String functionName = nodo.getAttribute("ID");
+                    Cuadruplos.GEN_LABEL(functionName);
+                    this.recorrer(nodo);
                     break;
                 }
-                case "ARRAY": {
-
+                case "Body": {
+                    if (nodo.getParentNode().getNodeName().equals("Block")) {
+                        Cuadruplos.GEN_LABEL("main");
+                    }
+                    recorrer(nodo);
                     break;
                 }
                 case "FunctionCall": {
-                    break;
-                }
-                case "GreaterThan":
-                case "LessThan":
-                case "Equals":
-                case "LessOrEqual":
-                case "GreaterOrEqual":
-                case "Different": {
-                    this.cuadruplosExpresion(nodo);
-                    Element parent = (Element) nodo.getParentNode();
-                    String listaV = nodo.getAttribute("listaV");
-                    String listaF = nodo.getAttribute("listaF");
-                    parent.setAttribute("listaV", listaV);
-                    parent.setAttribute("listaF", listaF);
-                    break;
-                }
-                case "AND":
-                case "OR":
-                case "NOT": {
-                    cuadruploRelacional(nodo);
+                    cuadruploFuncCall(nodo);
                     break;
                 }
                 case "IfStatement": {
@@ -132,10 +107,10 @@ public class Generator {
                     if (lista.getLength() > 1) {
                         arg2 = (Element) lista.item(1);
                         arg2Name = arg2.getNodeName();
-                        String argValue ="";
+                        String argValue = "";
                         switch (arg2Name) {
                             case "ID": {
-                                argValue= arg2.getAttribute("Value");
+                                argValue = arg2.getAttribute("Value");
                                 break;
                             }
                             case "ARRAY": {
@@ -147,10 +122,41 @@ public class Generator {
                         }
                         Cuadruplos.GEN("WRITE", arg1Value, "", "");
                         Cuadruplos.GEN("WRITE", argValue, "", "");
-                    }else{
+                    } else {
                         Cuadruplos.GEN("WRITE", arg1Value, "", "");
                     }
 
+                    break;
+                }
+                case "Assignment": {
+                    cuadruploAssignment(nodo);
+                    break;
+                }
+                case "AND":
+                case "OR":
+                case "NOT": {
+                    cuadruploRelacional(nodo);
+                    break;
+                }
+                case "GreaterThan":
+                case "LessThan":
+                case "Equals":
+                case "LessOrEqual":
+                case "GreaterOrEqual":
+                case "Different": {
+                    this.cuadruplosExpresion(nodo);
+                    Element parent = (Element) nodo.getParentNode();
+                    String listaV = nodo.getAttribute("listaV");
+                    String listaF = nodo.getAttribute("listaF");
+                    parent.setAttribute("listaV", listaV);
+                    parent.setAttribute("listaF", listaF);
+                    break;
+                }
+                case "Div":
+                case "Minus":
+                case "Times":
+                case "Plus": {
+                    cuadruploAritmetico(nodo);
                     break;
                 }
                 default: {
@@ -297,49 +303,56 @@ public class Generator {
 
         String temp1 = "";
         String temp2 = "";
-        String operacion = "";
+        boolean isFunctionCall = false;
+        
         if (arg2.getNodeName().equals("ID") || arg2.getNodeName().equals("Literal")) {
             temp2 = arg2.getAttribute("Value");
-        } else {// relational and arithmetic operation, arrays
+        } else if (arg2.getNodeName().equals("FunctionCall")) {
+            this.cuadruploFuncCall(arg2);
+            temp2 = "RET";
+        } else {
+            // relational and arithmetic operation, arrays
             cuadruploAritmetico(arg2);
             temp2 = this.getTemp();
         }
 
         if (arg1.getNodeName().equals("ID")) {
-            temp1 = arg1.getAttribute("Value");
-            operacion = ":=";
-            Cuadruplos.GEN(operacion, temp2, temp1);
+            String isReturn = nodo.getAttribute("Return");
+            if (isReturn.isEmpty()) {
+                temp1 = arg1.getAttribute("Value");
+                Cuadruplos.GEN(":=", temp2, temp1);
+            } else {
+                Cuadruplos.GEN("FRET", temp2, "", "");
+            }
+
         } else if (arg1.getNodeName().equals("ARRAY")) {
             Element arg = (Element) arg1.getFirstChild();
             String argName = arg.getNodeName();
             String Valex = arg1.getAttribute("Value");
-            operacion = "[]=";
             Simbolo S = TS.getVariable(Valex, ambitoActual);
             String tipo = S.getTipo();
             String indiceInicial = tipo.split("\\.")[2];
             if (argName.equals("ID") || argName.equals("Literal")) {
                 String Valex2 = arg.getAttribute("Value");
                 String newTemp = this.newTemp();
-                Cuadruplos.GEN(MINUS, Valex2, indiceInicial, newTemp);
+                Cuadruplos.GEN("-", Valex2, indiceInicial, newTemp);
                 String temp = this.getTemp();
                 newTemp = this.newTemp();
-                Cuadruplos.GEN(TIMES, temp, this.getTypeSize(tipo), newTemp);
+                Cuadruplos.GEN("*", temp, this.getTypeSize(tipo), newTemp);
                 temp = this.getTemp();
-                Cuadruplos.GEN(operacion, temp, temp2, Valex);
+                Cuadruplos.GEN("[]=", temp, temp2, Valex);
             } else {
                 cuadruploAritmetico(arg);
                 String temp = this.getTemp();
                 String newTemp = this.newTemp();
-                Cuadruplos.GEN(MINUS, temp, indiceInicial, newTemp);
+                Cuadruplos.GEN("-", temp, indiceInicial, newTemp);
                 temp = this.getTemp();
                 newTemp = this.newTemp();
-                Cuadruplos.GEN(TIMES, temp, this.getTypeSize(tipo), newTemp);
+                Cuadruplos.GEN("*", temp, this.getTypeSize(tipo), newTemp);
                 temp = this.getTemp();
-                Cuadruplos.GEN(operacion, temp, temp2, Valex);
+                Cuadruplos.GEN("[]=", temp, temp2, Valex);
             }
-
         }
-
     }
 
     public void cuadruplosExpresion(Element nodo) throws Exception {
@@ -396,10 +409,10 @@ public class Generator {
         System.out.println("------" + IDArray);
         if (argName.equals("ID") || argName.equals("Literal")) {
             String newTemp = this.newTemp();
-            Cuadruplos.GEN(MINUS, arg.getAttribute("Value"), indiceInicial, newTemp);
+            Cuadruplos.GEN("-", arg.getAttribute("Value"), indiceInicial, newTemp);
             String temp = this.getTemp();
             newTemp = this.newTemp();
-            Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
+            Cuadruplos.GEN("*", temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
             temp = this.getTemp();
             newTemp = this.newTemp();
             Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
@@ -407,58 +420,17 @@ public class Generator {
             cuadruploAritmetico(arg);
             String temp = this.getTemp();
             String newTemp = this.newTemp();
-            Cuadruplos.GEN(MINUS, temp, indiceInicial, newTemp);
+            Cuadruplos.GEN("-", temp, indiceInicial, newTemp);
             temp = this.getTemp();
             newTemp = this.newTemp();
-            Cuadruplos.GEN(TIMES, temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
+            Cuadruplos.GEN("*", temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
             temp = this.getTemp();
             newTemp = this.newTemp();
             Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
         }
     }
 
-    public String crearLista(int quadIndex) {
-        return "" + quadIndex;
-    }
-
-    public String fusiona(String list1, String list2) {
-        return list1 + "," + list2;
-    }
-
-    public void completa(int quadIndex, String lista) {
-        String[] splitList = lista.split(",");
-        for (String indexS : splitList) {
-            int index = Integer.valueOf(indexS);
-            Cuadruplo quad = Cuadruplos.cuadruplos.get(index);
-            if (quad.operacion.equals("GOTO")) {
-                quad.arg1 = quadIndex + "";
-            } else {
-                quad.resultado = quadIndex + "";
-            }
-        }
-    }
-
-    public void print() {
-        Cuadruplos.print();
-    }
-
-    private String getTypeSize(String tipo) {
-        if (tipo.equals("char") || tipo.equals("boolean")) {
-            return "1";
-        } else {
-            return "4";
-        }
-    }
-
-    private String getTemp() {
-        return "t" + this.tempCounter;
-    }
-
-    private String newTemp() {
-        return "t" + ++this.tempCounter;
-    }
-
-    private void cuadruploAND(Element nodo) throws Exception {
+    private void cuadruploAnd(Element nodo) throws Exception {
         if (debug) {
             System.out.println("cuadruploAND: " + nodo.getNodeName());
         }
@@ -560,7 +532,7 @@ public class Generator {
         nodo.setAttribute("listaV", arg2.getAttribute("listaV"));
     }
 
-    private void cuadruploOR(Element nodo) throws Exception {
+    private void cuadruploOr(Element nodo) throws Exception {
         if (debug) {
             System.out.println("cuadruploOR: " + nodo.getNodeName());
         }
@@ -660,7 +632,7 @@ public class Generator {
         nodo.setAttribute("listaF", arg2.getAttribute("listaF"));
     }
 
-    private void cuadruploNOT(Element nodo) throws Exception {
+    private void cuadruploNot(Element nodo) throws Exception {
         if (debug) {
             System.out.println("cuadruploNOT: " + nodo.getNodeName());
         }
@@ -719,15 +691,15 @@ public class Generator {
         }
         switch (nodeName) {
             case "AND": {
-                cuadruploAND(node);
+                cuadruploAnd(node);
                 break;
             }
             case "OR": {
-                cuadruploOR(node);
+                cuadruploOr(node);
                 break;
             }
             case "NOT": {
-                cuadruploNOT(node);
+                cuadruploNot(node);
                 break;
             }
             case "GreaterThan":
@@ -948,4 +920,109 @@ public class Generator {
 
     }
 
+    private void cuadruploFuncCall(Element functionNode) throws Exception {
+        Element funcId = (Element) functionNode.getFirstChild();
+        Element funcArgsNode = (Element) functionNode.getLastChild();
+        if (funcArgsNode.getNodeName().equals("Arguments")) {
+            NodeList funcArgs = funcArgsNode.getChildNodes();
+            ArrayList<String> parameters = new ArrayList();
+            for (int i = 0; i < funcArgs.getLength(); i++) {
+                Element currentNode = (Element) funcArgs.item(i);
+                String argumentName = currentNode.getNodeName();
+                switch (argumentName) {
+                    case "ID":
+                    case "Literal": {
+                        String Valex = currentNode.getAttribute("Value");
+                        parameters.add(Valex);
+                        break;
+                    }
+                    case "ARRAY": {
+                        this.cuadruploArray(currentNode);
+                        String temp = this.getTemp();
+                        parameters.add(temp);
+                        break;
+                    }
+                    case "AND":
+                    case "OR":
+                    case "NOT":
+                    case "GreaterThan":
+                    case "LessThan":
+                    case "Equals":
+                    case "LessOrEqual":
+                    case "GreaterOrEqual":
+                    case "Different": {
+                        cuadruploRelacional(currentNode);
+                        String newTemp = this.newTemp();
+                        int M1 = Cuadruplos.getSize();
+                        Cuadruplos.GEN(":=", "1", "", newTemp);
+                        int M2 = Cuadruplos.getSize();
+                        Cuadruplos.GEN(":=", "0", "", newTemp);
+                        this.completa(M1, currentNode.getAttribute("listaV"));
+                        this.completa(M2, currentNode.getAttribute("listaF"));
+                        parameters.add(newTemp);
+                        break;
+                    }
+
+                    case "Div":
+                    case "Minus":
+                    case "Times":
+                    case "Plus": {
+                        cuadruploAritmetico(currentNode);
+                        String temp = this.getTemp();
+                        parameters.add(temp);
+                        break;
+                    }
+                }
+            }
+
+            for (String Param : parameters) {
+                Cuadruplos.GEN_PARAM(Param);
+            }
+
+            String functionName = funcId.getAttribute("Value");
+            Cuadruplos.GEN_CALL(functionName);
+        }
+
+    }
+
+    public String crearLista(int quadIndex) {
+        return "" + quadIndex;
+    }
+
+    public String fusiona(String list1, String list2) {
+        return list1 + "," + list2;
+    }
+
+    public void completa(int quadIndex, String lista) {
+        String[] splitList = lista.split(",");
+        for (String indexS : splitList) {
+            int index = Integer.valueOf(indexS);
+            Cuadruplo quad = Cuadruplos.cuadruplos.get(index);
+            if (quad.operacion.equals("GOTO")) {
+                quad.arg1 = quadIndex + "";
+            } else {
+                quad.resultado = quadIndex + "";
+            }
+        }
+    }
+
+    public void print() {
+        Cuadruplos.print();
+    }
+
+    private String getTypeSize(String tipo) {
+        if (tipo.equals("char") || tipo.equals("boolean")) {
+            return "1";
+        } else {
+            return "4";
+        }
+    }
+
+    private String getTemp() {
+        return "t" + this.tempCounter;
+    }
+
+    private String newTemp() {
+        return "t" + ++this.tempCounter;
+    }
 }

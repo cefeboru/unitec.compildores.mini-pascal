@@ -15,10 +15,10 @@ public class Simbolo {
     private String tipo;
     private String ambito;
     private int refIndex = -1;
-    private boolean variable;
-    private boolean funcion;
-    private boolean parametro;
-    private boolean byRef;
+    private boolean variable = false;
+    private boolean funcion = false;
+    private boolean parametro = false;
+    private boolean byRef = false;
     private int posicionMemoria;
 
     public int getRefIndex() {

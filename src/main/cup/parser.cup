@@ -272,7 +272,7 @@ program         ::= Program var:v PuntoComa block:b Punto
                 | Program var:v PuntoComa block:b error
                 ;
 
-block           ::= decls:d Begin stmts:s End
+block           ::= decls:d blockstmt:s
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Block");
