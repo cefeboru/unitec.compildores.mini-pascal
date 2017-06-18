@@ -15,7 +15,7 @@ begin
 end;
 begin
     a := 1;
-    write('Hola');
+    write('Hola',a);
     e := x2( (1 >2) and (3>4) , 1 * 2, 'a');
 end.
 

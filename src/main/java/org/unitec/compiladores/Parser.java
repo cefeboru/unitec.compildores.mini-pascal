@@ -2931,7 +2931,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("Character");
-                    nPadre.setAttribute("Value",c.toString());      
+                    nPadre.setAttribute("Value","\'"+c.toString()+"\'");      
                     nPadre.setAttribute("Line", cleft + "");
                     nPadre.setAttribute("Column", cright + "");      
                     RESULT = nPadre;
@@ -2969,7 +2969,7 @@ class CUP$Parser$actions {
 		
                     iniXML();
                     Element nPadre = xmlDocument.createElement("String");
-                    nPadre.setAttribute("Value",s);
+                    nPadre.setAttribute("Value","\'"+s+"\'");
                     nPadre.setAttribute("Line", sleft + "");
                     nPadre.setAttribute("Column", sright  + "");
                     RESULT = nPadre;
