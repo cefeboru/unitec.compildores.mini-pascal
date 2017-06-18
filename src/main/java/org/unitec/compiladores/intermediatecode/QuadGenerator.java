@@ -15,7 +15,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Cesar Bonilla
  */
-public class Generator {
+public class QuadGenerator {
 
     TablaCuadruplos Cuadruplos = new TablaCuadruplos();
     TablaSimbolos TS = new TablaSimbolos();
@@ -24,8 +24,12 @@ public class Generator {
     int tempCounter = 0;
     boolean debug = false;
 
-    public Generator(TablaSimbolos TS) {
+    public QuadGenerator(TablaSimbolos TS) {
         this.TS = TS;
+    }
+    
+    public TablaCuadruplos getTablaCuadruplos(){
+        return this.Cuadruplos;
     }
 
     public void recorrer(Element rootNode) throws Exception {

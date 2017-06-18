@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class TablaSimbolos {
 
-    ArrayList<Simbolo> Simbolos = new ArrayList();
+    public ArrayList<Simbolo> Simbolos = new ArrayList();
     String formatHeader = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
     String formatBody = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
 

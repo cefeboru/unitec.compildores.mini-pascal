@@ -6,8 +6,8 @@
 package org.unitec.compiladores;
 
 import java.util.ArrayList;
-import org.unitec.compiladores.intermediatecode.Generator;
-import org.unitec.compiladores.intermediatecode.TablaCuadruplos;
+import org.unitec.compiladores.intermediatecode.QuadGenerator;
+import org.unitec.compiladores.targetcode.TargetGenerator;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -40,9 +40,12 @@ public class SemanticParser {
         } else {
             ts.toString();
             System.err.println("------------------------------------------------------------------------");
-            Generator G = new Generator(ts);
+            QuadGenerator G = new QuadGenerator(ts);
             G.recorrer(nodoPadre);
             G.print();
+            System.err.println("------------------------------------------------------------------------");
+            TargetGenerator TG = new TargetGenerator(ts, G.getTablaCuadruplos());
+            TG.printTargetCode();
         }
         return ts;
     }
