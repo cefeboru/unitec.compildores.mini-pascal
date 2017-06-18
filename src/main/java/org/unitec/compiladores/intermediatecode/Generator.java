@@ -955,6 +955,7 @@ public class Generator {
                         String newTemp = this.newTemp();
                         int M1 = Cuadruplos.getSize();
                         Cuadruplos.GEN(":=", "1", "", newTemp);
+                        Cuadruplos.GEN_GOTO(Cuadruplos.getSize()+2+"");
                         int M2 = Cuadruplos.getSize();
                         Cuadruplos.GEN(":=", "0", "", newTemp);
                         this.completa(M1, currentNode.getAttribute("listaV"));
