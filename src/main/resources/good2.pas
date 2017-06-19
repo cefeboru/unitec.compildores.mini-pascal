@@ -1,7 +1,6 @@
 program hola;
 var 
-    a: integer;
-    c: char;
+    a,b: integer;
 begin
-    writeln('Que horrible esta cosa');
+    a := 1 + 1;
 end.

@@ -228,7 +228,10 @@ public class QuadGenerator {
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
                         }
-                        Cuadruplos.GEN(operacion, arg1.getAttribute("Value"), arg2.getAttribute("Value"), temp);
+                        Cuadruplos.GEN(":=", arg1.getAttribute("Value"), temp);
+                        String firstTemp = this.getTemp();
+                        temp = newTemp();
+                        Cuadruplos.GEN(operacion, firstTemp, arg2.getAttribute("Value"), temp);
                     }
                 } else if (arg1IsFinal) {
                     if (arg1IsArray) {
@@ -307,12 +310,13 @@ public class QuadGenerator {
 
         String temp1 = "";
         String temp2 = "";
-        boolean isFunctionCall = false;
 
         switch (arg2.getNodeName()) {
             case "ID":
             case "Literal": {
-                temp2 = arg2.getAttribute("Value");
+                String t = arg2.getAttribute("Value");
+                temp2 = this.newTemp();
+                this.Cuadruplos.GEN(":=", t, temp2);
                 break;
             }
             case "FunctionCall": {
@@ -1052,10 +1056,10 @@ public class QuadGenerator {
     }
 
     private String getTemp() {
-        return "t" + this.tempCounter;
+        return "$t" + this.tempCounter;
     }
 
     private String newTemp() {
-        return "t" + ++this.tempCounter;
+        return "$t" + ++this.tempCounter;
     }
 }

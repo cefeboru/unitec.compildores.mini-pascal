@@ -5,8 +5,6 @@
  */
 package org.unitec.compiladores.targetcode;
 
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -14,8 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.unitec.compiladores.TablaSimbolos;
-import org.unitec.compiladores.intermediatecode.TablaCuadruplos;
 
 /**
  *
@@ -100,5 +96,32 @@ public class CodigoFinalTabla {
     void generateEndOfProgram() {
         text.add("li $v0, 10");
         text.add("syscall");
+    }
+
+    void addReadStatement(String variable) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "li", "$v0", "5"));
+        text.add("syscall");
+        text.add(String.format(row, "sw", "$v0", "_" + variable));
+    }
+
+    void generateAssignTemp(String resultado, String temp) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "sw", temp, "_" + resultado));
+    }
+
+    void generateAddi(String newArg1, String arg2, String resultTemp) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "addi", resultTemp, newArg1, arg2));
+    }
+
+    void generateAssignVar(String variable, String storeTemp) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "sw", storeTemp, "_"+variable));
+    }
+
+    void generateAssignNum(String arg1, String storeTemp) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "li", storeTemp, arg1));
     }
 }

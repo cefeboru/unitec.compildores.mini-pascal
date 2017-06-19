@@ -2,6 +2,8 @@ program hola;
 var 
     a,b,c,d:integer;
     e: boolean;
+    asd: string;
+
 function x2(var z:boolean;x:integer;var y:char):boolean;
 var 
     a:integer;
@@ -15,8 +17,9 @@ begin
 end;
 begin
     a := 1;
-    write('Hola',a);
+    read(a);
     e := x2( (1 >2) and (3>4) , 1 * 2, 'a');
+    asd := '123';
 end.
 
 

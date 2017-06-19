@@ -45,6 +45,7 @@ public class SemanticParser {
             G.print();
             System.err.println("------------------------------------------------------------------------");
             TargetGenerator TG = new TargetGenerator(ts, G.getTablaCuadruplos());
+            TG.generateFinalCode();
             TG.printTargetCode();
         }
         return ts;

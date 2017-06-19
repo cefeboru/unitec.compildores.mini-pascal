@@ -1,14 +1,10 @@
 .data
- _c:    .space 30
+ _a:	.word 0
+ _b:	.word 0
 .text
 .globl main
 main:
-li $v0, 8
-la $a0, _c
-li $a1, 30
-syscall
-li $v0, 4
-la $a0, _c
-syscall
+li $t0, 1
+addi $t1, $t0, 1
 li $v0, 10
 syscall

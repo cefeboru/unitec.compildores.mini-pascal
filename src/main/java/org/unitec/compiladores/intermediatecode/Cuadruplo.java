@@ -68,6 +68,14 @@ public class Cuadruplo {
     public void setResultado(String resultado) {
         this.resultado = resultado;
     }
+
+    public int getIndice() {
+        return indice;
+    }
+
+    public void setIndice(int indice) {
+        this.indice = indice;
+    }
     
     @Override
     public String toString(){
