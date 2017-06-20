@@ -47,6 +47,7 @@ public class TargetGenerator {
             if (S.getAmbito().equals("main") && S.isVariable()) {
                 String tipo = S.getTipo();
                 switch (tipo) {
+                    case "boolean":
                     case "integer": {
                         cft.addIntegerDataVariable(S.getId());
                         break;
@@ -105,7 +106,12 @@ public class TargetGenerator {
                         String temp = this.getTempDisponible(resultado);
                         cft.generateAssignNum(arg1, temp);
                     } else if(arg1.equals("true") || arg1.equals("false")){
-                        //
+                        String temp = this.getTempDisponible(resultado);
+                        if (arg1.equals("true")) {
+                            cft.generateAssignNum("0", temp);
+                        }else{
+                            cft.generateAssignNum("1", temp);
+                        }
                     } else {
                         String temp = this.getTempDisponible(resultado);
                         cft.generateAssignVarStore(arg1, temp);
@@ -124,6 +130,36 @@ public class TargetGenerator {
                     String Arg1 = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
                     cft.generateSub(Arg1, Arg2, tempAvailable);
+                    break;
+                }
+                case "*":{
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateMult(Arg1,Arg2);
+                    if (resultado.contains("$t")) {
+                        String ArgResultado = this.getTempDisponible(resultado);
+                        cft.generateMFLo(ArgResultado);
+                    }else{
+                        String temp = this.getTempDisponible(resultado);
+                        cft.generateMFLo(temp);
+                        cft.generateAssignTemp(resultado, temp);
+                        this.getTempClean(resultado);
+                    }
+                    break;
+                }
+                case "/":{
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateDiv(Arg1,Arg2);
+                    if (resultado.contains("$t")) {
+                        String ArgResultado = this.getTempDisponible(resultado);
+                        cft.generateMFLo(ArgResultado);
+                    }else{
+                        String temp = this.getTempDisponible(resultado);
+                        cft.generateMFLo(temp);
+                        cft.generateAssignTemp(resultado, temp);
+                        this.getTempClean(resultado);
+                    }
                     break;
                 }
             }

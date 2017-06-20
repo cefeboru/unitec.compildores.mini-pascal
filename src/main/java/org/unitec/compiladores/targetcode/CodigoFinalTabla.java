@@ -144,4 +144,19 @@ public class CodigoFinalTabla {
         String row = "%s %s, %s";
         text.add(String.format(row, "move", tempArg1, tempResultado));
     }
+
+    void generateMult(String Arg1, String Arg2) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "mult", Arg1, Arg2));
+    }
+
+    void generateMFLo(String ArgResultado) {
+        String row = "%s %s";
+        text.add(String.format(row, "mflo", ArgResultado));
+    }
+
+    void generateDiv(String Arg1, String Arg2) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "div", Arg1, Arg2));
+    }
 }
