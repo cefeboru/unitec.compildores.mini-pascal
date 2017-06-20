@@ -231,7 +231,10 @@ public class QuadGenerator {
                         Cuadruplos.GEN(":=", arg1.getAttribute("Value"), temp);
                         String firstTemp = this.getTemp();
                         temp = newTemp();
-                        Cuadruplos.GEN(operacion, firstTemp, arg2.getAttribute("Value"), temp);
+                        Cuadruplos.GEN(":=", arg2.getAttribute("Value"), temp);
+                        String secondTemp = this.getTemp();
+                        temp = newTemp();
+                        Cuadruplos.GEN(operacion, firstTemp, secondTemp, temp);
                     }
                 } else if (arg1IsFinal) {
                     if (arg1IsArray) {
@@ -249,12 +252,15 @@ public class QuadGenerator {
                     } else {
                         cuadruploAritmetico(arg2);
                         String lastTemp = this.getTemp();
-                        String temp = this.newTemp();
+                        String newTemp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
                         }
-                        Cuadruplos.GEN(operacion, arg1.getAttribute("Value"), lastTemp, temp);
+                        Cuadruplos.GEN(":=", arg1.getAttribute("Value"), newTemp);
+                        String temp = this.getTemp();
+                        newTemp = this.newTemp();
+                        Cuadruplos.GEN(operacion, temp, lastTemp, newTemp);
                     }
                 } else if (arg2IsFinal) {
                     if (arg2IsArray) {
@@ -272,12 +278,15 @@ public class QuadGenerator {
                     } else {
                         cuadruploAritmetico(arg1);
                         String lastTemp = this.getTemp();
-                        String temp = this.newTemp();
+                        String newTemp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
                         }
-                        Cuadruplos.GEN(operacion, lastTemp, arg2.getAttribute("Value"), temp);
+                        Cuadruplos.GEN(":=", arg2.getAttribute("Value"), newTemp);
+                        String temp = this.getTemp();
+                        newTemp = this.newTemp();
+                        Cuadruplos.GEN(operacion, lastTemp , temp, newTemp);
                     }
                 } else { // Both are OPs
                     cuadruploAritmetico(arg1);

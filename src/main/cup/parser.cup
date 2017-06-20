@@ -985,6 +985,11 @@ AritExpr3       ::= literal:l
                     op.appendChild(e1);
                     RESULT = op;
                 :}
+                |   ParentesisAbrir AritExpr1:e1 ParentesisCerrar
+                {:
+                    iniXML();
+                    RESULT = e1;
+                :}
                 ;
 
 BoolExpr1       ::= BoolExpr1:e1 OperadorOr:op BoolExpr2:e2
@@ -1031,16 +1036,6 @@ BoolExpr3       ::= ParentesisAbrir AritExpr1:e1  opRelacion:op  AritExpr1:e2 Pa
                     iniXML();
                     RESULT = e1;
                 :}
-                | ParentesisAbrir var:e1 ParentesisCerrar
-                {:
-                    iniXML();
-                    RESULT = e1;
-                :} 
-                | ParentesisAbrir literal:e1 ParentesisCerrar
-                {:
-                    iniXML();
-                    RESULT = e1;
-                :} 
                 | OperadorNot:op BoolExpr3:e1
                 {:
                     iniXML();

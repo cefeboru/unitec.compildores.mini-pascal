@@ -92,10 +92,13 @@ public class TargetGenerator {
                 }
                 case ":=": {
                     if (arg1.contains("$t")) {
-//                        String temp = tempEquivalente.get(arg1);
-//                        cft.generateAssignTemp(resultado, temp);
-//                        this.tempVivos.put(temp, false);
-//                        tempEquivalente.remove(arg1);
+                        String tempArg1 =   this.getTemp(arg1);
+                        if(resultado.contains("$t")){
+                            String tempResultado = this.getTempClean(resultado);
+                            cft.generateMove(tempArg1, tempResultado);
+                        } else {
+                            cft.generateAssignTemp(resultado, tempArg1);
+                        }
                     } else if (arg1.contains("'")) {
                         //
                     } else if(arg1.matches("[0-9]+")){
@@ -105,20 +108,22 @@ public class TargetGenerator {
                         //
                     } else {
                         String temp = this.getTempDisponible(resultado);
-                        cft.generateAssignVar(arg1, temp);
+                        cft.generateAssignVarStore(arg1, temp);
                     }
                     break;
                 }
                 case "+":{
-                    if(arg2.matches("[0-9]+")){
-                        String resultTemp = this.getTempDisponible(resultado);
-                        String newArg1 = this.getTemp(arg1);
-                        cft.generateAddi(newArg1, arg2, resultTemp);
-                    } else if(arg2.contains("$t")){
-                        
-                    } else {
-                    
-                    }
+                    String tempAvailable = this.getTempDisponible(resultado);
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateAdd(Arg1, Arg2, tempAvailable);
+                    break;
+                }
+                case "-":{
+                    String tempAvailable = this.getTempDisponible(resultado);
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateSub(Arg1, Arg2, tempAvailable);
                     break;
                 }
             }
@@ -203,10 +208,14 @@ public class TargetGenerator {
         return "";
     }
 
-    private String getTemp(String arg1) {
+    private String getTempClean(String arg1) {
         String temp = tempEquivalente.get(arg1);
         tempEquivalente.remove(arg1);
         this.tempVivos.put(temp, false);
         return temp;
+    }
+
+    private String getTemp(String arg1) {
+        return tempEquivalente.get(arg1);
     }
 }

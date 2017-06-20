@@ -115,7 +115,7 @@ public class CodigoFinalTabla {
         text.add(String.format(row, "addi", resultTemp, newArg1, arg2));
     }
 
-    void generateAssignVar(String variable, String storeTemp) {
+    void generateAssignVarStore(String variable, String storeTemp) {
         String row = "%s %s, %s";
         text.add(String.format(row, "sw", storeTemp, "_"+variable));
     }
@@ -123,5 +123,25 @@ public class CodigoFinalTabla {
     void generateAssignNum(String arg1, String storeTemp) {
         String row = "%s %s, %s";
         text.add(String.format(row, "li", storeTemp, arg1));
+    }
+
+    void generateAdd(String Arg1, String Arg2, String resultado) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "add", resultado, Arg1, Arg2));
+    }
+
+    void generateAssignVarLoad(String Arg1, String Arg2) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "lw", Arg2, "_"+Arg1));
+    }
+
+    void generateSub(String Arg1, String Arg2, String tempAvailable) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "sub", tempAvailable, Arg1, Arg2));
+    }
+
+    void generateMove(String tempArg1, String tempResultado) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "move", tempArg1, tempResultado));
     }
 }
