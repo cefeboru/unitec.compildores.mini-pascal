@@ -2,41 +2,50 @@
  _a:	.word 0
  _b:	.word 0
  _c:	.space 40
- _msg1:	.asciiz "asad"
+ _e:	.word 0
+ _msg1:	.asciiz "meow"
+ _msg2:	.asciiz "write"
+ _msg3:	.asciiz "watever"
+ _msg4:	.asciiz "asd"
 .text
 .globl main
 main:
-li $t0, 7
-sw $t0, _a
-li $t1, 3
-sw $t1, _b
-lw $t2, _a
-lw $t3, _b
-li $t4, 1
-sub $t5, $t3, $t4
-li $t3, 4
-mult $t5, $t3
-mflo $t3
-la $t4, _c
-add $t4, $t3, $t4
-sw $t2, ($t4)
-li $t2, 1
-li $t3, 1
-add $t5, $t2, $t3
-li $t2, 1
-add $t3, $t5, $t2
-li $t2, 1
-sub $t5, $t3, $t2
-li $t2, 4
-mult $t5, $t2
-mflo $t2
-la $t4, _c
-add $t3, $t2, $t4
+li $t0, 0
+li $t1, 1
+beq $t0, $t1, L1
+b L2
+L1:
+li $t0, 1
+li $t1, 1
+add $t2, $t0, $t1
+sw $t2, _a
 li $v0, 4
 la $a0, _msg1
 syscall
-li $v0, 1
-lw $a0, ($t3)
+b L3
+L2:
+li $t0, 2
+li $t1, 1
+bgt $t0, $t1, L4
+b L5
+L4:
+li $t0, 3
+li $t1, 4
+blt $t0, $t1, L6
+b L5
+L6:
+li $v0, 4
+la $a0, _msg2
+syscall
+b L3
+L5:
+li $v0, 4
+la $a0, _msg3
+syscall
+b L3
+L3:
+li $v0, 4
+la $a0, _msg4
 syscall
 li $v0, 10
 syscall

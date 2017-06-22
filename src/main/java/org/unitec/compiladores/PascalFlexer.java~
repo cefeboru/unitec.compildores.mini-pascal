@@ -868,7 +868,7 @@ public class PascalFlexer implements java_cup.runtime.Scanner {
             }
           case 65: break;
           case 7: 
-            { yybegin(COMILLA_SIMPLE);
+            { begin(COMILLA_SIMPLE);string = new StringBuffer();
             }
           case 66: break;
           case 8: 

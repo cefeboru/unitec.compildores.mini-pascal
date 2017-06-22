@@ -107,7 +107,7 @@ PuntoPunto                  =   \.\.
 <YYINITIAL> {
     {WhiteSpace}                    {}
     {LlaveAbrir}                    {yybegin(COMMENT);}
-    {ComillaSimple}                 {yybegin(COMILLA_SIMPLE);}
+    {ComillaSimple}                 {yybegin(COMILLA_SIMPLE);string = new StringBuffer(); }
     {LlaveCerrar}                   {throw new Error("Error Lexico: Se ha encontrado un token inválido: \'"+ yytext() + "\' en la Linea: " + (yyline +1) + ", Columna: " + (yycolumn+1) );}
     {Program}                       {return symbol(sym.Program);}
     {Procedure}                     {return symbol(sym.Procedure);}

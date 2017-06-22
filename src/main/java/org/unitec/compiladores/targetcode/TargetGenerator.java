@@ -116,9 +116,9 @@ public class TargetGenerator {
                     } else if (arg1.equals("true") || arg1.equals("false")) {
                         String temp = this.getTempDisponible(resultado);
                         if (arg1.equals("true")) {
-                            cft.generateAssignNum("0", temp);
-                        } else {
                             cft.generateAssignNum("1", temp);
+                        } else {
+                            cft.generateAssignNum("0", temp);
                         }
                     } else {
                         String temp = this.getTempDisponible(resultado);
@@ -186,6 +186,50 @@ public class TargetGenerator {
                     }
                     break;
                 }
+                case "GOTO": {
+                    String label = labelControl.get(Integer.parseInt(arg1));
+                    cft.generateBranch(label);
+                    break;
+                }
+                case "if>":{
+                    String label = labelControl.get(Integer.parseInt(resultado));
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateGreaterThan(Arg1, Arg2, label);
+                    break;
+                }
+                case "if<":{
+                    String label = labelControl.get(Integer.parseInt(resultado));
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateLessThan(Arg1, Arg2, label);
+                    break;
+                }
+                case "if>=":{
+                    String label = labelControl.get(Integer.parseInt(resultado));
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateGreaterEqual(Arg1, Arg2, label);
+                    break;
+                }
+                case "if<=":{
+                    String label = labelControl.get(Integer.parseInt(resultado));
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateLessEqual(Arg1, Arg2, label);
+                    break;
+                }
+                case "if=":{
+                    String label = labelControl.get(Integer.parseInt(resultado));
+                    String Arg1 = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateEqual(Arg1, Arg2, label);
+                    break;
+                }
+            }
+            if (i==tc.getSize()-1 && op.equals("GOTO")) {
+                String label = labelControl.get(Integer.parseInt(arg1));
+                cft.addLabel(label);
             }
         }
         cft.generateEndOfProgram();

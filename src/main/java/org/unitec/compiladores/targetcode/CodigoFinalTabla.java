@@ -192,4 +192,35 @@ public class CodigoFinalTabla {
         text.add(String.format(row,"lw", "$a0", "("+temp+")"));
         text.add("syscall");
     }
+
+    void generateBranch(String label) {
+        text.add("b "+label);
+    }
+
+    void generateGreaterThan(String arg1, String arg2, String label) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "bgt",arg1, arg2, label));
+    }
+
+    void generateLessThan(String Arg1, String Arg2, String label) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "blt",Arg1, Arg2, label));
+    }
+
+    void generateGreaterEqual(String Arg1, String Arg2, String label) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "bge",Arg1, Arg2, label));
+    }
+
+    void generateLessEqual(String Arg1, String Arg2, String label) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "ble",Arg1, Arg2, label));
+    }
+
+    void generateEqual(String Arg1, String Arg2, String label) {
+        String row = "%s %s, %s, %s";
+        text.add(String.format(row, "beq",Arg1, Arg2, label));
+    }
+    
+    
 }
