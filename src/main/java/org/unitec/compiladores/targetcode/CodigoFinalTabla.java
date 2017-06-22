@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import org.unitec.compiladores.intermediatecode.Cuadruplo;
 
 /**
  *
@@ -51,6 +52,16 @@ public class CodigoFinalTabla {
         varName = "_" + varName;
         String varType = "byte";
         String varValue = "' '";
+        String row = " %s:\t.%s %s";
+        data.add(String.format(row, varName, varType, varValue));
+    }
+    
+    
+
+    void addArrayDataVariable(String varName, int space) {
+        varName = "_" + varName;
+        String varType = "space";
+        String varValue = space + "";
         String row = " %s:\t.%s %s";
         data.add(String.format(row, varName, varType, varValue));
     }
@@ -158,5 +169,27 @@ public class CodigoFinalTabla {
     void generateDiv(String Arg1, String Arg2) {
         String row = "%s %s, %s";
         text.add(String.format(row, "div", Arg1, Arg2));
+    }
+
+    void generateReadArray(String arg1, String arg2, String arrayAddress, String tempResultado) {
+        String row = "%s %s, %s";
+        String row2 = "%s %s, %s, %s";
+        text.add(String.format(row, "la", arrayAddress , "_"+arg1));
+        text.add(String.format(row2, "add", tempResultado, arg2, arrayAddress));
+    }
+
+    void generateWriteArray(String indice, String valor, String resultado, String arrayAddress) {
+        String row = "%s %s, %s";
+        String row2 = "%s %s, %s, %s";
+        text.add(String.format(row, "la", arrayAddress , "_"+resultado));
+        text.add(String.format(row2, "add", arrayAddress, indice, arrayAddress));
+        text.add(String.format(row, "sw", valor, "("+arrayAddress+")"));
+    }
+
+    void addWriteTemp(Cuadruplo C, String temp) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "li", "$v0", "1"));
+        text.add(String.format(row,"lw", "$a0", "("+temp+")"));
+        text.add("syscall");
     }
 }

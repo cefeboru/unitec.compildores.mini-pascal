@@ -208,20 +208,24 @@ public class QuadGenerator {
                         cuadruploAritmetico(arg1);
                         String tempArg = this.getTemp();
                         String temp = this.newTemp();
+                        Cuadruplos.GEN(":=",arg2.getAttribute("Value"),temp);
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
                         }
-                        Cuadruplos.GEN(operacion, tempArg, arg2.getAttribute("Value"), temp);
+                        String newTemp = this.newTemp();
+                        Cuadruplos.GEN(operacion, tempArg, temp, newTemp);
                     } else if (arg2IsArray) {
                         cuadruploAritmetico(arg2);
                         String tempArg = this.getTemp();
                         String temp = this.newTemp();
+                        Cuadruplos.GEN(":=",arg2.getAttribute("Value"),temp);
                         String operacion = nodo.getAttribute("Value");
                         if (debug) {
                             System.out.println("Operacion: " + operacion);
                         }
-                        Cuadruplos.GEN(operacion, arg1.getAttribute("Value"), tempArg, temp);
+                        String newTemp = this.newTemp();
+                        Cuadruplos.GEN(operacion, temp, tempArg, newTemp);
                     } else {
                         String temp = this.newTemp();
                         String operacion = nodo.getAttribute("Value");
@@ -378,22 +382,31 @@ public class QuadGenerator {
             String tipo = S.getTipo();
             String indiceInicial = tipo.split("\\.")[2];
             if (argName.equals("ID") || argName.equals("Literal")) {
-                String Valex2 = arg.getAttribute("Value");
+                String tempArg1 = this.newTemp();
+                Cuadruplos.GEN(":=", arg.getAttribute("Value"), tempArg1);
+                String tempArg2 = this.newTemp();
+                Cuadruplos.GEN(":=", indiceInicial, tempArg2);
                 String newTemp = this.newTemp();
-                Cuadruplos.GEN("-", Valex2, indiceInicial, newTemp);
+                Cuadruplos.GEN("-", tempArg1, tempArg2, newTemp);
                 String temp = this.getTemp();
+                tempArg2 = this.newTemp();
+                Cuadruplos.GEN(":=", this.getTypeSize(tipo), tempArg2);
                 newTemp = this.newTemp();
-                Cuadruplos.GEN("*", temp, this.getTypeSize(tipo), newTemp);
+                Cuadruplos.GEN("*", temp, tempArg2 , newTemp);
                 temp = this.getTemp();
                 Cuadruplos.GEN("[]=", temp, temp2, Valex);
             } else {
                 cuadruploAritmetico(arg);
                 String temp = this.getTemp();
+                String tempArg2 = this.newTemp();
+                Cuadruplos.GEN(":=", indiceInicial, tempArg2);
                 String newTemp = this.newTemp();
-                Cuadruplos.GEN("-", temp, indiceInicial, newTemp);
+                Cuadruplos.GEN("-", temp, tempArg2, newTemp);
                 temp = this.getTemp();
+                tempArg2 = this.newTemp();
+                Cuadruplos.GEN(":=", this.getTypeSize(tipo), tempArg2);
                 newTemp = this.newTemp();
-                Cuadruplos.GEN("*", temp, this.getTypeSize(tipo), newTemp);
+                Cuadruplos.GEN("*", temp, tempArg2, newTemp);
                 temp = this.getTemp();
                 Cuadruplos.GEN("[]=", temp, temp2, Valex);
             }
@@ -451,24 +464,34 @@ public class QuadGenerator {
         Simbolo S = TS.getVariable(IDArray, ambitoActual);
         String tipo = S.getTipo();
         String indiceInicial = tipo.split("\\.")[2];
-        System.out.println("------" + IDArray);
         if (argName.equals("ID") || argName.equals("Literal")) {
+            String temp1 = this.newTemp();
+            Cuadruplos.GEN(":=",  arg.getAttribute("Value"), temp1);
+            String temp2 = this.newTemp();
+            Cuadruplos.GEN(":=", indiceInicial, temp2);
             String newTemp = this.newTemp();
-            Cuadruplos.GEN("-", arg.getAttribute("Value"), indiceInicial, newTemp);
-            String temp = this.getTemp();
+            Cuadruplos.GEN("-", temp1, temp2, newTemp);
+            
+            temp1 = this.getTemp();
+            temp2 = this.newTemp();
+            Cuadruplos.GEN(":=", getTypeSize(tipo.split("\\.")[1]), temp2);
             newTemp = this.newTemp();
-            Cuadruplos.GEN("*", temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
-            temp = this.getTemp();
+            Cuadruplos.GEN("*", temp1, temp2, newTemp);
+            temp2 = this.getTemp();
             newTemp = this.newTemp();
-            Cuadruplos.GEN(operacion, IDArray, temp, newTemp);
+            Cuadruplos.GEN(operacion, IDArray, temp2, newTemp);
         } else {
             cuadruploAritmetico(arg);
             String temp = this.getTemp();
+            String temp2 = this.newTemp();
+            Cuadruplos.GEN(":=", indiceInicial, temp2);
             String newTemp = this.newTemp();
-            Cuadruplos.GEN("-", temp, indiceInicial, newTemp);
+            Cuadruplos.GEN("-", temp, temp2, newTemp);
             temp = this.getTemp();
+            temp2 = this.newTemp();
+            Cuadruplos.GEN(":=", getTypeSize(tipo.split("\\.")[1]), temp2);
             newTemp = this.newTemp();
-            Cuadruplos.GEN("*", temp, getTypeSize(tipo.split("\\.")[1]), newTemp);
+            Cuadruplos.GEN("*", temp, temp2, newTemp);
             temp = this.getTemp();
             newTemp = this.newTemp();
             Cuadruplos.GEN(operacion, IDArray, temp, newTemp);

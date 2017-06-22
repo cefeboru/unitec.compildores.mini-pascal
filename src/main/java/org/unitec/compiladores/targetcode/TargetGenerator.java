@@ -62,6 +62,14 @@ public class TargetGenerator {
                         break;
                     }
                 }
+                if (tipo.startsWith("Array")) {
+                    String[] list = tipo.split("\\.");
+                    int space = Integer.parseInt(list[3]) - Integer.parseInt(list[2]) + 1;
+                    if (list[1].equals("boolean") || list[1].equals("integer")) {
+                        space *= 4;
+                    }
+                    cft.addArrayDataVariable(S.getId(), space);
+                }
             }
         }
     }
@@ -93,8 +101,8 @@ public class TargetGenerator {
                 }
                 case ":=": {
                     if (arg1.contains("$t")) {
-                        String tempArg1 =   this.getTemp(arg1);
-                        if(resultado.contains("$t")){
+                        String tempArg1 = this.getTemp(arg1);
+                        if (resultado.contains("$t")) {
                             String tempResultado = this.getTempClean(resultado);
                             cft.generateMove(tempArg1, tempResultado);
                         } else {
@@ -102,44 +110,60 @@ public class TargetGenerator {
                         }
                     } else if (arg1.contains("'")) {
                         //
-                    } else if(arg1.matches("[0-9]+")){
+                    } else if (arg1.matches("[0-9]+")) {
                         String temp = this.getTempDisponible(resultado);
                         cft.generateAssignNum(arg1, temp);
-                    } else if(arg1.equals("true") || arg1.equals("false")){
+                    } else if (arg1.equals("true") || arg1.equals("false")) {
                         String temp = this.getTempDisponible(resultado);
                         if (arg1.equals("true")) {
                             cft.generateAssignNum("0", temp);
-                        }else{
+                        } else {
                             cft.generateAssignNum("1", temp);
                         }
                     } else {
                         String temp = this.getTempDisponible(resultado);
-                        cft.generateAssignVarStore(arg1, temp);
+                        cft.generateAssignVarLoad(arg1, temp);
                     }
                     break;
                 }
-                case "+":{
+                case "=[]": {
+                    String tempAvailable = this.getTempDisponible(resultado);
+                    String address = this.getTempClean(arg1);
+                    String Arg2 = this.getTempClean(arg2);
+                    cft.generateReadArray(arg1, Arg2, address, tempAvailable);
+                    getTempClean(arg1);
+
+                    break;
+                }
+                case "[]=": {
+                    String arrayAdress = this.getTempDisponible(resultado);
+                    String indice = this.getTempClean(arg1);
+                    String valor = this.getTempClean(arg2);
+                    cft.generateWriteArray(indice, valor, resultado, arrayAdress);
+                    break;
+                }
+                case "+": {
                     String tempAvailable = this.getTempDisponible(resultado);
                     String Arg1 = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
                     cft.generateAdd(Arg1, Arg2, tempAvailable);
                     break;
                 }
-                case "-":{
+                case "-": {
                     String tempAvailable = this.getTempDisponible(resultado);
                     String Arg1 = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
                     cft.generateSub(Arg1, Arg2, tempAvailable);
                     break;
                 }
-                case "*":{
+                case "*": {
                     String Arg1 = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
-                    cft.generateMult(Arg1,Arg2);
+                    cft.generateMult(Arg1, Arg2);
                     if (resultado.contains("$t")) {
                         String ArgResultado = this.getTempDisponible(resultado);
                         cft.generateMFLo(ArgResultado);
-                    }else{
+                    } else {
                         String temp = this.getTempDisponible(resultado);
                         cft.generateMFLo(temp);
                         cft.generateAssignTemp(resultado, temp);
@@ -147,14 +171,14 @@ public class TargetGenerator {
                     }
                     break;
                 }
-                case "/":{
+                case "/": {
                     String Arg1 = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
-                    cft.generateDiv(Arg1,Arg2);
+                    cft.generateDiv(Arg1, Arg2);
                     if (resultado.contains("$t")) {
                         String ArgResultado = this.getTempDisponible(resultado);
                         cft.generateMFLo(ArgResultado);
-                    }else{
+                    } else {
                         String temp = this.getTempDisponible(resultado);
                         cft.generateMFLo(temp);
                         cft.generateAssignTemp(resultado, temp);
@@ -190,7 +214,10 @@ public class TargetGenerator {
 
     public void generateWrite(Cuadruplo C, String ambitoActual) throws Exception {
         String param = C.getArg1();
-        if (param.contains("'")) {
+        if (param.startsWith("$t")) {
+            String temp = this.getTempClean(param);
+            cft.addWriteTemp(C, temp);
+        }else if (param.contains("'")) {
             String messageName = cft.addDataMessage(param);
             cft.addWriteStatementLiteral(messageName);
         } else {
@@ -235,7 +262,7 @@ public class TargetGenerator {
         for (Map.Entry<String, Boolean> entry : tempVivos.entrySet()) {
             String key = entry.getKey();
             boolean estaVivo = entry.getValue();
-            if(!estaVivo){
+            if (!estaVivo) {
                 tempVivos.put(key, true);
                 this.tempEquivalente.put(previousTemp, key);
                 return key;
