@@ -131,8 +131,6 @@ public class TargetGenerator {
                     String address = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
                     cft.generateReadArray(arg1, Arg2, address, tempAvailable);
-                    getTempClean(arg1);
-
                     break;
                 }
                 case "[]=": {

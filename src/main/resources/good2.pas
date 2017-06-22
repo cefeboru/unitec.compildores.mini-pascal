@@ -4,12 +4,13 @@ var
     c: Array [1..10] of integer;
     e :boolean;
 begin
+    c[1] := 10;
     if (false) then
     begin
         a:=1+1;
         write('meow');
     end
-    else if((2+1 > 1) and (3<4)) then
+    else if((c[1] > 1) and (3<4)) then
     begin
         write('write');
     end
@@ -17,7 +18,7 @@ begin
     begin
         write('watever');
     end;
-    for a := 10  to 20 do
+    {for a := 10  to 20 do
     begin
       writeln('value of a: ', a);
     end;
@@ -35,6 +36,6 @@ begin
     begin
         writeln('value of a: ', a);
         a := a + 1;
-    end;
+    end;}
     write('das');
 end.
