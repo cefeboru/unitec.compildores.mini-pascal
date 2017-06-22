@@ -1034,8 +1034,9 @@ public class QuadGenerator {
                 switch (argumentName) {
                     case "ID":
                     case "Literal": {
-                        String Valex = currentNode.getAttribute("Value");
-                        parameters.add(Valex);
+                        String temp = this.newTemp();
+                        Cuadruplos.GEN(":=", currentNode.getAttribute("Value"), temp);
+                        parameters.add(temp);
                         break;
                     }
                     case "ARRAY": {

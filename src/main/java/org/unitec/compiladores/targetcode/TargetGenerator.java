@@ -25,6 +25,7 @@ public class TargetGenerator {
     HashMap<String, Boolean> tempVivos = new HashMap();
     HashMap<String, String> tempEquivalente = new HashMap();
     int labelCount = 0;
+    int paramCount = 0;
 
     public TargetGenerator(TablaSimbolos TS, TablaCuadruplos TC) throws Exception {
         ts = TS;
@@ -93,6 +94,11 @@ public class TargetGenerator {
                 case "LABEL": {
                     ambitoActual = C.getArg1();
                     cft.addLabel(C.getArg1());
+                    if (ambitoActual.equals("main")) {
+                        cft.generateMove("$fp", "$sp");
+                    }else{
+                        //funciones
+                    }
                     break;
                 }
                 case "READ": {
@@ -120,6 +126,8 @@ public class TargetGenerator {
                         } else {
                             cft.generateAssignNum("0", temp);
                         }
+                    } else if(arg1.equals("RET")){
+                        cft.generateMove("$v0", "_"+resultado);
                     } else {
                         String temp = this.getTempDisponible(resultado);
                         cft.generateAssignVarLoad(arg1, temp);
@@ -225,6 +233,16 @@ public class TargetGenerator {
                     String Arg1 = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
                     cft.generateEqual(Arg1, Arg2, label);
+                    break;
+                }
+                case "CALL":{
+                    cft.generateJal(arg1);
+                    paramCount = 0;
+                    break;
+                }
+                case "PARAM":{
+                    cft.generateParam(arg1,paramCount);
+                    paramCount++;
                     break;
                 }
             }

@@ -26,7 +26,7 @@ public class SemanticParser {
     static String tipoFuncion = "";
     static int numErrores = 0;
     static boolean inAFunction = false;
-    static boolean debug = true;
+    static boolean debug = false;
 
     public static TablaSimbolos llenarTablaSimbolos(Element nodoPadre) throws Exception {
         ambitoActual = "main";
@@ -155,7 +155,7 @@ public class SemanticParser {
                 case "FunctionDeclaration": {
                     String ID = nodo.getAttribute("ID");
                     String type = nodo.getAttribute("Type");
-                    Simbolo S = new Simbolo(ID, null, type, "main", false, true, false, offset);
+                    Simbolo S = new Simbolo(ID, null, type, "null", false, true, false, offset);
                     int indice = ts.Add(S);
                     int backupOffset = offset;
                     offset = 0;

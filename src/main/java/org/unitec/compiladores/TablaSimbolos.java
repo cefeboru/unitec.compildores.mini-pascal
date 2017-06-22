@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class TablaSimbolos {
 
     public ArrayList<Simbolo> Simbolos = new ArrayList();
-    String formatHeader = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
-    String formatBody = "%-20s %-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
+    String formatHeader = "%-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
+    String formatBody = "%-20s %-60s %-15s %-15s %-15s %-15s %-15s %-18s";
 
     public int Add(Simbolo S) throws Exception {
         int itemIndex = this.getSymbolIndex(S);
@@ -91,7 +91,6 @@ public class TablaSimbolos {
         String headers = String.format(
                 formatHeader,
                 "ID",
-                "VALOR",
                 "TIPO",
                 "AMBITO",
                 "ES VARIABLE",
@@ -105,7 +104,6 @@ public class TablaSimbolos {
             String output = String.format(
                     formatBody,
                     S.getId(),
-                    S.getValor(),
                     S.getTipo(),
                     S.getAmbito(),
                     String.valueOf(S.isVariable()),

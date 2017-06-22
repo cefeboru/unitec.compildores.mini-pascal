@@ -35,6 +35,7 @@ L4:
 li $t3, 0
 L6:
 main:
+move $fp, $sp
 li $t4, 1
 sw $t4, _a
 li $v0, 5
@@ -59,7 +60,10 @@ li $t7, 1
 li $t8, 2
 mult $t7, $t8
 mflo $t7
-lw $t8, _RET
-sw null, _asd
+move $a0, $t15
+move $a1, $t18
+move $a2, $t19
+jal x2
+move $v0, _e
 li $v0, 10
 syscall

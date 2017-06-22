@@ -221,6 +221,14 @@ public class CodigoFinalTabla {
         String row = "%s %s, %s, %s";
         text.add(String.format(row, "beq",Arg1, Arg2, label));
     }
-    
-    
+
+    void generateJal(String arg1) {
+        String row = "%s %s";
+        text.add(String.format(row, "jal", arg1));
+    }
+
+    void generateParam(String arg1, int paramCount) {
+        String row = "%s %s, %s";
+        text.add(String.format(row, "move", "$a"+paramCount, arg1));
+    }
 }
