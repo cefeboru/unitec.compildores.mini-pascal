@@ -814,7 +814,7 @@ ifstmt          ::= If:i expr:e Then stmt:s Else stmt:s2
                 |   error Else stmt:s2
                 ;
 
-forstmt         ::= For assignstmt:a To expr:e Do stmts:s
+forstmt         ::= For assignstmt:a To expr:e Do blockstmt:s
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("ForStatement");
@@ -823,15 +823,30 @@ forstmt         ::= For assignstmt:a To expr:e Do stmts:s
                     if (s != null) { nPadre.appendChild(s); }
                     RESULT = nPadre;
                 :}
+                | For assignstmt:a To expr:e Do 
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("ForStatement");
+                    if (a != null) { nPadre.appendChild(a); }
+                    if (e != null) { nPadre.appendChild(e); }
+                    RESULT = nPadre;
+                :}
                 |   forstmt error
                 ;
 
-whilestmt       ::= While expr:e Do stmt:s
+whilestmt       ::= While expr:e Do blockstmt:s
                 {:
                     iniXML();
                     Element nPadre = xmlDocument.createElement("WhileStatement");
                     if (e != null) { nPadre.appendChild(e); }
                     if (s != null) { nPadre.appendChild(s); }
+                    RESULT = nPadre;
+                :}
+                | While expr:e Do 
+                {:
+                    iniXML();
+                    Element nPadre = xmlDocument.createElement("WhileStatement");
+                    if (e != null) { nPadre.appendChild(e); }
                     RESULT = nPadre;
                 :}
                 |   whilestmt error

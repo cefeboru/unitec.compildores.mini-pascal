@@ -147,6 +147,9 @@ public class TargetGenerator {
                     String Arg1 = this.getTempClean(arg1);
                     String Arg2 = this.getTempClean(arg2);
                     cft.generateAdd(Arg1, Arg2, tempAvailable);
+                    if (!resultado.contains("$t")) {
+                        cft.generateAssignTemp(resultado,tempAvailable);
+                    }
                     break;
                 }
                 case "-": {
@@ -227,10 +230,10 @@ public class TargetGenerator {
                     break;
                 }
             }
-            if (i==tc.getSize()-1 && op.equals("GOTO")) {
+            /*if (i==tc.getSize()-1 && op.equals("GOTO")) {
                 String label = labelControl.get(Integer.parseInt(arg1));
                 cft.addLabel(label);
-            }
+            }*/
         }
         cft.generateEndOfProgram();
 

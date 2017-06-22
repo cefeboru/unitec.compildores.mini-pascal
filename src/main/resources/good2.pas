@@ -9,7 +9,7 @@ begin
         a:=1+1;
         write('meow');
     end
-    else if((2 > 1) and (3<4)) then
+    else if((2+1 > 1) and (3<4)) then
     begin
         write('write');
     end
@@ -17,5 +17,24 @@ begin
     begin
         write('watever');
     end;
-    write('asd');
+    for a := 10  to 20 do
+    begin
+      writeln('value of a: ', a);
+    end;
+    
+
+    a := 11;
+    repeat
+        writeln('value of a: ', a);
+        a := a + 1
+    until a = 20;
+
+    a := 12;
+    while  a < 20  do
+   
+    begin
+        writeln('value of a: ', a);
+        a := a + 1;
+    end;
+    write('das');
 end.

@@ -542,7 +542,6 @@ public class QuadGenerator {
             case "LessOrEqual":
             case "GreaterOrEqual":
             case "Different": {
-                System.out.println("****"+arg1.getNodeName());
                 cuadruplosExpresion(arg1);
                 break;
             }
@@ -602,8 +601,6 @@ public class QuadGenerator {
         nodo.setAttribute("listaF", listaFusionada);
         nodo.setAttribute("listaV", arg2.getAttribute("listaV"));
         
-        /*Cuadruplos.GEN("if" + op, t1, t2, "@");
-        Cuadruplos.GEN_GOTO("@");*/
     }
 
     private void cuadruploOr(Element nodo) throws Exception {
@@ -802,7 +799,6 @@ public class QuadGenerator {
             elseIf = (Element) lista.item(2);
             elseIfName = elseIf.getNodeName();
         }
-        System.out.println("---->" + expression.getNodeName());
         if (expression.getNodeName().equals("Literal") || expression.getNodeName().equals("ID")) {
             String newTemp = this.newTemp();
             Cuadruplos.GEN(":=", expression.getAttribute("Value"), newTemp);
@@ -827,7 +823,6 @@ public class QuadGenerator {
 
         this.completa(M1, expression.getAttribute("listaV"));
         this.completa(M2, expression.getAttribute("listaF"));
-        System.out.println("---->"+elseIfName);
         switch (elseIfName) {
             case "IfStatement": {
                 cuadruploIf(elseIf);
@@ -964,41 +959,61 @@ public class QuadGenerator {
         switch (endName) {
             case "Literal":
             case "ID": {
+                String temp1 = this.newTemp();
+                Cuadruplos.GEN(":=", iterator, temp1);
+                String idValex = end.getAttribute("Value");
+                String temp2 = this.newTemp();
+                Cuadruplos.GEN(":=", idValex, temp2);
+                
                 String listaV = this.crearLista(Cuadruplos.getSize());
                 String listaF = this.crearLista(Cuadruplos.getSize() + 1);
                 nodo.setAttribute("listaV", listaV);
                 nodo.setAttribute("listaF", listaF);
-                String idValex = end.getAttribute("Value");
-                Cuadruplos.GEN("if<=", iterator, idValex, "@");
+                
+                Cuadruplos.GEN("if<=", temp1, temp2, "@");
+                System.out.println("");
                 Cuadruplos.GEN_GOTO("@");
                 break;
             }
             case "ARRAY": {
                 this.cuadruploArray(end);
+                String temp = this.getTemp();
+                String temp1 = this.newTemp();
+                Cuadruplos.GEN(":=", iterator, temp1);
+                
                 String listaV = this.crearLista(Cuadruplos.getSize());
                 String listaF = this.crearLista(Cuadruplos.getSize() + 1);
                 nodo.setAttribute("listaV", listaV);
                 nodo.setAttribute("listaF", listaF);
-                String temp = this.getTemp();
-                Cuadruplos.GEN("if<=", iterator, temp, "@");
+                
+                Cuadruplos.GEN("if<=", temp1, temp, "@");
                 Cuadruplos.GEN_GOTO("@");
                 break;
             }
             default: {
                 this.cuadruploAritmetico(end);
+                String temp = this.getTemp();
+                String temp1 = this.newTemp();
+                Cuadruplos.GEN(":=", iterator, temp1);
+                
                 String listaV = this.crearLista(Cuadruplos.getSize());
                 String listaF = this.crearLista(Cuadruplos.getSize() + 1);
                 nodo.setAttribute("listaV", listaV);
                 nodo.setAttribute("listaF", listaF);
-                String temp = this.getTemp();
-                Cuadruplos.GEN("if<=", iterator, temp, "@");
+                
+                Cuadruplos.GEN("if<=", temp1, temp, "@");
                 Cuadruplos.GEN_GOTO("@");
                 break;
             }
         }
         int M2 = Cuadruplos.getSize();
         recorrer(body);
-        Cuadruplos.GEN("+", iterator, "1", iterator);
+        String temp1 = this.newTemp();
+        Cuadruplos.GEN(":=", iterator, temp1);
+        String temp2 = this.newTemp();
+        Cuadruplos.GEN(":=", "1", temp2);
+        
+        Cuadruplos.GEN("+", temp1, temp2, iterator);
         Cuadruplos.GEN_GOTO(M1 + "");
         int M3 = Cuadruplos.getSize();
 
